@@ -1,0 +1,128 @@
+package com.arlojay.cosmicearth.lib.noise.impl;
+
+import com.arlojay.cosmicearth.lib.noise.NoiseNode;
+import com.arlojay.cosmicearth.lib.noise.OctaveNoiseSampler;
+
+public class ErodedNoise implements NoiseNode {
+    private final NoiseNode noise;
+    private final int detail;
+    private final int depth;
+    private final double lacunarity;
+    private final double roughness;
+    private final double distortion;
+    private final double stride;
+
+    public ErodedNoise(NoiseNode noise, int detail, double lacunarity, double roughness) {
+        this(noise, detail, 2, lacunarity, 2.0, roughness, 0.0);
+    }
+
+    public ErodedNoise(NoiseNode noise, int detail, int depth, double lacunarity, double stride, double roughness, double distortion) {
+        this.noise = noise;
+        this.detail = detail;
+        this.depth = depth;
+        this.lacunarity = lacunarity;
+        this.stride = stride;
+        this.roughness = roughness;
+        this.distortion = distortion;
+    }
+
+    @Override
+    public double sample(double t) {
+        double max = 0.0;
+        double value = 0.0;
+        double effectiveness = 1.0;
+        double scale = 1.0;
+        double lacunarity = this.lacunarity;
+
+        for(int i = 0; i < depth; i++) {
+            var sample = Math.abs(OctaveNoiseSampler.sample1D(
+                    noise, t * scale,
+                    detail, roughness, lacunarity, distortion
+            )) * 2.0d - 1.0d;
+
+            max += effectiveness;
+            value += sample * effectiveness;
+            scale *= stride;
+
+            effectiveness *= roughness;
+            lacunarity *= 0.75d * sample + 1.25d;
+        }
+
+        return value / max;
+    }
+
+    @Override
+    public double sample(double x, double y) {
+        double max = 0.0;
+        double value = 0.0;
+        double effectiveness = 1.0;
+        double scale = 1.0;
+        double lacunarity = this.lacunarity;
+
+        for(int i = 0; i < depth; i++) {
+            var sample = Math.abs(OctaveNoiseSampler.sample2D(
+                    noise, x * scale, y * scale,
+                    detail, roughness, lacunarity, distortion
+            )) * 2.0d - 1.0d;
+
+            max += effectiveness;
+            value += sample * effectiveness;
+            scale *= stride;
+
+            effectiveness *= roughness;
+            lacunarity *= 0.75d * sample + 1.25d;
+        }
+
+        return value / max;
+    }
+
+    @Override
+    public double sample(double x, double y, double z) {
+        double max = 0.0;
+        double value = 0.0;
+        double effectiveness = 1.0;
+        double scale = 1.0;
+        double lacunarity = this.lacunarity;
+
+        for(int i = 0; i < depth; i++) {
+            var sample = Math.abs(OctaveNoiseSampler.sample3D(
+                    noise, x * scale, y * scale, z * scale,
+                    detail, roughness, lacunarity, distortion
+            )) * 2.0d - 1.0d;
+
+            max += effectiveness;
+            value += sample * effectiveness;
+            scale *= stride;
+
+            effectiveness *= roughness;
+            lacunarity *= 0.75d * sample + 1.25d;
+        }
+
+        return value / max;
+    }
+
+    @Override
+    public double sample(double x, double y, double z, double w) {
+        double max = 0.0;
+        double value = 0.0;
+        double effectiveness = 1.0;
+        double scale = 1.0;
+        double lacunarity = this.lacunarity;
+
+        for(int i = 0; i < depth; i++) {
+            var sample = Math.abs(OctaveNoiseSampler.sample4D(
+                    noise, x * scale, y * scale, z * scale, w * scale,
+                    detail, roughness, lacunarity, distortion
+            )) * 2.0d - 1.0d;
+
+            max += effectiveness;
+            value += sample * effectiveness;
+            scale *= stride;
+
+            effectiveness *= roughness;
+            lacunarity *= 0.75d * sample + 1.25d;
+        }
+
+        return value / max;
+    }
+}
