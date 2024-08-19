@@ -13,7 +13,7 @@ public abstract class ZoneGeneratorMixin {
     @Shadow
     public static void registerZoneGenerator(ZoneGenerator zoneGenerator) {}
 
-    @Inject(method = "registerZoneGenerators", at = @At(value = "INVOKE", target = "Lfinalforeach/cosmicreach/worldgen/ZoneGenerator;registerZoneGenerator(Lfinalforeach/cosmicreach/worldgen/ZoneGenerator;)V"))
+    @Inject(method = "registerZoneGenerators", at = @At(value = "INVOKE", target = "Lfinalforeach/cosmicreach/worldgen/ZoneGenerator;registerZoneGenerator(Lfinalforeach/cosmicreach/worldgen/ZoneGenerator;)V", ordinal = 0))
     private static void registerZoneGenerators(CallbackInfo ci) {
         registerZoneGenerator(new EarthZoneGenerator());
     }
