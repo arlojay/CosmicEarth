@@ -1,44 +1,38 @@
 package com.arlojay.cosmicearth.lib.noise.impl;
 
 import com.arlojay.cosmicearth.lib.noise.NoiseGenerator;
-
-import java.util.Random;
+import finalforeach.cosmicreach.worldgen.noise.WhiteNoise;
 
 public class WhiteNoiseGenerator extends NoiseGenerator {
-    private final Random noise;
-    private final double[] randomTable;
+    private final WhiteNoise noise;
 
     public WhiteNoiseGenerator(long seed) {
         super(seed);
 
-        this.noise = new Random(seed);
-
-        randomTable = new double[256];
-        for(int i = 0; i < randomTable.length; i++) randomTable[i] = this.noise.nextDouble() * 10000000D;
+        this.noise = new WhiteNoise(seed);
     }
 
-    private double sampleRandomTable(double n) {
-        return randomTable[(int) ((Double.doubleToLongBits(n) / n)) & 0xff];
-    }
-
+    @Override
     public double sample(double t) {
-        this.noise.setSeed(seed + Double.doubleToLongBits(t + sampleRandomTable(t)));
-        return this.noise.nextDouble() * 2d - 1d;
+        return noise.noise1D((float) t);
     }
 
+    @Override
     public double sample(double x, double y) {
-        double n = sample(x);
-        this.noise.setSeed(seed + Double.doubleToLongBits(y + sampleRandomTable(n)));
-        return this.noise.nextDouble() * 2d - 1d;
+        return noise.noise2D((float) x, (float) y);
     }
 
+    @Override
     public double sample(double x, double y, double z) {
-        double n = sample(x, y);
-        this.noise.setSeed(seed + Double.doubleToLongBits(z + sampleRandomTable(n)));
-        return this.noise.nextDouble() * 2d - 1d;
+        return noise.noise3D((float) x, (float) y, (float) z);
     }
 
+    @Override
     public double sample(double x, double y, double z, double w) {
-        return sample(sample(x, y) * sampleRandomTable(z + w), sample(z, w) * sampleRandomTable(x + y)) * 2d - 1d;
+        return noise.noise3D(
+                (float) (x + noise.noise1D((float) (w + y + z))),
+                (float) (y + noise.noise1D((float) (w + x + z))),
+                (float) (z + noise.noise1D((float) (w + x + y)))
+        );
     }
 }
