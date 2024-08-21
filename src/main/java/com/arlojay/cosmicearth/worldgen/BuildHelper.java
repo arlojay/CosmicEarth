@@ -100,81 +100,82 @@ public class BuildHelper {
         return null;
     }
 
+    private static final WhiteNoise densityNoise = new WhiteNoise();
     private static void scatterBlock(
-            Zone zone,
+            Zone zone, long seed,
             BlockState[] floorMask, BlockState[] airMask,
             int globalX, int globalY, int globalZ,
             double clusterSize, double density,
             BlockState blockState,
-            WhiteNoise densityNoise,
 
             boolean ignoreAir
     ) {
+        densityNoise.setSeed(seed);
         double clusterSizeSq = clusterSize * clusterSize;
 
-        for(int dx = -(int) Math.floor(clusterSize); dx <= (int) Math.ceil(clusterSize); dx++) {
-            for(int dz = -(int) Math.floor(clusterSize); dz <= (int) Math.ceil(clusterSize); dz++) {
+        int intRadius = (int) Math.ceil(clusterSize);
+
+        for(int dx = -intRadius; dx <= intRadius; dx++) {
+            for(int dz = -intRadius; dz <= intRadius; dz++) {
                 if(dx * dx + dz * dz > clusterSizeSq) continue;
-
-                var densitySample = densityNoise.noise2D(dx, dz) * 0.5d + 0.5d;
-
-                if(density > densitySample) continue;
 
                 var x = globalX + dx;
                 var z = globalZ + dz;
+
+                var densitySample = densityNoise.noise2D(x, z) * 0.5d + 0.5d;
+
+                if(density < densitySample) continue;
+
                 var foundY = BuildHelper.findClosestBlockInColumn(zone, floorMask, x, globalY, z);
                 if(foundY == null) continue;
 
-                boolean isAcceptableLocation = false;
+                var y = foundY + 1;
 
                 if(!ignoreAir) {
+                    boolean isAcceptableLocation = false;
+
                     for (var airBlock : airMask) {
-                        if (zone.getBlockState(x, foundY, z).equals(airBlock)) isAcceptableLocation = true;
+                        if (zone.getBlockState(x, y, z).equals(airBlock)) isAcceptableLocation = true;
                     }
+
+                    if(!isAcceptableLocation) continue;
                 }
 
-                if(!isAcceptableLocation) continue;
-
-                var y = foundY + 1;
                 BuildHelper.setBlockState(zone, blockState, x, y, z);
             }
         }
     }
 
     public static void scatterBlock(
-            Zone zone,
+            Zone zone, long seed,
             BlockState[] floorMask, BlockState[] airMask,
             int globalX, int globalY, int globalZ,
             double clusterSize, double density,
-            BlockState blockState,
-            WhiteNoise densityNoise
+            BlockState blockState
     ) {
         scatterBlock(
-                zone,
+                zone, seed,
                 floorMask, airMask,
                 globalX, globalY, globalZ,
                 clusterSize, density,
                 blockState,
-                densityNoise,
                 false
         );
     }
 
     public static void scatterBlock(
-            Zone zone,
+            Zone zone, long seed,
             BlockState[] floorMask,
             int globalX, int globalY, int globalZ,
             double clusterSize, double density,
-            BlockState blockState,
-            WhiteNoise densityNoise
+            BlockState blockState
     ) {
         scatterBlock(
-                zone,
+                zone, seed,
                 floorMask, floorMask,
                 globalX, globalY, globalZ,
                 clusterSize, density,
                 blockState,
-                densityNoise,
                 true
         );
     }
