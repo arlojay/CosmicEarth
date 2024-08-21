@@ -5,8 +5,7 @@
             "modelName": "cosmicearth:deciduous_leaves",
             "generateSlabs": false,
             "isTransparent": true,
-            "cullsSelf": false,
-            "isOpaque": false,
+            "isOpaque": true,
             "lightAttenuation": 1
         }
     }
