@@ -1,8 +1,10 @@
 package com.arlojay.cosmicearth;
 
 import com.arlojay.cosmicearth.block.Blocks;
+import com.arlojay.cosmicearth.worldgen.Worldgen;
 import com.github.puzzle.core.PuzzleRegistries;
 import com.github.puzzle.game.events.OnRegisterBlockEvent;
+import com.github.puzzle.game.events.OnRegisterZoneGenerators;
 import com.github.puzzle.loader.entrypoint.interfaces.ModInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,5 +24,10 @@ public class CosmicEarthMod implements ModInitializer {
     @Subscribe
     public void onEvent(OnRegisterBlockEvent event) {
         Blocks.register(event);
+    }
+
+    @Subscribe
+    public void onEvent(OnRegisterZoneGenerators event) {
+//        Worldgen.register(event);
     }
 }

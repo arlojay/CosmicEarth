@@ -3,6 +3,8 @@ package com.arlojay.cosmicearth.worldgen;
 import com.arlojay.cosmicearth.CosmicEarthMod;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.impl.*;
+import com.arlojay.cosmicearth.lib.spline.SplineMapper;
+import com.arlojay.cosmicearth.lib.spline.SplinePoint;
 import finalforeach.cosmicreach.blocks.BlockState;
 import finalforeach.cosmicreach.savelib.blockdata.SingleBlockData;
 import finalforeach.cosmicreach.savelib.blocks.IBlockDataFactory;
@@ -10,26 +12,34 @@ import finalforeach.cosmicreach.world.Chunk;
 import finalforeach.cosmicreach.world.Zone;
 import finalforeach.cosmicreach.worldgen.ChunkColumn;
 import finalforeach.cosmicreach.worldgen.ZoneGenerator;
+import finalforeach.cosmicreach.worldgen.trees.CoconutTree;
 
 public class EarthZoneGenerator extends ZoneGenerator {
     public static int maxHeight = 255;
     public static int waterHeight = 100;
-    public static int shoreHeight = 105;
+    public static int shoreHeight = 110;
 
     BlockState airBlock = this.getBlockStateInstance("base:air[default]");
     BlockState stoneBlock = this.getBlockStateInstance("base:stone_basalt[default]");
     BlockState grassBlock = this.getBlockStateInstance("base:grass[default]");
+    BlockState fullGrassBlock = this.getBlockStateInstance("base:grass[type=full]");
     BlockState dirtBlock = this.getBlockStateInstance("base:dirt[default]");
     BlockState sandBlock = this.getBlockStateInstance("base:sand[default]");
     BlockState waterBlock = this.getBlockStateInstance("base:water[default]");
     BlockState gravelBlock = this.getBlockStateInstance("base:stone_gravel[default]");
+    BlockState shortGrassBlock = this.getBlockStateInstance("cosmicearth:short_grass[default]");
+    BlockState tallGrassBlock = this.getBlockStateInstance("cosmicearth:tall_grass[default]");
+
+    WorldgenStructure pineTreeStructure = new PineTreeStructure();
+    WorldgenStructure floraClusterStructure = new FloraClusterStructure();
+    WorldgenStructure oakTreeStructure = new OakTreeStructure();
 
     private final IBlockDataFactory<BlockState> chunkDataFactory = () -> new SingleBlockData<>(airBlock);
 
     private NoiseNode heightNoise;
     private NoiseNode heightNoiseGradient;
-    private NoiseNode voronoiBlobNoise;
     private NoiseNode paletteNoise;
+    private NoiseNode featureNoise;
 
     @Override
     public void create() {
@@ -53,14 +63,14 @@ public class EarthZoneGenerator extends ZoneGenerator {
                                         ),
                                         1d),
                         }),
-                        new NoiseSpline.SplinePoint[]{
-                            new NoiseSpline.SplinePoint(-1, -1),
-                            new NoiseSpline.SplinePoint(-0.5, -0.4),
-                            new NoiseSpline.SplinePoint(0, 0),
-                            new NoiseSpline.SplinePoint(0.5, 0.2),
-                            new NoiseSpline.SplinePoint(0.8, 0.6),
-                            new NoiseSpline.SplinePoint(1, 1)
-                        }
+                        new SplineMapper(new SplinePoint[]{
+                                new SplinePoint(-1, -1),
+                                new SplinePoint(-0.5, -0.4),
+                                new SplinePoint(0, 0),
+                                new SplinePoint(0.5, 0.2),
+                                new SplinePoint(0.8, 0.6),
+                                new SplinePoint(1, 1)
+                        })
                 ),
                 60d, 140d
         );
@@ -74,59 +84,65 @@ public class EarthZoneGenerator extends ZoneGenerator {
                                 2.0,
                                 0.0
                         ),
-                        new NoiseSpline.SplinePoint[]{
-                                new NoiseSpline.SplinePoint(   -1d,     0d  ),
-                                new NoiseSpline.SplinePoint(   -2/3d,   1d  ),
-                                new NoiseSpline.SplinePoint(    0d,    -1d  ),
-                                new NoiseSpline.SplinePoint(    2/3d,   1d  ),
-                                new NoiseSpline.SplinePoint(    1d,     0d  ),
-                        }
+                        new SplineMapper(new SplinePoint[]{
+                                new SplinePoint(   -1d,     0d  ),
+                                new SplinePoint(   -2/3d,   1d  ),
+                                new SplinePoint(    0d,    -1d  ),
+                                new SplinePoint(    2/3d,   1d  ),
+                                new SplinePoint(    1d,     0d  ),
+                        })
                 ),
                 -40d, 100d
         );
 
+        var erosionNoise = new ErodedNoise(
+                new SimplexNoiseGenerator(seed + 4),
+                3,
+                2.0,
+                0.7
+        );
+
         heightNoise = new NoiseMixer(new NoiseMixer.MixerSource[]{
                 new NoiseMixer.MixerSource(
-                        new NoiseScaler(shapedNoise, 0.001d),
+                        new NoiseScaler(shapedNoise, 0.002d),
                         1d
                 ),
                 new NoiseMixer.MixerSource(
                         new NoiseScaler(ridgesNoise, 0.0003d),
+                        0.6d
+                ),
+                new NoiseMixer.MixerSource(
+                        new NoiseScaler(erosionNoise, 0.004d),
                         1d
                 )
         }, false);
 
-        heightNoise = new NoiseScaler(
-                new NoiseMapper(
-                        new ErodedNoise(new SimplexNoiseGenerator(seed + 4), 5, 2.0, 0.5),
-                        70d, 150d
-                ),
-                0.001
-        );
+//        heightNoise = new NoiseScaler(
+//                new NoiseMapper(
+//                        new ErodedNoise(new SimplexNoiseGenerator(seed + 4), 2, 2.0, 0.5),
+//                        70d, 150d
+//                ),
+//                0.01
+//        );
 
-        heightNoiseGradient = new NoiseGradientTransformer(heightNoise, 0.0001d);
-        voronoiBlobNoise = new NoiseScaler(
-                new VoronoiGenerator(seed + 5, VoronoiGenerator.VoronoiMode.DISTANCE),
-                0.02
-        );
+        heightNoiseGradient = new NoiseGradientTransformer(heightNoise, 0.5d);
 
 
 
         paletteNoise = new WhiteNoiseGenerator(seed + 2);
+        featureNoise = new WhiteNoiseGenerator(seed + 6);
     }
 
     @Override
     public void generateForChunkColumn(Zone zone, ChunkColumn col) {
         if (col.chunkY >= 0 && col.chunkY <= 15) {
-            int maxCy = Math.floorDiv(this.maxHeight, 16);
+            int maxCy = Math.floorDiv(maxHeight, 16);
 
             var columnDescriptor = new EarthZoneColumnDescriptor(col);
             columnDescriptor.buildCache2d("height", heightNoise);
             columnDescriptor.buildCache2d("gradient", heightNoiseGradient);
             columnDescriptor.buildCache2d("palette", paletteNoise);
-//            columnDescriptor.buildCache2d("doubleGradient", heightNoiseDoubleGradient);
 
-//            for(int cy = maxCy; cy >= col.chunkY; cy--) {
             for(int cy = col.chunkY; cy <= maxCy; cy++) {
                 Chunk chunk = zone.getChunkAtChunkCoords(col.chunkX, cy, col.chunkZ);
                 if (chunk == null) {
@@ -139,6 +155,8 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
                 generateChunk(chunk, columnDescriptor);
             }
+
+            generateFeatures(zone, col, columnDescriptor);
         }
     }
 
@@ -155,17 +173,19 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
                 for (int localY = 0; localY < CHUNK_WIDTH; localY++, globalY++) {
                     if(globalY > height) {
-                        chunk.setBlockState(globalY <= waterHeight ? waterBlock : airBlock, localX, localY, localZ);
+                        if(globalY <= waterHeight) {
+                            chunk.setBlockState(waterBlock, localX, localY, localZ);
+                        }
                         continue;
                     }
 
-                    if(globalY > height - 1 && gradient < 1.0) {
-
-                        if(gradient < 0.5) {
+//                    Grass/top layer
+                    if(globalY > height - 1) {
+                        if(gradient < 0.9) {
                             if(height <= shoreHeight) {
-                                chunk.setBlockState(gradient < 0.2 ? sandBlock : gravelBlock, localX, localY, localZ);
+                                chunk.setBlockState(gradient < 0.7 ? sandBlock : gravelBlock, localX, localY, localZ);
                             } else {
-                                chunk.setBlockState(grassBlock, localX, localY, localZ);
+                                chunk.setBlockState(gradient < 0.4 ? fullGrassBlock : grassBlock, localX, localY, localZ);
                             }
                             continue;
                         } else if(height > shoreHeight) {
@@ -179,14 +199,22 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
                             chunk.setBlockState(paletteBlock, localX, localY, localZ);
                             continue;
+                        } else {
+                            chunk.setBlockState(stoneBlock, localX, localY, localZ);
+                            continue;
                         }
                     }
 
-                    if(globalY > height - 5 && gradient < 0.4) {
-                        if(height <= shoreHeight) {
-                            chunk.setBlockState(gradient < 0.2 ? sandBlock : gravelBlock, localX, localY, localZ);
+                    // Dirt layer
+                    if(globalY > height - 5) {
+                        if(gradient < 1.0) {
+                            if(height <= shoreHeight) {
+                                chunk.setBlockState(gradient < 0.9 ? sandBlock : gravelBlock, localX, localY, localZ);
+                            } else {
+                                chunk.setBlockState(dirtBlock, localX, localY, localZ);
+                            }
                         } else {
-                            chunk.setBlockState(dirtBlock, localX, localY, localZ);
+                            chunk.setBlockState(stoneBlock, localX, localY, localZ);
                         }
                         continue;
                     }
@@ -194,6 +222,83 @@ public class EarthZoneGenerator extends ZoneGenerator {
                     chunk.setBlockState(stoneBlock, localX, localY, localZ);
                 }
                 globalY -= CHUNK_WIDTH;
+            }
+            globalZ -= CHUNK_WIDTH;
+        }
+    }
+
+    private void generateFeatures(Zone zone, ChunkColumn column, EarthZoneColumnDescriptor columnDescriptor) {
+        int globalX = column.getBlockX();
+        int globalZ = column.getBlockZ();
+
+        for(int localX = 0; localX < CHUNK_WIDTH; localX++, globalX++) {
+            for (int localZ = 0; localZ < CHUNK_WIDTH; localZ++, globalZ++) {
+                var height = columnDescriptor.readCache2d("height", localX, localZ);
+                var gradient = columnDescriptor.readCache2d("gradient", localX, localZ);
+                var featureValue = featureNoise.sample(globalX, globalZ);
+
+                var globalY = (int) Math.round(height + 0.5);
+                var ground = zone.getBlockState(globalX, globalY - 1, globalZ);
+                var air = zone.getBlockState(globalX, globalY, globalZ);
+
+                // Tree generation
+                if(
+                        featureValue > 0.95 && (
+                                ground.equals(grassBlock) ||
+                                ground.equals(dirtBlock) ||
+                                ground.equals(sandBlock)
+                        ) &&
+                        air.equals(airBlock)
+                ) {
+//                    CosmicEarthMod.LOGGER.info("place tree on gradient " + gradient);
+                    // Coconut trees
+                    if(
+                            height < waterHeight + 24d &&
+                            height > 48d &&
+                            gradient < 0.2d
+                    ) {
+//                        CosmicEarthMod.LOGGER.info("\\- coconut tree");
+                        CoconutTree.generateTree(this.seed, zone, globalX, globalY, globalZ);
+                        continue;
+                    }
+                    // Pine trees
+                    else if(
+                            height > shoreHeight + 10d &&
+                            height < maxHeight - 48d &&
+                            gradient < 0.6d
+                    ) {
+//                        CosmicEarthMod.LOGGER.info("\\- pine tree");
+                        pineTreeStructure.generate(this.seed, zone, globalX, globalY, globalZ);
+                        continue;
+                    }
+                    // Oak trees
+                    else if(featureValue > 0.99) {
+//                        CosmicEarthMod.LOGGER.info("\\- oak tree");
+                        oakTreeStructure.generate(this.seed, zone, globalX, globalY, globalZ);
+                        continue;
+                    }
+                }
+
+                if(
+                        featureValue > -0.5 && (
+                                ground.equals(grassBlock) ||
+                                ground.equals(fullGrassBlock)
+                        ) &&
+                        air.equals(airBlock)
+                ) {
+                    zone.setBlockState(featureValue > 0.0 ? tallGrassBlock : shortGrassBlock, globalX, globalY, globalZ);
+                    continue;
+                }
+
+                if(
+                        featureValue > -0.55 && (
+                                ground.equals(grassBlock) ||
+                                ground.equals(fullGrassBlock)
+                        ) &&
+                        air.equals(airBlock)
+                ) {
+                    floraClusterStructure.generate(this.seed, zone, globalX, globalY, globalZ);
+                }
             }
             globalZ -= CHUNK_WIDTH;
         }
