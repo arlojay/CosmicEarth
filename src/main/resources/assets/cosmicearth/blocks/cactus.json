@@ -1,0 +1,12 @@
+{
+    "stringId": "cosmicearth:cactus",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:cactus",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": false,
+            "lightAttenuation": 1
+        }
+    }
+}

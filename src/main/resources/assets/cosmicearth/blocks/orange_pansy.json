@@ -1,0 +1,13 @@
+{
+    "stringId": "cosmicearth:orange_pansy",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:orange_pansy",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": false,
+            "lightAttenuation": 0,
+            "walkThrough": true
+        }
+    }
+}

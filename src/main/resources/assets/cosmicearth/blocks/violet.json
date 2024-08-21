@@ -1,0 +1,13 @@
+{
+    "stringId": "cosmicearth:violet",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:violet",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": false,
+            "lightAttenuation": 0,
+            "walkThrough": true
+        }
+    }
+}

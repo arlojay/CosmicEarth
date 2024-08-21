@@ -1,0 +1,13 @@
+{
+    "stringId": "cosmicearth:bluebell",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:bluebell",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": false,
+            "lightAttenuation": 0,
+            "walkThrough": true
+        }
+    }
+}

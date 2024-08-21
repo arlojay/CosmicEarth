@@ -1,0 +1,13 @@
+{
+    "stringId": "cosmicearth:daisy",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:daisy",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": false,
+            "lightAttenuation": 0,
+            "walkThrough": true
+        }
+    }
+}

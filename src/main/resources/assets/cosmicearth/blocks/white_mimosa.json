@@ -1,0 +1,13 @@
+{
+    "stringId": "cosmicearth:white_mimosa",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:white_mimosa",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": false,
+            "lightAttenuation": 0,
+            "walkThrough": true
+        }
+    }
+}

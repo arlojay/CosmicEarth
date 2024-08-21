@@ -1,0 +1,13 @@
+{
+    "stringId": "cosmicearth:purple_iris",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:purple_iris",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": false,
+            "lightAttenuation": 0,
+            "walkThrough": true
+        }
+    }
+}

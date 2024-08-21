@@ -1,0 +1,27 @@
+{
+    "textures":
+    {
+        "default":
+        {
+            "fileName": "base:debug.png"
+        }
+    },
+    "cuboids": [
+        {
+            "localBounds": [0,0,8, 16,16,8],
+            "faces":
+            {
+                "localNegZ": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "default"},
+                "localPosZ": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "default"}
+            }
+        },
+        {
+            "localBounds": [8,0,0, 8,16,16],
+            "faces":
+            {
+                "localNegX": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "default"},
+                "localPosX": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "default"}
+            }
+        }
+    ]
+}

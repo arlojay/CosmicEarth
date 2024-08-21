@@ -1,0 +1,14 @@
+{
+    "parent": "cosmicearth:cube",
+    "textures": {
+        "top": {
+            "fileName": "cosmicearth:dead_grass_top.png"
+        },
+        "bottom": {
+            "fileName": "base:dirt.png"
+        },
+        "side": {
+            "fileName": "cosmicearth:dead_grass_side.png"
+        }
+    }
+}

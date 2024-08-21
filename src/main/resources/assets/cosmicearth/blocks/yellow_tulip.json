@@ -1,0 +1,13 @@
+{
+    "stringId": "cosmicearth:yellow_tulip",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:yellow_tulip",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": false,
+            "lightAttenuation": 0,
+            "walkThrough": true
+        }
+    }
+}

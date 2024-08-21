@@ -1,0 +1,12 @@
+{
+    "stringId": "cosmicearth:coniferous_leaves",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:coniferous_leaves",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": true,
+            "lightAttenuation": 1
+        }
+    }
+}

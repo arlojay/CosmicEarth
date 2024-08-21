@@ -1,0 +1,49 @@
+{
+    "textures":
+    {
+        "side": {
+            "fileName": "cosmicearth:cactus.png"
+        },
+        "top": {
+            "fileName": "cosmicearth:cactus_top.png"
+        }
+    },
+    "cuboids": [
+        {
+            "localBounds": [0,0,1, 16,16,1],
+            "faces":
+            {
+                "localNegZ": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "side"}
+            }
+        },
+        {
+            "localBounds": [0,0,15, 16,16,15],
+            "faces":
+            {
+                "localPosZ": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "side"}
+            }
+        },
+        {
+            "localBounds": [1,0,0, 1,16,16],
+            "faces":
+            {
+                "localNegX": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "side"}
+            }
+        },
+        {
+            "localBounds": [15,0,0, 15,16,16],
+            "faces":
+            {
+                "localPosX": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "side"}
+            }
+        },
+        {
+            "localBounds": [1,0,1, 15,16,15],
+            "faces":
+            {
+                "localNegY": {"uv": [ 1, 1, 15, 15 ], "ambientocclusion": true, "cullFace": true, "texture": "top"},
+                "localPosY": {"uv": [ 1, 1, 15, 15 ], "ambientocclusion": true, "cullFace": true, "texture": "top"}
+            }
+        }
+    ]
+}

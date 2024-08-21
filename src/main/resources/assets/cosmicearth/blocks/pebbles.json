@@ -1,0 +1,85 @@
+{
+  "stringId": "cosmicearth:pebbles",
+  "blockStates": {
+    "model=0": {
+      "modelName": "cosmicearth:pebbles_0",
+      "isOpaque": false,
+      "isTransparent": true,
+      "lightAttenuation": 0,
+      "generateSlabs": false,
+      "lightLevelRed": 0,
+      "lightLevelGreen": 0,
+      "lightLevelBlue": 0
+    },
+    "model=1": {
+      "modelName": "cosmicearth:pebbles_1",
+      "isOpaque": false,
+      "isTransparent": true,
+      "lightAttenuation": 0,
+      "generateSlabs": false,
+      "lightLevelRed": 0,
+      "lightLevelGreen": 0,
+      "lightLevelBlue": 0
+    },
+    "model=2": {
+      "modelName": "cosmicearth:pebbles_2",
+      "isOpaque": false,
+      "isTransparent": true,
+      "lightAttenuation": 0,
+      "generateSlabs": false,
+      "lightLevelRed": 0,
+      "lightLevelGreen": 0,
+      "lightLevelBlue": 0
+    },
+    "model=3": {
+      "modelName": "cosmicearth:pebbles_3",
+      "isOpaque": false,
+      "isTransparent": true,
+      "lightAttenuation": 0,
+      "generateSlabs": false,
+      "lightLevelRed": 0,
+      "lightLevelGreen": 0,
+      "lightLevelBlue": 0
+    },
+    "model=4": {
+      "modelName": "cosmicearth:pebbles_4",
+      "isOpaque": false,
+      "isTransparent": true,
+      "lightAttenuation": 0,
+      "generateSlabs": false,
+      "lightLevelRed": 0,
+      "lightLevelGreen": 0,
+      "lightLevelBlue": 0
+    },
+    "model=5": {
+      "modelName": "cosmicearth:pebbles_5",
+      "isOpaque": false,
+      "isTransparent": true,
+      "lightAttenuation": 0,
+      "generateSlabs": false,
+      "lightLevelRed": 0,
+      "lightLevelGreen": 0,
+      "lightLevelBlue": 0
+    },
+    "model=6": {
+      "modelName": "cosmicearth:pebbles_6",
+      "isOpaque": false,
+      "isTransparent": true,
+      "lightAttenuation": 0,
+      "generateSlabs": false,
+      "lightLevelRed": 0,
+      "lightLevelGreen": 0,
+      "lightLevelBlue": 0
+    },
+    "model=7": {
+      "modelName": "cosmicearth:pebbles_7",
+      "isOpaque": false,
+      "isTransparent": true,
+      "lightAttenuation": 0,
+      "generateSlabs": false,
+      "lightLevelRed": 0,
+      "lightLevelGreen": 0,
+      "lightLevelBlue": 0
+    }
+  }
+}

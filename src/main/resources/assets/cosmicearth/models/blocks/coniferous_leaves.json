@@ -1,0 +1,25 @@
+{
+    "textures":
+    {
+        "default":
+        {
+            "fileName": "cosmicearth:coniferous_leaves.png"
+        }
+    },
+    "cuboids": [
+        {
+            "localBounds": [0,0,0, 16,16,16],
+            "faces":
+            {
+                "localNegX": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "default"},
+                "localPosX": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "default"},
+
+                "localNegY": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "default"},
+                "localPosY": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "default"},
+
+                "localNegZ": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "default"},
+                "localPosZ": {"uv": [ 0, 0, 16, 16 ], "ambientocclusion": true, "cullFace": false, "texture": "default"}
+            }
+        }
+    ]
+}

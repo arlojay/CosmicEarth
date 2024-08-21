@@ -1,0 +1,13 @@
+{
+    "stringId": "cosmicearth:pink_lily",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:pink_lily",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": false,
+            "lightAttenuation": 0,
+            "walkThrough": true
+        }
+    }
+}

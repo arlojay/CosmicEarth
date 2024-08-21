@@ -1,0 +1,13 @@
+{
+    "stringId": "cosmicearth:buttercup",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:buttercup",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": false,
+            "lightAttenuation": 0,
+            "walkThrough": true
+        }
+    }
+}

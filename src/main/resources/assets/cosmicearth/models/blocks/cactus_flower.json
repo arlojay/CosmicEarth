@@ -1,0 +1,8 @@
+{
+    "parent": "cosmicearth:plant",
+    "textures": {
+        "default": {
+            "fileName": "cosmicearth:cactus_flower.png"
+        }
+    }
+}

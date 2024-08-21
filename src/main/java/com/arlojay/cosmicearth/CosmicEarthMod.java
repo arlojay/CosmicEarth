@@ -1,5 +1,6 @@
 package com.arlojay.cosmicearth;
 
+import com.arlojay.cosmicearth.block.Blocks;
 import com.github.puzzle.core.PuzzleRegistries;
 import com.github.puzzle.game.events.OnRegisterBlockEvent;
 import com.github.puzzle.loader.entrypoint.interfaces.ModInitializer;
@@ -20,6 +21,6 @@ public class CosmicEarthMod implements ModInitializer {
 
     @Subscribe
     public void onEvent(OnRegisterBlockEvent event) {
-
+        Blocks.register(event);
     }
 }

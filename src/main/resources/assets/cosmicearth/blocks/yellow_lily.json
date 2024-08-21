@@ -1,0 +1,13 @@
+{
+    "stringId": "cosmicearth:yellow_lily",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:yellow_lily",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": false,
+            "lightAttenuation": 0,
+            "walkThrough": true
+        }
+    }
+}

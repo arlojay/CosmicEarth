@@ -1,0 +1,9 @@
+{
+    "stringId": "cosmicearth:dead_grass",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:dead_grass",
+            "generateSlabs": false
+        }
+    }
+}

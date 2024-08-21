@@ -1,0 +1,13 @@
+{
+    "stringId": "cosmicearth:tall_grass",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:tall_grass",
+            "generateSlabs": false,
+            "isTransparent": true,
+            "isOpaque": false,
+            "lightAttenuation": 0,
+            "walkThrough": true
+        }
+    }
+}
