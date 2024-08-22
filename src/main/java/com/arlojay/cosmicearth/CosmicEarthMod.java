@@ -28,6 +28,6 @@ public class CosmicEarthMod implements ModInitializer {
 
     @Subscribe
     public void onEvent(OnRegisterZoneGenerators event) {
-//        Worldgen.register(event);
+        Worldgen.register(event);
     }
 }
