@@ -5,6 +5,8 @@ import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.impl.*;
 import com.arlojay.cosmicearth.lib.spline.SplineMapper;
 import com.arlojay.cosmicearth.lib.spline.SplinePoint;
+import com.arlojay.cosmicearth.lib.variety.Palette;
+import com.arlojay.cosmicearth.lib.variety.PaletteItem;
 import finalforeach.cosmicreach.blocks.BlockState;
 import finalforeach.cosmicreach.savelib.blockdata.SingleBlockData;
 import finalforeach.cosmicreach.savelib.blocks.IBlockDataFactory;
@@ -29,6 +31,12 @@ public class EarthZoneGenerator extends ZoneGenerator {
     BlockState gravelBlock = this.getBlockStateInstance("base:stone_gravel[default]");
     BlockState shortGrassBlock = this.getBlockStateInstance("cosmicearth:short_grass[default]");
     BlockState tallGrassBlock = this.getBlockStateInstance("cosmicearth:tall_grass[default]");
+
+    Palette<BlockState> steepGradientTopsoil = new Palette<>(
+            new PaletteItem<>(grassBlock, 1d),
+            new PaletteItem<>(gravelBlock, 1d),
+            new PaletteItem<>(stoneBlock, 2d)
+    );
 
     WorldgenStructure pineTreeStructure = new PineTreeStructure();
     WorldgenStructure floraClusterStructure = new FloraClusterStructure();
@@ -179,44 +187,65 @@ public class EarthZoneGenerator extends ZoneGenerator {
                         continue;
                     }
 
-//                    Grass/top layer
+                    // Grass/top layer
                     if(globalY > height - 1) {
+                        // Shallow gradient
                         if(gradient < 0.9) {
-                            if(height <= shoreHeight) {
-                                chunk.setBlockState(gradient < 0.7 ? sandBlock : gravelBlock, localX, localY, localZ);
-                            } else {
+                            if(height > shoreHeight) {
+                                // Inland
                                 chunk.setBlockState(gradient < 0.4 ? fullGrassBlock : grassBlock, localX, localY, localZ);
+                                continue;
+                            } else {
+                                // Shoreline / underwater
+                                chunk.setBlockState(gradient < 0.7 ? sandBlock : gravelBlock, localX, localY, localZ);
+                                continue;
                             }
-                            continue;
-                        } else if(height > shoreHeight) {
-                            var paletteBlock = gravelBlock;
-
-                            if(paletteOffset > 0.0) {
-                                paletteBlock = stoneBlock;
-                            } else if(paletteOffset > -0.5) {
-                                paletteBlock = grassBlock;
+                        }
+                        // Steep gradient
+                        else {
+                            if(height > shoreHeight) {
+                                // Inland
+                                var paletteBlock = steepGradientTopsoil.getRandomItem(
+                                        Double.doubleToLongBits(paletteOffset * Double.MAX_VALUE)
+                                );
+                                chunk.setBlockState(paletteBlock, localX, localY, localZ);
+                                continue;
+                            } else {
+                                // Shoreline / underwater
+                                chunk.setBlockState(stoneBlock, localX, localY, localZ);
+                                continue;
                             }
-
-                            chunk.setBlockState(paletteBlock, localX, localY, localZ);
-                            continue;
-                        } else {
-                            chunk.setBlockState(stoneBlock, localX, localY, localZ);
-                            continue;
                         }
                     }
 
-                    // Dirt layer
+                    // Dirt/middle layer
                     if(globalY > height - 5) {
+                        // Shallow gradient
                         if(gradient < 1.0) {
-                            if(height <= shoreHeight) {
-                                chunk.setBlockState(gradient < 0.9 ? sandBlock : gravelBlock, localX, localY, localZ);
-                            } else {
+                            // Inland
+                            if(height > shoreHeight) {
                                 chunk.setBlockState(dirtBlock, localX, localY, localZ);
+                                continue;
                             }
-                        } else {
-                            chunk.setBlockState(stoneBlock, localX, localY, localZ);
+                            // Shoreline / underwater
+                            else {
+                                chunk.setBlockState(gradient < 0.9 ? sandBlock : gravelBlock, localX, localY, localZ);
+                                continue;
+                            }
                         }
-                        continue;
+                        // Steep gradient
+                        else {
+                            // Inland
+                            if(height > shoreHeight) {
+                                chunk.setBlockState(stoneBlock, localX, localY, localZ);
+                                continue;
+                            }
+                            // Shoreline / underwater
+                            else {
+                                chunk.setBlockState(stoneBlock, localX, localY, localZ);
+                                continue;
+                            }
+                        }
                     }
 
                     chunk.setBlockState(stoneBlock, localX, localY, localZ);
