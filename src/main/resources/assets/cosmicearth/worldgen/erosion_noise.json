@@ -5,6 +5,7 @@
     "roughness": 0.7,
 
     "source": {
-        "type": "simplex"
+        "type": "simplex",
+        "seed": 4
     }
 }

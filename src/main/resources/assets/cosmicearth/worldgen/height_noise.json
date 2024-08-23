@@ -6,22 +6,37 @@
         {
             "factor": 1,
             "noise": {
-                "type": "ref",
-                "file": "cosmicearth:shaped_noise"
+                "type": "scale",
+                "scalar": 0.002,
+
+                "source": {
+                    "type": "ref",
+                    "file": "cosmicearth:shaped_noise"
+                }
             }
         },
         {
             "factor": 0.6,
             "noise": {
-                "type": "ref",
-                "file": "cosmicearth:ridges_noise"
+                "type": "scale",
+                "scalar": 0.0003,
+
+                "source": {
+                    "type": "ref",
+                    "file": "cosmicearth:ridges_noise"
+                }
             }
         },
         {
             "factor": 1,
             "noise": {
-                "type": "ref",
-                "file": "cosmicearth:erosion_noise"
+                "type": "scale",
+                "scalar": 0.004,
+
+                "source": {
+                    "type": "ref",
+                    "file": "cosmicearth:erosion_noise"
+                }
             }
         }
     ]

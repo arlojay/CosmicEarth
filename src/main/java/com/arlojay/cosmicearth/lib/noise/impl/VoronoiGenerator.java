@@ -23,17 +23,25 @@ public class VoronoiGenerator extends NoiseGenerator {
 
             return new VoronoiGenerator(
                     NoiseLoader.getProps().getLong("seed", 0L),
+                    options.getLong("seed", 0L),
                     randomness,
                     VoronoiMode.valueOf(mode)
             );
         });
     }
 
+
+    public VoronoiGenerator(long seed, long seedOffset, VoronoiMode mode) {
+        this(seed, seedOffset, 1.0d, mode);
+    }
     public VoronoiGenerator(long seed, VoronoiMode mode) {
-        this(seed, 1.0d, mode);
+        this(seed, 0L, 1.0d, mode);
     }
     public VoronoiGenerator(long seed, double randomness, VoronoiMode mode) {
-        super(seed);
+        this(seed, 0L, randomness, mode);
+    }
+    public VoronoiGenerator(long seed, long seedOffset, double randomness, VoronoiMode mode) {
+        super(seed, seedOffset);
         this.mode = mode;
         this.randomness = randomness * (Math.sqrt(3d) / 2d);
         this.randomGenerator = new Random(seed);

@@ -21,7 +21,8 @@
             "distortion": 0,
 
             "source": {
-                "type": "simplex"
+                "type": "simplex",
+                "seed": 2
             }
         }
     }

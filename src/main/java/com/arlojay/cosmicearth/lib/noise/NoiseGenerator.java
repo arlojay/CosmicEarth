@@ -1,14 +1,16 @@
 package com.arlojay.cosmicearth.lib.noise;
 
 public abstract class NoiseGenerator implements NoiseNode {
-    public long seed;
+    protected long seed;
+    protected final long seedOffset;
 
-    public NoiseGenerator(long seed) {
+    public NoiseGenerator(long seed, long seedOffset) {
         this.seed = seed;
+        this.seedOffset = seedOffset;
     }
 
     @Override
     public void setSeed(long seed) {
-        this.seed = seed;
+        this.seed = seed + seedOffset;
     }
 }

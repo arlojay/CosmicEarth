@@ -35,10 +35,11 @@
           "factor": 1,
           "noise": {
             "type": "scale",
-            "scalar": 1,
+            "scalar": 8,
 
             "source": {
-              "type": "simplex"
+              "type": "simplex",
+              "seed": 1
             }
           }
         }

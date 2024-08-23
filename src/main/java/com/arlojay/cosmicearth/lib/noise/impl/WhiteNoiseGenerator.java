@@ -11,13 +11,17 @@ public class WhiteNoiseGenerator extends NoiseGenerator {
     public static void register() {
         NoiseLoader.registerNoiseNode("noise",
                 (JsonObject options) -> new SimplexNoiseGenerator(
-                        NoiseLoader.getProps().getLong("seed", 0L)
+                        NoiseLoader.getProps().getLong("seed", 0L),
+                        options.getLong("seed", 0L)
                 )
         );
     }
 
     public WhiteNoiseGenerator(long seed) {
-        super(seed);
+        this(seed, 0L);
+    }
+    public WhiteNoiseGenerator(long seed, long seedOffset) {
+        super(seed, seedOffset);
 
         this.noise = new WhiteNoise(seed);
     }

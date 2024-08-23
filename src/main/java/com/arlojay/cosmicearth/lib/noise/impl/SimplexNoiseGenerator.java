@@ -6,16 +6,20 @@ import libs.opensimplex2.OpenSimplex2;
 import org.hjson.JsonObject;
 
 public class SimplexNoiseGenerator extends NoiseGenerator {
-    public SimplexNoiseGenerator(long seed) {
-        super(seed);
-    }
-
     public static void register() {
         NoiseLoader.registerNoiseNode("simplex",
                 (JsonObject options) -> new SimplexNoiseGenerator(
-                        NoiseLoader.getProps().getLong("seed", 0L)
+                        NoiseLoader.getProps().getLong("seed", 0L),
+                        options.getLong("seed", 0L)
                 )
         );
+    }
+
+    public SimplexNoiseGenerator(long seed) {
+        super(seed, 0L);
+    }
+    public SimplexNoiseGenerator(long seed, long seedOffset) {
+        super(seed, seedOffset);
     }
 
     @Override
