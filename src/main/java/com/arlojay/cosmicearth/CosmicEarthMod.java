@@ -1,6 +1,7 @@
 package com.arlojay.cosmicearth;
 
 import com.arlojay.cosmicearth.block.Blocks;
+import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
 import com.arlojay.cosmicearth.worldgen.Worldgen;
 import com.github.puzzle.core.PuzzleRegistries;
 import com.github.puzzle.game.events.OnRegisterBlockEvent;
@@ -17,8 +18,7 @@ public class CosmicEarthMod implements ModInitializer {
     @Override
     public void onInit() {
         PuzzleRegistries.EVENT_BUS.register(this);
-
-        LOGGER.info("Hello From INIT");
+        NoiseLoader.registerDefaultNoiseNodes();
     }
 
     @Subscribe

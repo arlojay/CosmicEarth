@@ -3,6 +3,11 @@ package com.arlojay.cosmicearth.lib.noise;
 public abstract class SingleInputNoiseTransformer implements NoiseNode {
     private final NoiseNode source;
 
+    @Override
+    public String buildString() {
+        return NoiseDebugString.buildStringSubnode(source);
+    }
+
     public SingleInputNoiseTransformer(NoiseNode source) {
         this.source = source;
     }
@@ -28,4 +33,9 @@ public abstract class SingleInputNoiseTransformer implements NoiseNode {
     }
 
     protected abstract double transform(double sample);
+
+    @Override
+    public void setSeed(long seed) {
+        source.setSeed(seed);
+    }
 }

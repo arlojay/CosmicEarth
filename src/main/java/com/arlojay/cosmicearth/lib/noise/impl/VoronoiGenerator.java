@@ -1,6 +1,8 @@
 package com.arlojay.cosmicearth.lib.noise.impl;
 
 import com.arlojay.cosmicearth.lib.noise.NoiseGenerator;
+import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
+import org.hjson.JsonObject;
 
 import java.util.Random;
 
@@ -12,6 +14,20 @@ public class VoronoiGenerator extends NoiseGenerator {
     private final VoronoiMode mode;
     private final double randomness;
     private final Random randomGenerator;
+
+    public static void register() {
+        NoiseLoader.registerNoiseNode("voronoi", (JsonObject options) -> {
+            double randomness = options.getDouble("randomness", 1d);
+            String mode = options.getString("mode", VoronoiMode.CELL.toString());
+
+
+            return new VoronoiGenerator(
+                    NoiseLoader.getProps().getLong("seed", 0L),
+                    randomness,
+                    VoronoiMode.valueOf(mode)
+            );
+        });
+    }
 
     public VoronoiGenerator(long seed, VoronoiMode mode) {
         this(seed, 1.0d, mode);
@@ -130,5 +146,10 @@ public class VoronoiGenerator extends NoiseGenerator {
         }
 
         return this.mode.equals(VoronoiMode.CELL) ? closestId : (1d - 2d / Math.exp(closest));
+    }
+
+    @Override
+    public String buildString() {
+        return "@Voronoi";
     }
 }

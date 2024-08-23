@@ -1,0 +1,28 @@
+{
+    "type": "mix",
+    "normalize": false,
+
+    "sources": [
+        {
+            "factor": 1,
+            "noise": {
+                "type": "ref",
+                "file": "cosmicearth:shaped_noise"
+            }
+        },
+        {
+            "factor": 0.6,
+            "noise": {
+                "type": "ref",
+                "file": "cosmicearth:ridges_noise"
+            }
+        },
+        {
+            "factor": 1,
+            "noise": {
+                "type": "ref",
+                "file": "cosmicearth:erosion_noise"
+            }
+        }
+    ]
+}

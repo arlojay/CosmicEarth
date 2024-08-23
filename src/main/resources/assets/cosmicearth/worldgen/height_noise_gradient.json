@@ -1,0 +1,8 @@
+{
+    "type": "gradient",
+    
+    "source": {
+        "type": "ref",
+        "file": "cosmicearth:height_noise"
+    }
+}

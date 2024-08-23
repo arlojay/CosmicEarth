@@ -12,6 +12,11 @@ public abstract class MultiInputNoiseTransformer implements NoiseNode {
     }
 
     @Override
+    public String buildString() {
+        return NoiseDebugString.buildStringSubnode(sources);
+    }
+
+    @Override
     public double sample(double t) {
         for(int i = 0; i < sources.length; i++) samples[i] = sources[i].sample(t);
         return transform(samples);
@@ -36,4 +41,10 @@ public abstract class MultiInputNoiseTransformer implements NoiseNode {
     }
 
     protected abstract double transform(double[] samples);
+
+
+    @Override
+    public void setSeed(long seed) {
+        for(var source : sources) source.setSeed(seed);
+    }
 }

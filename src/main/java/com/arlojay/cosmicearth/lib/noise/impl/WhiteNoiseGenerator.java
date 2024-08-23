@@ -1,10 +1,20 @@
 package com.arlojay.cosmicearth.lib.noise.impl;
 
 import com.arlojay.cosmicearth.lib.noise.NoiseGenerator;
+import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
 import finalforeach.cosmicreach.worldgen.noise.WhiteNoise;
+import org.hjson.JsonObject;
 
 public class WhiteNoiseGenerator extends NoiseGenerator {
     private final WhiteNoise noise;
+
+    public static void register() {
+        NoiseLoader.registerNoiseNode("noise",
+                (JsonObject options) -> new SimplexNoiseGenerator(
+                        NoiseLoader.getProps().getLong("seed", 0L)
+                )
+        );
+    }
 
     public WhiteNoiseGenerator(long seed) {
         super(seed);
@@ -34,5 +44,10 @@ public class WhiteNoiseGenerator extends NoiseGenerator {
                 (float) (y + noise.noise1D((float) (w + x + z))),
                 (float) (z + noise.noise1D((float) (w + x + y)))
         );
+    }
+
+    @Override
+    public String buildString() {
+        return "@WhiteNoise";
     }
 }

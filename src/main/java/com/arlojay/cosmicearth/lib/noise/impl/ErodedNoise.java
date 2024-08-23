@@ -1,7 +1,10 @@
 package com.arlojay.cosmicearth.lib.noise.impl;
 
+import com.arlojay.cosmicearth.lib.noise.NoiseDebugString;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.OctaveNoiseSampler;
+import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
+import org.hjson.JsonObject;
 
 public class ErodedNoise implements NoiseNode {
     private final NoiseNode noise;
@@ -11,6 +14,29 @@ public class ErodedNoise implements NoiseNode {
     private final double roughness;
     private final double distortion;
     private final double stride;
+
+    public static void register() {
+        NoiseLoader.registerNoiseNode("erosion", (JsonObject options) -> {
+            var sourceObject = options.get("source");
+            if(sourceObject == null) throw new NoSuchFieldException("erosion transformer must have a `source`");
+
+            JsonObject sourceNode = sourceObject.asObject();
+            int detail = options.getInt("detail", 2);
+            int depth = options.getInt("depth", 2);
+            double lacunarity = options.getDouble("lacunarity", 2d);
+            double stride = options.getDouble("stride", 2d);
+            double roughness = options.getDouble("roughness", 0.5d);
+            double distortion = options.getDouble("distortion", 0d);
+
+
+            return new ErodedNoise(
+                    NoiseLoader.createNoiseNode(sourceNode),
+                    detail, depth,
+                    lacunarity, stride,
+                    roughness, distortion
+            );
+        });
+    }
 
     public ErodedNoise(NoiseNode noise, int detail, double lacunarity, double roughness) {
         this(noise, detail, 2, lacunarity, 2.0, roughness, 0.0);
@@ -124,5 +150,22 @@ public class ErodedNoise implements NoiseNode {
         }
 
         return value / max;
+    }
+
+    @Override
+    public void setSeed(long seed) {
+        noise.setSeed(seed);
+    }
+
+    @Override
+    public String buildString() {
+        return "@ErodedNoise" + NoiseDebugString.createPropertyList(
+                "detail", this.detail,
+                "depth", this.depth,
+                "lacunarity", this.lacunarity,
+                "stride", this.stride,
+                "roughness", this.roughness,
+                "distortion", this.distortion
+        ) + NoiseDebugString.buildStringSubnode(noise);
     }
 }

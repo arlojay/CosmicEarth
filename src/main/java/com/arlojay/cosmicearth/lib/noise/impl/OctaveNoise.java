@@ -1,7 +1,10 @@
 package com.arlojay.cosmicearth.lib.noise.impl;
 
+import com.arlojay.cosmicearth.lib.noise.NoiseDebugString;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.OctaveNoiseSampler;
+import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
+import org.hjson.JsonObject;
 
 public class OctaveNoise implements NoiseNode {
     private final NoiseNode noise;
@@ -9,6 +12,25 @@ public class OctaveNoise implements NoiseNode {
     private final double roughness;
     private final int detail;
     private final double distortion;
+
+    public static void register() {
+        NoiseLoader.registerNoiseNode("octave", (JsonObject options) -> {
+            var sourceObject = options.get("source");
+            if(sourceObject == null) throw new NoSuchFieldException("octave transformer must have a `source`");
+
+            JsonObject sourceNode = sourceObject.asObject();
+            int detail = options.getInt("detail", 2);
+            double roughness = options.getDouble("roughness", 0.5d);
+            double lacunarity = options.getDouble("lacunarity", 2d);
+            double distortion = options.getDouble("distortion", 0d);
+
+
+            return new OctaveNoise(
+                    NoiseLoader.createNoiseNode(sourceNode),
+                    detail, roughness, lacunarity, distortion
+            );
+        });
+    }
 
     public OctaveNoise(NoiseNode noise, int detail, double roughness, double lacunarity, double distortion) {
         this.noise = noise;
@@ -48,5 +70,20 @@ public class OctaveNoise implements NoiseNode {
                 noise, x, y, z, w,
                 detail, roughness, lacunarity, distortion
         );
+    }
+
+    @Override
+    public void setSeed(long seed) {
+        noise.setSeed(seed);
+    }
+
+    @Override
+    public String buildString() {
+        return "@OctaveNoise" + NoiseDebugString.createPropertyList(
+            "detail", detail,
+            "roughness", roughness,
+            "lacunarity", lacunarity,
+            "distortion", distortion
+        ) + NoiseDebugString.buildStringSubnode(noise);
     }
 }

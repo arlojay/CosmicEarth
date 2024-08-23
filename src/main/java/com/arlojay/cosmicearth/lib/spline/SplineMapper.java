@@ -22,4 +22,16 @@ public class SplineMapper {
         }
         return points[points.length - 1].y;
     }
+
+    public String toString() {
+        var builder = new StringBuilder();
+        boolean first = true;
+        for(var point : points) {
+            if(!first) builder.append(", ");
+            builder.append("(").append(point.x).append(", ").append(point.y).append(")");
+            first = false;
+        }
+
+        return builder.toString();
+    }
 }

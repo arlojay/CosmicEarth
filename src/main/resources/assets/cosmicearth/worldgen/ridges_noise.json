@@ -1,0 +1,28 @@
+{
+    "type": "map",
+    "outputMin": -40,
+    "outputMax": 100,
+
+    "source": {
+        "type": "spline",
+        "points": [
+            [ -1.0,  0.0  ],
+            [ -0.66, 1.0  ],
+            [  0.0, -1.0  ],
+            [  0.66, 1.0  ],
+            [  1.0,  0.0  ]
+        ],
+
+        "source": {
+            "type": "octave",
+            "detail": 3,
+            "roughness": 0.5,
+            "lacunarity": 2,
+            "distortion": 0,
+
+            "source": {
+                "type": "simplex"
+            }
+        }
+    }
+}

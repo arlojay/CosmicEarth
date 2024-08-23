@@ -1,0 +1,48 @@
+{
+  "type": "map",
+  "outputMin": 60,
+  "outputMax": 140,
+
+  "source": {
+    "type": "spline",
+    "points": [
+      [ -1.0, -1.0  ],
+      [ -0.5, -0.4  ],
+      [  0.0,  0.0  ],
+      [  0.5,  0.2  ],
+      [  0.8,  0.6  ],
+      [  1.0,  1.0  ]
+    ],
+
+    "source": {
+      "type": "mix",
+
+      "sources": [
+        {
+          "factor": 10,
+          "noise": {
+            "type": "octave",
+            "detail": 10,
+            "roughness": 0.4,
+            "lacunarity": 0.2,
+            "distortion": 0.3,
+            "source": {
+              "type": "simplex"
+            }
+          }
+        },
+        {
+          "factor": 1,
+          "noise": {
+            "type": "scale",
+            "scalar": 1,
+
+            "source": {
+              "type": "simplex"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

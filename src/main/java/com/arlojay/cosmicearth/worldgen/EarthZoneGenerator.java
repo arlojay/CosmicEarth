@@ -2,9 +2,8 @@ package com.arlojay.cosmicearth.worldgen;
 
 import com.arlojay.cosmicearth.CosmicEarthMod;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
-import com.arlojay.cosmicearth.lib.noise.impl.*;
-import com.arlojay.cosmicearth.lib.spline.SplineMapper;
-import com.arlojay.cosmicearth.lib.spline.SplinePoint;
+import com.arlojay.cosmicearth.lib.noise.impl.WhiteNoiseGenerator;
+import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
 import com.arlojay.cosmicearth.lib.variety.Palette;
 import com.arlojay.cosmicearth.lib.variety.PaletteItem;
 import finalforeach.cosmicreach.blocks.BlockState;
@@ -49,96 +48,26 @@ public class EarthZoneGenerator extends ZoneGenerator {
     private NoiseNode paletteNoise;
     private NoiseNode featureNoise;
 
-    @Override
-    public void create() {
-        var shapedNoise = new NoiseMapper(
-                new NoiseSpline(
-                        new NoiseMixer(new NoiseMixer.MixerSource[]{
-                                new NoiseMixer.MixerSource(
-                                        new OctaveNoise(
-                                                new SimplexNoiseGenerator(seed),
-                                                10,
-                                                0.4,
-                                                2.0,
-                                                0.3
-                                        ),
-                                        10d
-                                ),
-                                new NoiseMixer.MixerSource(
-                                        new NoiseScaler(
-                                                new SimplexNoiseGenerator(seed + 1),
-                                                8d
-                                        ),
-                                        1d),
-                        }),
-                        new SplineMapper(new SplinePoint[]{
-                                new SplinePoint(-1, -1),
-                                new SplinePoint(-0.5, -0.4),
-                                new SplinePoint(0, 0),
-                                new SplinePoint(0.5, 0.2),
-                                new SplinePoint(0.8, 0.6),
-                                new SplinePoint(1, 1)
-                        })
-                ),
-                60d, 140d
-        );
+    private void loadNoise() throws Exception {
 
-        var ridgesNoise = new NoiseMapper(
-                new NoiseSpline(
-                        new OctaveNoise(
-                                new SimplexNoiseGenerator(seed + 3),
-                                3,
-                                0.5,
-                                2.0,
-                                0.0
-                        ),
-                        new SplineMapper(new SplinePoint[]{
-                                new SplinePoint(   -1d,     0d  ),
-                                new SplinePoint(   -2/3d,   1d  ),
-                                new SplinePoint(    0d,    -1d  ),
-                                new SplinePoint(    2/3d,   1d  ),
-                                new SplinePoint(    1d,     0d  ),
-                        })
-                ),
-                -40d, 100d
-        );
+        NoiseLoader.getProps().set("seed", seed);
 
-        var erosionNoise = new ErodedNoise(
-                new SimplexNoiseGenerator(seed + 4),
-                3,
-                2.0,
-                0.7
-        );
-
-        heightNoise = new NoiseMixer(new NoiseMixer.MixerSource[]{
-                new NoiseMixer.MixerSource(
-                        new NoiseScaler(shapedNoise, 0.002d),
-                        1d
-                ),
-                new NoiseMixer.MixerSource(
-                        new NoiseScaler(ridgesNoise, 0.0003d),
-                        0.6d
-                ),
-                new NoiseMixer.MixerSource(
-                        new NoiseScaler(erosionNoise, 0.004d),
-                        1d
-                )
-        }, false);
-
-//        heightNoise = new NoiseScaler(
-//                new NoiseMapper(
-//                        new ErodedNoise(new SimplexNoiseGenerator(seed + 4), 2, 2.0, 0.5),
-//                        70d, 150d
-//                ),
-//                0.01
-//        );
-
-        heightNoiseGradient = new NoiseGradientTransformer(heightNoise, 0.5d);
-
-
+        heightNoise = NoiseLoader.loadById("cosmicearth:height_noise");
+        heightNoiseGradient = NoiseLoader.loadById("cosmicearth:height_noise_gradient");
 
         paletteNoise = new WhiteNoiseGenerator(seed + 2);
         featureNoise = new WhiteNoiseGenerator(seed + 6);
+
+        CosmicEarthMod.LOGGER.info(heightNoiseGradient.buildString());
+    }
+
+    @Override
+    public void create() {
+        try {
+            loadNoise();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
