@@ -69,10 +69,10 @@ public class NoiseLoader {
     }
 
     private static NoiseNode loadLocation(ResourceLocation source) throws NoSuchFieldException, FileNotFoundException {
-        var sourceFile = PuzzleGameAssetLoader.locateAsset(source.toPath());
-        if(sourceFile == null) {
-            sourceFile = PuzzleGameAssetLoader.locateAsset(getWorldgenFileLocation(source).toPath());
-        }
+
+        var sourceFile = PuzzleGameAssetLoader.assetExists(source)
+                ? PuzzleGameAssetLoader.locateAsset(source)
+                : PuzzleGameAssetLoader.locateAsset(getWorldgenFileLocation(source));
 
         if(sourceFile == null) throw new FileNotFoundException("Cannot find noise file " + source);
 
