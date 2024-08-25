@@ -11,7 +11,7 @@
 
                 "source": {
                     "type": "ref",
-                    "file": "cosmicearth:shaped_noise"
+                    "file": "cosmicearth:terrain/shaped"
                 }
             }
         },
@@ -23,7 +23,7 @@
 
                 "source": {
                     "type": "ref",
-                    "file": "cosmicearth:ridges_noise"
+                    "file": "cosmicearth:terrain/ridges"
                 }
             }
         },
@@ -35,7 +35,7 @@
 
                 "source": {
                     "type": "ref",
-                    "file": "cosmicearth:erosion_noise"
+                    "file": "cosmicearth:terrain/erosion"
                 }
             }
         }
