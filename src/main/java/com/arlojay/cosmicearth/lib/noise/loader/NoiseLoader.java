@@ -120,5 +120,6 @@ public class NoiseLoader {
         SimplexNoiseGenerator.register();
         VoronoiGenerator.register();
         WhiteNoiseGenerator.register();
+        NoiseAbsolute.register();
     }
 }
