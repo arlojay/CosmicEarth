@@ -41,22 +41,22 @@ public class NoiseScaler implements NoiseNode {
 
     @Override
     public double sample(double t) {
-        return noise.sample(t * scaleX);
+        return noise.sample(t / scaleX);
     }
 
     @Override
     public double sample(double x, double y) {
-        return noise.sample(x * scaleX, y * scaleY);
+        return noise.sample(x / scaleX, y / scaleY);
     }
 
     @Override
     public double sample(double x, double y, double z) {
-        return noise.sample(x * scaleX, y * scaleY, z * scaleZ);
+        return noise.sample(x / scaleX, y / scaleY, z / scaleZ);
     }
 
     @Override
     public double sample(double x, double y, double z, double w) {
-        return noise.sample(x * scaleX, y * scaleY, z * scaleZ, w * scaleW);
+        return noise.sample(x / scaleX, y / scaleY, z / scaleZ, w / scaleW);
     }
 
     @Override

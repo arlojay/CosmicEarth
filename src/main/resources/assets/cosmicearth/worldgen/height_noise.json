@@ -7,7 +7,7 @@
             "factor": 1,
             "noise": {
                 "type": "scale",
-                "scalar": 0.002,
+                "scalar": 500,
 
                 "source": {
                     "type": "ref",
@@ -19,7 +19,7 @@
             "factor": 0.6,
             "noise": {
                 "type": "scale",
-                "scalar": 0.0003,
+                "scalar": 3000,
 
                 "source": {
                     "type": "ref",
@@ -31,7 +31,7 @@
             "factor": 1,
             "noise": {
                 "type": "scale",
-                "scalar": 0.004,
+                "scalar": 250,
 
                 "source": {
                     "type": "ref",
