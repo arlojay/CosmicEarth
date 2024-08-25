@@ -201,21 +201,19 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
                 // Tree generation
                 if(
-                        featureValue > 0.95 && (
+                        featureValue > 0.98 && (
                                 ground.equals(grassBlock) ||
                                 ground.equals(dirtBlock) ||
                                 ground.equals(sandBlock)
                         ) &&
                         air.equals(airBlock)
                 ) {
-//                    CosmicEarthMod.LOGGER.info("place tree on gradient " + gradient);
                     // Coconut trees
                     if(
                             height < waterHeight + 24d &&
                             height > 48d &&
                             gradient < 0.2d
                     ) {
-//                        CosmicEarthMod.LOGGER.info("\\- coconut tree");
                         CoconutTree.generateTree(this.seed, zone, globalX, globalY, globalZ);
                         continue;
                     }
@@ -225,13 +223,11 @@ public class EarthZoneGenerator extends ZoneGenerator {
                             height < maxHeight - 48d &&
                             gradient < 0.6d
                     ) {
-//                        CosmicEarthMod.LOGGER.info("\\- pine tree");
                         pineTreeStructure.generate(this.seed, zone, globalX, globalY, globalZ);
                         continue;
                     }
                     // Oak trees
-                    else if(featureValue > 0.99) {
-//                        CosmicEarthMod.LOGGER.info("\\- oak tree");
+                    else if(featureValue > 0.996) {
                         oakTreeStructure.generate(this.seed, zone, globalX, globalY, globalZ);
                         continue;
                     }
