@@ -31,7 +31,7 @@ public class BuildHelper {
         int y = globalY - 16 * cy;
         int z = globalZ - 16 * cz;
         c.setBlockState(blockState, x, y, z);
-//        c.flagForRemeshing(false);
+        c.flagForRemeshing(false);
     }
 
     public static BlockState getBlockState(Zone zone, int globalX, int globalY, int globalZ) {
