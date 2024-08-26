@@ -4,7 +4,7 @@
     "outputMax": 100,
 
     "source": {
-        "type": "spline",
+        "type": "graph",
         "points": [
             [ -1.0,  0.0  ],
             [ -0.66, 1.0  ],

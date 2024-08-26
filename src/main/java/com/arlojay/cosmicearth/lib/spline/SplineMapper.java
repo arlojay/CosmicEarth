@@ -1,20 +1,42 @@
 package com.arlojay.cosmicearth.lib.spline;
 
 public class SplineMapper {
+    public enum Interpolator {
+        SMOOTHSTEP() {
+            public double interpolate(double a, double b, double t) {
+                return (b - a) * (t * t * (3d - 2d * t)) + a;
+            }
+        },
+        LINEAR() {
+            public double interpolate(double a, double b, double t) {
+                return (b - a) * t + a;
+            }
+        },
+        CONSTANT() {
+            public double interpolate(double a, double b, double t) {
+                return t > 0.5 ? b : a;
+            }
+        };
+
+        public double interpolate(double a, double b, double t) {
+            return 0;
+        }
+    }
+
     private final SplinePoint[] points;
+    private final Interpolator interpolator;
 
-    public SplineMapper(SplinePoint[] unsortedPoints) {
+    public SplineMapper(SplinePoint[] unsortedPoints, Interpolator interpolator) {
         this.points = unsortedPoints; // too lazy lmao
+        this.interpolator = interpolator;
     }
 
-    private double interpolate(double a, double b, double t) {
-        return (b - a) * (t * t * (3d - 2d * t)) + a;
-    }
-
-    public double interpolate(double sample) {
+    public double transform(double sample) {
         var lastPoint = points[0];
+        if(sample <= lastPoint.x) return lastPoint.y;
+
         for (var currentPoint : points) {
-            if (currentPoint.x > sample) return interpolate(
+            if (currentPoint.x >= sample) return interpolator.interpolate(
                     lastPoint.y, currentPoint.y,
                     (sample - lastPoint.x) / (currentPoint.x - lastPoint.x)
             );

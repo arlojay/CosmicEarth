@@ -10,15 +10,19 @@ import org.hjson.JsonObject;
 
 public class NoiseSpline extends SingleInputNoiseTransformer {
     private final SplineMapper mapper;
+    private final SplineMapper.Interpolator interpolator;
 
     public static void register() {
-        NoiseLoader.registerNoiseNode("spline", (JsonObject options) -> {
+        NoiseLoader.registerNoiseNode("graph", (JsonObject options) -> {
             var sourceObject = options.get("source");
-            if(sourceObject == null) throw new NoSuchFieldException("map transformer must have a `source`");
+            if(sourceObject == null) throw new NoSuchFieldException("graph transformer must have a `source`");
 
             var pointObjects = options.get("points");
-            if(pointObjects == null) throw new NoSuchFieldException("map transformer must have a `points` array");
+            if(pointObjects == null) throw new NoSuchFieldException("graph transformer must have a `points` array");
             var pointObjectsArray = pointObjects.asArray();
+
+            var interpolationTypeString = options.getString("interpolator", SplineMapper.Interpolator.SMOOTHSTEP.toString());
+            var interpolator = SplineMapper.Interpolator.valueOf(interpolationTypeString.toUpperCase());
 
             var mixerSources = new SplinePoint[pointObjectsArray.size()];
 
@@ -32,25 +36,32 @@ public class NoiseSpline extends SingleInputNoiseTransformer {
             }
 
             return new NoiseSpline(
-                    NoiseLoader.createNoiseNode(sourceObject.asObject()),
-                    new SplineMapper(mixerSources)
+                    NoiseLoader.createNoiseNode(sourceObject),
+                    new SplineMapper(mixerSources, interpolator),
+                    interpolator
             );
         });
     }
 
     public NoiseSpline(NoiseNode source, SplineMapper mapper) {
+        this(source, mapper, SplineMapper.Interpolator.SMOOTHSTEP);
+    }
+
+    public NoiseSpline(NoiseNode source, SplineMapper mapper, SplineMapper.Interpolator interpolationType) {
         super(source);
         this.mapper = mapper;
+        this.interpolator = interpolationType;
     }
 
     @Override
     protected double transform(double sample) {
-        return mapper.interpolate(sample);
+        return mapper.transform(sample);
     }
 
     @Override
     public String buildString() {
         return "@NoiseSpline" + NoiseDebugString.createPropertyList(
+                "interpolator", interpolator.toString(),
                 "mapper", mapper.toString()
         ) + super.buildString();
     }
