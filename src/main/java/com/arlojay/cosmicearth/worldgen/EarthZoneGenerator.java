@@ -4,7 +4,8 @@ import com.arlojay.cosmicearth.CosmicEarthMod;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.impl.WhiteNoiseGenerator;
 import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
-import com.arlojay.cosmicearth.lib.variety.Palette;
+import com.arlojay.cosmicearth.lib.variety.GroupedPalette;
+import com.arlojay.cosmicearth.lib.variety.RandomPalette;
 import com.arlojay.cosmicearth.lib.variety.PaletteItem;
 import finalforeach.cosmicreach.blocks.BlockState;
 import finalforeach.cosmicreach.savelib.blockdata.SingleBlockData;
@@ -31,7 +32,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
     BlockState shortGrassBlock = this.getBlockStateInstance("cosmicearth:short_grass[default]");
     BlockState tallGrassBlock = this.getBlockStateInstance("cosmicearth:tall_grass[default]");
 
-    Palette<BlockState> steepGradientTopsoil = new Palette<>(
+    RandomPalette<BlockState> steepGradientTopsoil = new RandomPalette<>(Set.of(
             new PaletteItem<>(grassBlock, 1d),
             new PaletteItem<>(gravelBlock, 1d),
             new PaletteItem<>(stoneBlock, 2d)
@@ -134,7 +135,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
                         else {
                             if(height > shoreHeight) {
                                 // Inland
-                                var paletteBlock = steepGradientTopsoil.getRandomItem(
+                                var paletteBlock = steepGradientTopsoil.getItem(
                                         Double.doubleToLongBits(paletteOffset * Double.MAX_VALUE)
                                 );
                                 chunk.setBlockState(paletteBlock, localX, localY, localZ);
