@@ -1,5 +1,6 @@
 package com.arlojay.cosmicearth.lib.noise.impl;
 
+import com.arlojay.cosmicearth.lib.noise.NoiseDebugString;
 import com.arlojay.cosmicearth.lib.noise.NoiseGenerator;
 import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
 import finalforeach.cosmicreach.worldgen.noise.WhiteNoise;
@@ -52,6 +53,9 @@ public class WhiteNoiseGenerator extends NoiseGenerator {
 
     @Override
     public String buildString() {
-        return "@WhiteNoise";
+        return "@WhiteNoise" + NoiseDebugString.createPropertyList(
+                "seed", seed,
+                "seedOffset", seedOffset
+        );
     }
 }

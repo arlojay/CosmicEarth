@@ -1,5 +1,6 @@
 package com.arlojay.cosmicearth.lib.noise.impl;
 
+import com.arlojay.cosmicearth.lib.noise.NoiseDebugString;
 import com.arlojay.cosmicearth.lib.noise.NoiseGenerator;
 import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
 import org.hjson.JsonObject;
@@ -25,7 +26,7 @@ public class VoronoiGenerator extends NoiseGenerator {
                     NoiseLoader.getProps().getLong("seed", 0L),
                     options.getLong("seed", 0L),
                     randomness,
-                    VoronoiMode.valueOf(mode)
+                    VoronoiMode.valueOf(mode.toUpperCase())
             );
         });
     }
@@ -158,6 +159,11 @@ public class VoronoiGenerator extends NoiseGenerator {
 
     @Override
     public String buildString() {
-        return "@Voronoi";
+        return "@Voronoi" + NoiseDebugString.createPropertyList(
+                "seed", seed,
+                "seedOffset", seedOffset,
+                "randomness", randomness,
+                "mode", mode
+        );
     }
 }

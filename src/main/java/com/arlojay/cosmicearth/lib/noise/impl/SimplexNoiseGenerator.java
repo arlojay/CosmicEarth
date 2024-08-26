@@ -1,5 +1,6 @@
 package com.arlojay.cosmicearth.lib.noise.impl;
 
+import com.arlojay.cosmicearth.lib.noise.NoiseDebugString;
 import com.arlojay.cosmicearth.lib.noise.NoiseGenerator;
 import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
 import libs.opensimplex2.OpenSimplex2;
@@ -44,6 +45,9 @@ public class SimplexNoiseGenerator extends NoiseGenerator {
 
     @Override
     public String buildString() {
-        return "@SimplexNoise";
+        return "@SimplexNoise" + NoiseDebugString.createPropertyList(
+                "seed", seed,
+                "seedOffset", seedOffset
+        );
     }
 }
