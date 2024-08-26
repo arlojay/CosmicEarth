@@ -60,10 +60,10 @@ public class ErodedNoise implements NoiseNode {
         double lacunarity = this.lacunarity;
 
         for(int i = 0; i < depth; i++) {
-            var sample = Math.abs(OctaveNoiseSampler.sample1D(
+            var sample = Math.pow(Math.abs(OctaveNoiseSampler.sample1D(
                     noise, t * scale,
                     detail, roughness, lacunarity, distortion
-            )) * 2.0d - 1.0d;
+            )) * 2.0d - 1.0d, 0.5d);
 
             max += effectiveness;
             value += sample * effectiveness;
