@@ -6,9 +6,10 @@ This terrain generator aims to both provide **stylized landscapes** using comple
 
 This is a mod for [Cosmic Reach](https://finalforeach.itch.io/cosmic-reach), a game by [FinalForEach](https://www.youtube.com/@finalforeach) (YouTube link), built using the [Puzzle Modloader](https://github.com/PuzzleLoader/).
 
+![View of the outside from a cave; overgrown](readme-assets/shelf.jpg "Shelf")
 ![Plains view of the sky; setting sun with pink sky](readme-assets/sunset.jpg "Sunset")
+![Deep cave with a bit of grass and a tree at the bottom](readme-assets/falling-down.jpg "Falling Down")
 ![View of the ocean from a rocky shore](readme-assets/shore.jpg "Shore")
-![Aerial view of a grassy hill in the middle of a beach](readme-assets/aerial.jpg "Aerial")
 ![Peeking through forest trees at a densely grown and vertical forest](readme-assets/forest.jpg "Forest")
 ![Grassy view of plains, ambushed by an Interceptor](readme-assets/ambush.jpg "Ambush")
 
