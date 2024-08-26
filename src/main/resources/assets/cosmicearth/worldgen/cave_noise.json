@@ -1,0 +1,21 @@
+{
+    "type": "operation", "op": "add",
+
+    "a": 0,
+    "b": {
+        "type": "mix",
+        "normalize": false,
+    
+        "sources": [
+            {
+                "factor": 1,
+                "noise": {
+                    "type": "scale",
+                    "scalar": 40,
+    
+                    "source": { "type": "ref", "file": "cosmicearth:cave/pocket" }
+                }
+            }
+        ]
+    }
+}

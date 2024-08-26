@@ -1,0 +1,24 @@
+{
+    "type": "graph",
+
+    "points": [
+        [ -0.5, -1.0 ],
+        [ -0.2,  1.0 ]
+    ],
+
+    "source": {
+        "type": "scale",
+        "scalar": 100,
+        "source": {
+            "type": "erosion",
+    
+            "detail": 4,
+            "roughness": 0.5,
+            "lacunarity": 2,
+    
+            "source": {
+                "type": "simplex"
+            }
+        }
+    }
+}

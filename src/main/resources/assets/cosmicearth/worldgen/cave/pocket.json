@@ -1,0 +1,51 @@
+{
+    "type": "graph",
+
+    "points": [
+        [0.2, 1],
+        [0.5, -1]
+    ],
+
+    "source": {
+        "type": "mix",
+
+        "sources": [
+            {
+                "factor": 3,
+
+                "noise": {
+                    "type": "scale",
+                    "scalar": 3,
+
+                    "source": {
+                        "type": "simplex",
+                        "seed": 12
+                    }
+                }
+            },
+            {
+                "factor": 1,
+
+                "noise": {
+                    "type": "octave",
+
+                    "detail": 3,
+                    "roughness": 0.3,
+                    "lacunarity": 2,
+
+                    "source": {
+                        "type": "scale",
+                        "scale_x": 2,
+                        "scale_y": 0.5,
+                        "scale_z": 2,
+
+                        "source": {
+                            "type": "simplex",
+                            "seed": 10
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "type": "graph",
+    "interpolator": "linear",
+
+    "points": [
+        [ 0,   1.0 ],
+        [ 50,  0.0 ],
+        [ 60,  0.0 ],
+        [ 80,  1.0 ]
+    ],
+
+    "source": { "type": "coordinate", "y": true }
+}
