@@ -17,7 +17,6 @@ public class NoiseMapper extends SingleInputNoiseTransformer {
             var sourceObject = options.get("source");
             if(sourceObject == null) throw new NoSuchFieldException("map transformer must have a `source`");
 
-            JsonObject sourceNode = sourceObject.asObject();
             double inputMin = options.getDouble("inputMin", -1d);
             double inputMax = options.getDouble("inputMax", 1d);
             double outputMin = options.getDouble("outputMin", -1d);
@@ -25,7 +24,7 @@ public class NoiseMapper extends SingleInputNoiseTransformer {
 
 
             return new NoiseMapper(
-                    NoiseLoader.createNoiseNode(sourceNode),
+                    NoiseLoader.createNoiseNode(sourceObject),
                     inputMin, inputMax, outputMin, outputMax
             );
         });

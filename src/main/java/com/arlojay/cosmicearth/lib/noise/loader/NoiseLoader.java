@@ -6,6 +6,7 @@ import com.arlojay.cosmicearth.lib.noise.impl.*;
 import com.github.puzzle.core.resources.PuzzleGameAssetLoader;
 import com.github.puzzle.core.resources.ResourceLocation;
 import org.hjson.JsonObject;
+import org.hjson.JsonValue;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -82,7 +83,7 @@ public class NoiseLoader {
     }
 
     private static NoiseNode loadString(String sourceString) throws NoSuchFieldException, FileNotFoundException {
-        var json = JsonObject.readHjson(sourceString).asObject();
+        var json = JsonObject.readHjson(sourceString);
 
         return createNoiseNode(json);
     }
@@ -91,7 +92,12 @@ public class NoiseLoader {
         noiseNodeFactories.put(id, factory);
     }
 
-    public static NoiseNode createNoiseNode(JsonObject source) throws NoSuchFieldException, FileNotFoundException {
+    public static NoiseNode createNoiseNode(JsonValue rawSource) throws NoSuchFieldException, FileNotFoundException {
+        if(rawSource.isNumber()) {
+            return new ConstantValueGenerator(rawSource.asDouble());
+        }
+
+        var source = rawSource.asObject();
         var type = source.getString("type", null);
         if(type == null) throw new NoSuchFieldException("Field `type` must exist on all noise nodes");
 
@@ -121,5 +127,8 @@ public class NoiseLoader {
         VoronoiGenerator.register();
         WhiteNoiseGenerator.register();
         NoiseAbsolute.register();
+        CoordinateGenerator.register();
+        NoiseOperation.register();
+        ConstantValueGenerator.register();
     }
 }

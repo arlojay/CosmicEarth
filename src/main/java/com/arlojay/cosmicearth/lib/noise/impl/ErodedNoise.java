@@ -20,7 +20,6 @@ public class ErodedNoise implements NoiseNode {
             var sourceObject = options.get("source");
             if(sourceObject == null) throw new NoSuchFieldException("erosion transformer must have a `source`");
 
-            JsonObject sourceNode = sourceObject.asObject();
             int detail = options.getInt("detail", 2);
             int depth = options.getInt("depth", 2);
             double lacunarity = options.getDouble("lacunarity", 2d);
@@ -30,7 +29,7 @@ public class ErodedNoise implements NoiseNode {
 
 
             return new ErodedNoise(
-                    NoiseLoader.createNoiseNode(sourceNode),
+                    NoiseLoader.createNoiseNode(sourceObject),
                     detail, depth,
                     lacunarity, stride,
                     roughness, distortion

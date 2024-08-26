@@ -17,14 +17,13 @@ public class NoiseScaler implements NoiseNode {
             var sourceObject = options.get("source");
             if(sourceObject == null) throw new NoSuchFieldException("scale transformer must have a `source`");
 
-            JsonObject sourceNode = sourceObject.asObject();
             double scalar = options.getDouble("scalar", 1d);
             double scaleX = options.getDouble("scale_x", scalar);
             double scaleY = options.getDouble("scale_y", scalar);
             double scaleZ = options.getDouble("scale_z", scalar);
             double scaleW = options.getDouble("scale_w", scalar);
 
-            return new NoiseScaler(NoiseLoader.createNoiseNode(sourceNode), scaleX, scaleY, scaleZ, scaleW);
+            return new NoiseScaler(NoiseLoader.createNoiseNode(sourceObject), scaleX, scaleY, scaleZ, scaleW);
         });
     }
 

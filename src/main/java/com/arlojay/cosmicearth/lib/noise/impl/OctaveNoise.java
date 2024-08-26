@@ -18,7 +18,6 @@ public class OctaveNoise implements NoiseNode {
             var sourceObject = options.get("source");
             if(sourceObject == null) throw new NoSuchFieldException("octave transformer must have a `source`");
 
-            JsonObject sourceNode = sourceObject.asObject();
             int detail = options.getInt("detail", 2);
             double roughness = options.getDouble("roughness", 0.5d);
             double lacunarity = options.getDouble("lacunarity", 2d);
@@ -26,7 +25,7 @@ public class OctaveNoise implements NoiseNode {
 
 
             return new OctaveNoise(
-                    NoiseLoader.createNoiseNode(sourceNode),
+                    NoiseLoader.createNoiseNode(sourceObject),
                     detail, roughness, lacunarity, distortion
             );
         });

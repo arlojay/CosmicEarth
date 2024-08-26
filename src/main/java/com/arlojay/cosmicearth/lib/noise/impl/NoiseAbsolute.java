@@ -12,10 +12,8 @@ public class NoiseAbsolute extends SingleInputNoiseTransformer {
             var sourceObject = options.get("source");
             if(sourceObject == null) throw new NoSuchFieldException("absolute transformer must have a `source`");
 
-            JsonObject sourceNode = sourceObject.asObject();
-
             return new NoiseAbsolute(
-                    NoiseLoader.createNoiseNode(sourceNode)
+                    NoiseLoader.createNoiseNode(sourceObject)
             );
         });
     }

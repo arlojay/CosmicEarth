@@ -14,11 +14,10 @@ public class NoiseGradientTransformer implements NoiseNode {
             var sourceObject = options.get("source");
             if(sourceObject == null) throw new NoSuchFieldException("gradient transformer must have a `source`");
 
-            JsonObject sourceNode = sourceObject.asObject();
             double h = options.getDouble("h", 0.001d);
 
 
-            return new NoiseGradientTransformer(NoiseLoader.createNoiseNode(sourceNode), h);
+            return new NoiseGradientTransformer(NoiseLoader.createNoiseNode(sourceObject), h);
         });
     }
 

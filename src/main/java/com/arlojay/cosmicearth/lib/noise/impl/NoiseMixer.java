@@ -26,9 +26,9 @@ public class NoiseMixer extends MultiInputNoiseTransformer {
                 var sourceObject = sourceObjectArray.get(i).asObject();
                 double factor = sourceObject.getDouble("factor", 1.0d);
                 var noise = sourceObject.get("noise");
-                if(noise == null) throw new NoSuchFieldException("mix transformer sources must have a `source`");
+                if(noise == null) throw new NoSuchFieldException("mix transformer sources must have a `noise` source");
 
-                var sourceNode = NoiseLoader.createNoiseNode(noise.asObject());
+                var sourceNode = NoiseLoader.createNoiseNode(noise);
                 mixerSources[i] = new MixerSource(sourceNode, factor);
             }
 
