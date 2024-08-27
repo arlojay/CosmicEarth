@@ -23,6 +23,10 @@ public class SimplexNoiseGenerator extends NoiseGenerator {
         super(seed, seedOffset);
     }
 
+    public SimplexNoiseGenerator asCopy() {
+        return new SimplexNoiseGenerator(seed, seedOffset);
+    }
+
     @Override
     public double sample(double t) {
         return OpenSimplex2.noise2(seed, t, t);

@@ -1,8 +1,5 @@
 package com.arlojay.cosmicearth.worldgen;
 
-import com.arlojay.cosmicearth.lib.noise.NoiseNode;
-import finalforeach.cosmicreach.world.Chunk;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,30 +7,33 @@ import java.util.Map;
 
 public class NoiseThreadColumn {
     // TODO: fix multiple noise threads messing up cave generation
-    public NoiseThread[] noiseThreads = new NoiseThread[1];
-    private final Map<Chunk, List<NoiseJob>> jobs = new HashMap<>();
+    public ThreadExecutor[] noiseThreads;
+    private final Map<Object, List<ThreadJob>> jobs = new HashMap<>();
     private int nextIndex;
 
-    public NoiseThreadColumn() {
+    public NoiseThreadColumn(int count) {
+        noiseThreads = new ThreadExecutor[count];
         for(int i = 0; i < noiseThreads.length; i++) {
-            noiseThreads[i] = new NoiseThread();
+            noiseThreads[i] = new ThreadExecutor();
         }
     }
 
-    private NoiseThread getNextThread() {
+    public ThreadExecutor getThread() {
         return noiseThreads[this.nextIndex++ % noiseThreads.length];
     }
 
-    public void process(Chunk chunk, NoiseNode noise, double[] samples) {
-        var job = getNextThread().createJob3d(noise, chunk, samples);
+    public void addJob(ThreadExecutor thread, Object key, ThreadJob job) {
+        var list = jobs.get(key);
+        if(list == null) list = new ArrayList<>();
 
-        var list = jobs.getOrDefault(chunk, new ArrayList<>());
         list.add(job);
-        jobs.put(chunk, list);
+        jobs.put(key, list);
+
+        thread.addJob(job);
     }
 
-    public void waitForJobs(Chunk chunk) {
-        var list = jobs.get(chunk);
+    public void waitForJobs(Object key) {
+        var list = jobs.get(key);
         if(list == null) return;
 
         for(var job : list) {

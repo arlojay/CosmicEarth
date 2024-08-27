@@ -19,13 +19,9 @@ import finalforeach.cosmicreach.worldgen.ChunkColumn;
 import finalforeach.cosmicreach.worldgen.ZoneGenerator;
 import finalforeach.cosmicreach.worldgen.trees.CoconutTree;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class EarthZoneGenerator extends ZoneGenerator {
-    private final RecyclingPool<NoiseCache> cache3DPool = new RecyclingPool<>(() -> null);
-    private final RecyclingPool<NoiseCache> cache2DPool = new RecyclingPool<>(() -> null);
-
     public static int maxHeight = 255;
     public static int waterHeight = 100;
     public static int shoreHeight = 110;
@@ -34,6 +30,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
     public static final int lavaHeight = 15;
 
     private NoiseThreadColumn noiseThreads;
+    private NoiseThreadColumn oreThreads;
 
     BlockState airBlock = this.getBlockStateInstance("base:air[default]");
     BlockState stoneBlock = this.getBlockStateInstance("base:stone_basalt[default]");
@@ -88,6 +85,8 @@ public class EarthZoneGenerator extends ZoneGenerator {
             )
     );
 
+    OreType[] oreTypes = new OreType[] { ironOre, goldOre };
+
     WorldgenStructure pineTreeStructure = new PineTreeStructure();
     WorldgenStructure floraClusterStructure = new FloraClusterStructure();
     WorldgenStructure oakTreeStructure = new OakTreeStructure();
@@ -116,7 +115,8 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
     @Override
     public void create() {
-        noiseThreads = new NoiseThreadColumn();
+        noiseThreads = new NoiseThreadColumn(4);
+        oreThreads = new NoiseThreadColumn(2);
 
         try {
             loadNoise();
@@ -148,36 +148,53 @@ public class EarthZoneGenerator extends ZoneGenerator {
             }
 
 
-            // Build 3d caches
-            var noiseCache3Ds = new NoiseCache[Region.REGION_WIDTH];
+            var noiseCache3Ds = new NoiseCache3D[Region.REGION_WIDTH];
+            var oreBlockUpdates = new ArrayList<Map<OreType, ChunkMask>>(Region.REGION_WIDTH);
 
             for(int i = 0; i < Region.REGION_WIDTH; i++) {
                 var chunk = chunks[i];
 
-                var cache3d = new NoiseCache(chunk.getBlockX(), chunk.getBlockY(), chunk.getBlockZ(), cache3DPool.get());
-                noiseCache3Ds[i] = cache3d;
-                noiseThreads.process(chunk, caveNoise, cache3d.getCache3d("cave"));
-                noiseThreads.process(chunk, stoneTypeNoise, cache3d.getCache3d("stone_type"));
+                // Build 3d caches
+                {
+                    var cache3d = NoiseCache3D.create(chunk.getBlockX(), chunk.getBlockY(), chunk.getBlockZ());
+                    noiseCache3Ds[i] = cache3d;
+
+                    var thread = noiseThreads.getThread();
+                    noiseThreads.addJob(thread, chunk, JobCreationHelpler.createNoiseJob(caveNoise, thread, chunk, cache3d.getCache("cave")));
+                    noiseThreads.addJob(thread, chunk, JobCreationHelpler.createNoiseJob(stoneTypeNoise, thread, chunk, cache3d.getCache("stone_type")));
+                }
+
+
+                // Build ore caches
+                {
+                    var thread = oreThreads.getThread();
+                    var blockUpdates = new HashMap<OreType, ChunkMask>();
+
+                    for (var oreType : oreTypes) {
+                        var mask = ChunkMask.create();
+                        var job = JobCreationHelpler.createOregenJob(chunk, oreType, seed, mask);
+
+                        oreThreads.addJob(thread, chunk, job);
+                        blockUpdates.put(oreType, mask);
+                    }
+
+                    oreBlockUpdates.add(blockUpdates);
+                }
             }
 
 
             // Build 2d caches
-            var cache2d = new NoiseCache(
-                    col.getBlockX(),
-                    col.chunkY * CHUNK_WIDTH,
-                    col.getBlockZ(),
-                    cache2DPool.get()
-            );
-            cache2d.buildCache2d("height", heightNoise);
-            cache2d.cloneCache2d("height", "base_height");
-            cache2d.buildCache2d("gradient", heightNoiseGradient);
-            cache2d.buildCache2d("palette", paletteNoise);
+            var cache2d = NoiseCache2D.create(col.getBlockX(), col.getBlockZ());
+            cache2d.build("height", heightNoise);
+            cache2d.copyCache("height", "base_height");
+            cache2d.build("gradient", heightNoiseGradient);
+            cache2d.build("palette", paletteNoise);
 
 
             // Generate base terrain
             for(int i = Region.REGION_WIDTH - 1; i >= 0; i--) {
                 generateChunk(chunks[i], cache2d, noiseCache3Ds[i]);
-                generateOres(zone, chunks[i]);
+                generateOres(chunks[i], oreBlockUpdates.get(i));
             }
 
             // Generate features
@@ -185,17 +202,35 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
 
             // Recycle caches
-            for(int i = 0; i < Region.REGION_WIDTH; i++) cache3DPool.recycle(noiseCache3Ds[i]);
-            cache2DPool.recycle(cache2d);
+            for(int i = 0; i < Region.REGION_WIDTH; i++) noiseCache3Ds[i].recycle();
+            cache2d.recycle();
         }
     }
 
-    private void generateOres(Zone zone, Chunk chunk) {
-        goldOre.populateChunk(zone, chunk, seed);
-        ironOre.populateChunk(zone, chunk, seed);
+    private void generateOres(Chunk chunk, Map<OreType, ChunkMask> updateList) {
+        oreThreads.waitForJobs(chunk);
+
+        for(var oreType : oreTypes) {
+            var mask = updateList.get(oreType);
+            var replaceMask = oreType.getReplaceMask();
+
+            int i = 0;
+            for (int blockX = 0; blockX < CHUNK_WIDTH; blockX++) {
+                for (int blockY = 0; blockY < CHUNK_WIDTH; blockY++) {
+                    for (int blockZ = 0; blockZ < CHUNK_WIDTH; blockZ++) {
+                        if(!replaceMask.contains(chunk.getBlockState(blockX, blockY, blockZ))) continue;
+
+                        if(mask.mask[i]) chunk.setBlockState(oreType.getBlock(), blockX, blockY, blockZ);
+                        i++;
+                    }
+                }
+            }
+
+            mask.recycle();
+        }
     }
 
-    private void generateChunk(Chunk chunk, NoiseCache noiseCache2d, NoiseCache noiseCache3d) {
+    private void generateChunk(Chunk chunk, NoiseCache2D noiseCache2d, NoiseCache3D noiseCache3d) {
         int globalX = chunk.blockX;
         int globalY = chunk.blockY + CHUNK_WIDTH - 1;
         int globalZ = chunk.blockZ;
@@ -206,14 +241,14 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
         for(int localX = 0; localX < CHUNK_WIDTH; localX++, globalX++) {
             for(int localZ = 0; localZ < CHUNK_WIDTH; localZ++, globalZ++) {
-                double baseHeight = noiseCache2d.readCache2d("base_height", localX, localZ);
-                double height = noiseCache2d.readCache2d("height", localX, localZ);
-                double gradient = noiseCache2d.readCache2d("gradient", localX, localZ);
-                double paletteOffset = noiseCache2d.readCache2d("palette", localX, localZ);
+                double baseHeight = noiseCache2d.read("base_height", localX, localZ);
+                double height = noiseCache2d.read("height", localX, localZ);
+                double gradient = noiseCache2d.read("gradient", localX, localZ);
+                double paletteOffset = noiseCache2d.read("palette", localX, localZ);
 
                 for (int localY = CHUNK_WIDTH - 1; localY >= 0; localY--, globalY--) {
-                    double caveDensity = noiseCache3d.readCache3d("cave", localX, localY, localZ);
-                    double stoneType = noiseCache3d.readCache3d("stone_type", localX, localY, localZ);
+                    double caveDensity = noiseCache3d.read("cave", localX, localY, localZ);
+                    double stoneType = noiseCache3d.read("stone_type", localX, localY, localZ);
 
                     stoneTypeBlockState = stoneTypePalette.getItem(stoneType);
 
@@ -227,7 +262,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
                     boolean voidCaves = globalY < shoreHeight && globalY > baseHeight - caveCeilingThickness;
                     if(caveDensity < 0.0 && !voidCaves) {
                         if(globalY < lavaHeight) chunk.setBlockState(magmaBlock, localX, localY, localZ);
-                        if(globalY + 1 > height) noiseCache2d.writeCache2d("height", localX, localZ, --height);
+                        if(globalY + 1 > height) height--;
                         continue;
                     }
 
@@ -294,20 +329,21 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
                     chunk.setBlockState(stoneTypeBlockState, localX, localY, localZ);
                 }
+                noiseCache2d.write("height", localX, localZ, height);
                 globalY += CHUNK_WIDTH;
             }
             globalZ -= CHUNK_WIDTH;
         }
     }
 
-    private void generateFeatures(Zone zone, ChunkColumn column, NoiseCache noiseCache) {
+    private void generateFeatures(Zone zone, ChunkColumn column, NoiseCache2D noiseCache) {
         int globalX = column.getBlockX();
         int globalZ = column.getBlockZ();
 
         for(int localX = 0; localX < CHUNK_WIDTH; localX++, globalX++) {
             for (int localZ = 0; localZ < CHUNK_WIDTH; localZ++, globalZ++) {
-                var height = noiseCache.readCache2d("height", localX, localZ);
-                var gradient = noiseCache.readCache2d("gradient", localX, localZ);
+                var height = noiseCache.read("height", localX, localZ);
+                var gradient = noiseCache.read("gradient", localX, localZ);
                 var featureValue = featureNoise.sample(globalX, globalZ);
 
                 var globalY = (int) Math.round(height + 0.5);

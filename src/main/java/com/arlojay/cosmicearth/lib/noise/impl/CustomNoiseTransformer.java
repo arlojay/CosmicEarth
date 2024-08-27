@@ -4,13 +4,11 @@ import com.arlojay.cosmicearth.lib.noise.NoiseDebugString;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.SingleInputNoiseTransformer;
 
-public class CustomNoiseTransformer extends SingleInputNoiseTransformer {
-    public interface Transformer {
-        double transform(double sample);
-    }
+import java.util.function.Function;
 
-    private final Transformer transformer;
-    public CustomNoiseTransformer(NoiseNode source, Transformer transformer) {
+public class CustomNoiseTransformer extends SingleInputNoiseTransformer {
+    private final Function<Double, Double> transformer;
+    public CustomNoiseTransformer(NoiseNode source, Function<Double, Double> transformer) {
         super(source);
         this.transformer = transformer;
     }
@@ -21,7 +19,7 @@ public class CustomNoiseTransformer extends SingleInputNoiseTransformer {
 
     @Override
     protected double transform(double sample) {
-        return transformer.transform(sample);
+        return transformer.apply(sample);
     }
 
     @Override

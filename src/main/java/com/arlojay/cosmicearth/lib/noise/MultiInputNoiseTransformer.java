@@ -1,8 +1,8 @@
 package com.arlojay.cosmicearth.lib.noise;
 
 public abstract class MultiInputNoiseTransformer implements NoiseNode {
-    private final NoiseNode[] sources;
-    private final double[] samples;
+    protected final NoiseNode[] sources;
+    protected final double[] samples;
     protected final int sourceCount;
 
     public MultiInputNoiseTransformer(NoiseNode[] sources) {

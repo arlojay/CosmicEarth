@@ -9,4 +9,8 @@ public class SplinePoint {
         this.x = x;
         this.y = y;
     }
+
+    public SplinePoint asCopy() {
+        return new SplinePoint(x, y);
+    }
 }

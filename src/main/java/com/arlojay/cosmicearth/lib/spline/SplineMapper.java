@@ -31,6 +31,12 @@ public class SplineMapper {
         this.interpolator = interpolator;
     }
 
+    public SplineMapper asCopy() {
+        var pointClones = new SplinePoint[points.length];
+        for(int i = 0; i < pointClones.length; i++) pointClones[i] = points[i].asCopy();
+        return new SplineMapper(pointClones, interpolator);
+    }
+
     public double transform(double sample) {
         var lastPoint = points[0];
         if(sample <= lastPoint.x) return lastPoint.y;

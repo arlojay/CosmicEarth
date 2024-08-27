@@ -4,13 +4,16 @@ import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import finalforeach.cosmicreach.world.Chunk;
 
 import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 
-public class NoiseThread {
+public class OregenThread {
     private final Queue<NoiseJob> queue = new ArrayDeque<>();
     private final Object addLock = new Object();
+    private final Map<NoiseNode, NoiseNode> noiseClones = new HashMap<>();
 
-    public NoiseThread() {
+    public OregenThread() {
         var thread = new Thread(() -> {
             try {
                 while (true) {
@@ -28,8 +31,17 @@ public class NoiseThread {
         thread.start();
     }
 
+    private NoiseNode getThreadNoise(NoiseNode main) {
+        if(noiseClones.containsKey(main)) return noiseClones.get(main);
+
+        var copy = main.asCopy();
+        noiseClones.put(main, copy);
+        return copy;
+    }
+
     public NoiseJob createJob3d(NoiseNode noise, Chunk chunk, double[] samples) {
-        var job = new NoiseJob(noise, chunk.blockX, chunk.blockY, chunk.blockZ, samples);
+        var noiseClone = getThreadNoise(noise);
+        var job = new NoiseJob(noiseClone, chunk.blockX, chunk.blockY, chunk.blockZ, samples);
         queue.add(job);
         synchronized (addLock) { addLock.notify(); }
         return job;

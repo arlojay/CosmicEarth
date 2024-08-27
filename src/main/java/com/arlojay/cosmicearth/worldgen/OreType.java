@@ -48,40 +48,42 @@ public class OreType {
         return block;
     }
 
-    public void place(Zone zone, Random random, int x, int y, int z) {
+    public void place(ChunkMask mask, Random random, int x, int y, int z) {
         var size = getSize(random);
-        OreGenerator.generateOreVein(
-                zone, block, replaceMask, x, y, z, size,
+        OreGenerator.generateChunkMask(
+                mask, x, y, z, size,
                 random.nextLong(Long.MIN_VALUE, Long.MAX_VALUE)
         );
     }
 
-    public void populateChunk(Zone zone, Chunk chunk, long seed) {
-        int globalX = chunk.blockX;
-        int globalY = chunk.blockY;
-        int globalZ = chunk.blockZ;
-
+    public ChunkMask getBlockPositions(ChunkMask chunkMask, long seed, int startX, int startY, int startZ) {
         orePositionSeedGenerator.setSeed(seed);
         var random = new Random(Float.floatToIntBits(
                 // haha funny numbers
                 orePositionSeedGenerator.noise3D(
-                        globalX - 328,
-                        globalY + 420,
-                        globalZ + 69
+                        startX - 328,
+                        startY + 420,
+                        startZ + 69
                 )
         ));
 
         int count = getChunkCount(random);
 
         for(int i = 0; i < count; i++) {
-            int oreX = globalX + random.nextInt(0, 16);
-            int oreY = globalY + random.nextInt(0, 16);
-            int oreZ = globalZ + random.nextInt(0, 16);
+            int oreX = startX + random.nextInt(0, 16);
+            int oreY = startY + random.nextInt(0, 16);
+            int oreZ = startZ + random.nextInt(0, 16);
 
             double rolledDensity = random.nextDouble();
             if(rolledDensity > densityMap.transform(oreY)) continue;
 
-            this.place(zone, random, oreX, oreY, oreZ);
+            this.place(chunkMask, random, oreX, oreY, oreZ);
         }
+
+        return chunkMask;
+    }
+
+    public List<BlockState> getReplaceMask() {
+        return replaceMask;
     }
 }

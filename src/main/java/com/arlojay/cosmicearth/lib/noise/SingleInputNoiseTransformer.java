@@ -1,7 +1,9 @@
 package com.arlojay.cosmicearth.lib.noise;
 
+import com.arlojay.cosmicearth.lib.noise.impl.CustomNoiseTransformer;
+
 public abstract class SingleInputNoiseTransformer implements NoiseNode {
-    private final NoiseNode source;
+    protected final NoiseNode source;
 
     @Override
     public String buildString() {
