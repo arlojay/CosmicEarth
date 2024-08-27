@@ -51,6 +51,10 @@ public class ErodedNoise implements NoiseNode {
         this.distortion = distortion;
     }
 
+    public ErodedNoise asCopy() {
+        return new ErodedNoise(noise.asCopy(), detail, depth, lacunarity, stride, roughness, distortion);
+    }
+
     @Override
     public double sample(double t) {
         double max = 0.0;

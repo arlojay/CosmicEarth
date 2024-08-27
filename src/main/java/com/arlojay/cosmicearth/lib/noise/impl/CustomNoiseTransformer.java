@@ -15,6 +15,10 @@ public class CustomNoiseTransformer extends SingleInputNoiseTransformer {
         this.transformer = transformer;
     }
 
+    public CustomNoiseTransformer asCopy() {
+        return new CustomNoiseTransformer(source.asCopy(), transformer);
+    }
+
     @Override
     protected double transform(double sample) {
         return transformer.transform(sample);

@@ -30,6 +30,11 @@ public class NoiseGradientTransformer implements NoiseNode {
     }
 
     @Override
+    public NoiseGradientTransformer asCopy() {
+        return new NoiseGradientTransformer(noise.asCopy(), h);
+    }
+
+    @Override
     public double sample(double t) {
         var deltaT = (noise.sample(t + h) - noise.sample(t - h)) / (h * 2d);
         return Math.abs(deltaT);

@@ -39,6 +39,10 @@ public class OctaveNoise implements NoiseNode {
         this.distortion = distortion;
     }
 
+    public OctaveNoise asCopy() {
+        return new OctaveNoise(noise.asCopy(), detail, roughness, lacunarity, distortion);
+    }
+
     @Override
     public double sample(double t) {
         return OctaveNoiseSampler.sample1D(

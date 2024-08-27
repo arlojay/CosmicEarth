@@ -27,6 +27,10 @@ public class WhiteNoiseGenerator extends NoiseGenerator {
         this.noise = new WhiteNoise(seed);
     }
 
+    public WhiteNoiseGenerator asCopy() {
+        return new WhiteNoiseGenerator(seed, seedOffset);
+    }
+
     @Override
     public double sample(double t) {
         return noise.noise1D((float) t);

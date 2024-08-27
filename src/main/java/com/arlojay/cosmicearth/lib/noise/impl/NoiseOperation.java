@@ -40,6 +40,11 @@ public class NoiseOperation implements NoiseNode {
         this.operation = operation;
     }
 
+    @Override
+    public NoiseOperation asCopy() {
+        return new NoiseOperation(sourceA.asCopy(), sourceB.asCopy(), operation);
+    }
+
     private double operate(double a, double b) {
         return switch (operation) {
             case ADD -> a + b;

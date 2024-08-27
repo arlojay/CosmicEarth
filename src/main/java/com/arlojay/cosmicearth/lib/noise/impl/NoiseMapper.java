@@ -43,6 +43,11 @@ public class NoiseMapper extends SingleInputNoiseTransformer {
     }
 
     @Override
+    public NoiseMapper asCopy() {
+        return new NoiseMapper(source.asCopy(), inputMin, inputMax, outputMin, outputMax);
+    }
+
+    @Override
     protected double transform(double sample) {
         return (sample - inputMin) / (inputMax - inputMin) * (outputMax - outputMin) + outputMin;
     }

@@ -54,6 +54,11 @@ public class NoiseSpline extends SingleInputNoiseTransformer {
     }
 
     @Override
+    public NoiseSpline asCopy() {
+        return new NoiseSpline(source.asCopy(), mapper.asCopy(), interpolator);
+    }
+
+    @Override
     protected double transform(double sample) {
         return mapper.transform(sample);
     }

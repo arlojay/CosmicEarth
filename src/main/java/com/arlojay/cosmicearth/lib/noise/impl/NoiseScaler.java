@@ -39,6 +39,11 @@ public class NoiseScaler implements NoiseNode {
     }
 
     @Override
+    public NoiseScaler asCopy() {
+        return new NoiseScaler(noise.asCopy(), scaleX, scaleY, scaleZ, scaleW);
+    }
+
+    @Override
     public double sample(double t) {
         return noise.sample(t / scaleX);
     }

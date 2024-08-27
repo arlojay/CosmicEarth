@@ -9,7 +9,20 @@ import org.hjson.JsonObject;
 import java.util.Arrays;
 
 public class NoiseMixer extends MultiInputNoiseTransformer {
-    public record MixerSource(NoiseNode noise, double factor) {}
+    public static class MixerSource {
+        private final double factor;
+        private final NoiseNode noise;
+
+        public MixerSource(NoiseNode noise, double factor) {
+            this.noise = noise;
+            this.factor = factor;
+        }
+
+        public MixerSource asCopy() {
+            return new MixerSource(noise.asCopy(), factor);
+        }
+    }
+
     private static NoiseNode[] getSources(MixerSource[] sources) {
         return Arrays.stream(sources).map(source -> source.noise).toArray(NoiseNode[]::new);
     }
@@ -41,6 +54,7 @@ public class NoiseMixer extends MultiInputNoiseTransformer {
     private final double[] noiseFactors;
     private final double noiseFactorSum;
     private final boolean normalize;
+    private final MixerSource[] mixerSources;
 
     public NoiseMixer(MixerSource[] sources) {
         this(sources, true);
@@ -49,6 +63,7 @@ public class NoiseMixer extends MultiInputNoiseTransformer {
     public NoiseMixer(MixerSource[] sources, boolean normalize) {
         super(getSources(sources));
 
+        this.mixerSources = sources;
         this.normalize = normalize;
         this.noiseFactors = new double[sources.length];
         double _noiseFactorSum = 0d;
@@ -58,6 +73,13 @@ public class NoiseMixer extends MultiInputNoiseTransformer {
         }
 
         noiseFactorSum = _noiseFactorSum;
+    }
+
+    @Override
+    public NoiseMixer asCopy() {
+        var clones = new MixerSource[mixerSources.length];
+        for(int i = 0; i < clones.length; i++) clones[i] = mixerSources[i].asCopy();
+        return new NoiseMixer(clones, normalize);
     }
 
     @Override

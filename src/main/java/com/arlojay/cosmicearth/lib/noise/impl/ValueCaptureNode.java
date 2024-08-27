@@ -11,6 +11,10 @@ public class ValueCaptureNode implements NoiseNode {
         this.noise = noise;
     }
 
+    public ValueCaptureNode asCopy() {
+        return new ValueCaptureNode(noise.asCopy());
+    }
+
     public double getLastValue() {
         return lastValue;
     }

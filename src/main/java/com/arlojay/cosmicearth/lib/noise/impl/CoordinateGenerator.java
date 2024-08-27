@@ -31,6 +31,10 @@ public class CoordinateGenerator extends NoiseGenerator {
         this.doW = doW;
     }
 
+    public CoordinateGenerator asCopy() {
+        return new CoordinateGenerator(doX, doY, doZ, doW);
+    }
+
     @Override
     public double sample(double t) {
         return doX ? t : 0;

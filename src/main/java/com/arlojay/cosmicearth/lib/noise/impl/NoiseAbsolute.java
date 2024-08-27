@@ -23,6 +23,10 @@ public class NoiseAbsolute extends SingleInputNoiseTransformer {
         super(source);
     }
 
+    public NoiseAbsolute asCopy() {
+        return new NoiseAbsolute(source.asCopy());
+    }
+
     @Override
     protected double transform(double sample) {
         return Math.abs(sample);

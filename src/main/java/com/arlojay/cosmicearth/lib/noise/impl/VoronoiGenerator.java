@@ -48,6 +48,10 @@ public class VoronoiGenerator extends NoiseGenerator {
         this.randomGenerator = new Random(seed);
     }
 
+    public VoronoiGenerator asCopy() {
+        return new VoronoiGenerator(seed, seedOffset, randomness, mode);
+    }
+
     private double random(long seed, double t) {
         randomGenerator.setSeed(seed + Double.doubleToLongBits(t / 110.38907218937722));
         return randomGenerator.nextFloat() * 2d - 1d;

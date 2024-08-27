@@ -20,6 +20,11 @@ public class ConstantValueGenerator implements NoiseNode {
         this.value = value;
     }
 
+    @Override
+    public ConstantValueGenerator asCopy() {
+        return new ConstantValueGenerator(value);
+    }
+
 
     @Override
     public double sample(double t) {
