@@ -1,6 +1,6 @@
 package com.arlojay.cosmicearth.lib.noise;
 
-import com.arlojay.cosmicearth.worldgen.Copyable;
+import com.arlojay.cosmicearth.lib.Copyable;
 
 public interface NoiseNode extends Copyable<NoiseNode> {
     double sample(double t);

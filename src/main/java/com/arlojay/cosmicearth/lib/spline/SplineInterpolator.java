@@ -1,6 +1,6 @@
 package com.arlojay.cosmicearth.lib.spline;
 
-import com.arlojay.cosmicearth.worldgen.Copyable;
+import com.arlojay.cosmicearth.lib.Copyable;
 
 public abstract class SplineInterpolator<Implementer extends SplineInterpolator<Implementer>> implements Copyable<SplineInterpolator<Implementer>> {
     protected final SplinePoint[] points;

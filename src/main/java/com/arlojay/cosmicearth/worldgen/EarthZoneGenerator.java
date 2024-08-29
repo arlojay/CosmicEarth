@@ -2,7 +2,7 @@ package com.arlojay.cosmicearth.worldgen;
 
 import com.arlojay.cosmicearth.CosmicEarthMod;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
-import com.arlojay.cosmicearth.lib.noise.impl.WhiteNoiseGenerator;
+import com.arlojay.cosmicearth.lib.noise.impl.generator.WhiteNoiseGenerator;
 import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
 import com.arlojay.cosmicearth.lib.spline.Interpolator;
 import com.arlojay.cosmicearth.lib.spline.SplinePoint;
@@ -10,6 +10,16 @@ import com.arlojay.cosmicearth.lib.variety.GroupedPalette;
 import com.arlojay.cosmicearth.lib.variety.PaletteItem;
 import com.arlojay.cosmicearth.lib.variety.RandomPalette;
 import com.arlojay.cosmicearth.lib.performance.Performance;
+import com.arlojay.cosmicearth.worldgen.mask.ChunkMask;
+import com.arlojay.cosmicearth.worldgen.noise.NoiseCache2D;
+import com.arlojay.cosmicearth.worldgen.noise.NoiseCache3D;
+import com.arlojay.cosmicearth.worldgen.ore.OreType;
+import com.arlojay.cosmicearth.worldgen.structure.FloraClusterStructure;
+import com.arlojay.cosmicearth.worldgen.structure.OakTreeStructure;
+import com.arlojay.cosmicearth.worldgen.structure.PineTreeStructure;
+import com.arlojay.cosmicearth.worldgen.structure.WorldgenStructure;
+import com.arlojay.cosmicearth.lib.threading.ThreadManager;
+import com.arlojay.cosmicearth.worldgen.threading.JobCreationHelper;
 import finalforeach.cosmicreach.blocks.BlockState;
 import finalforeach.cosmicreach.savelib.blockdata.SingleBlockData;
 import finalforeach.cosmicreach.savelib.blocks.IBlockDataFactory;
@@ -30,8 +40,8 @@ public class EarthZoneGenerator extends ZoneGenerator {
     public static final int caveCeilingThickness = 8;
     public static final int lavaHeight = 15;
 
-    private NoiseThreadColumn noiseThreads;
-    private NoiseThreadColumn oreThreads;
+    private ThreadManager noiseThreads;
+    private ThreadManager oreThreads;
 
     BlockState airBlock = this.getBlockStateInstance("base:air[default]");
     BlockState stoneBlock = this.getBlockStateInstance("base:stone_basalt[default]");
@@ -96,6 +106,11 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
     private NoiseNode heightNoise;
     private NoiseNode heightNoiseGradient;
+
+    private NoiseNode erosionBaseNoise;
+    private NoiseNode temperatureNoise;
+    private NoiseNode humidityNoise;
+
     private NoiseNode paletteNoise;
     private NoiseNode featureNoise;
     private NoiseNode caveNoise;
@@ -105,10 +120,15 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
         NoiseLoader.getProps().set("seed", seed);
 
-        heightNoise = NoiseLoader.loadById("cosmicearth:height_noise");
-        heightNoiseGradient = NoiseLoader.loadById("cosmicearth:height_noise_gradient");
-        caveNoise = NoiseLoader.loadById("cosmicearth:cave_noise");
-        stoneTypeNoise = NoiseLoader.loadById("cosmicearth:stone_type");
+        heightNoise = NoiseLoader.load("cosmicearth:height_noise");
+        heightNoiseGradient = NoiseLoader.load("cosmicearth:height_noise_gradient");
+
+        erosionBaseNoise = NoiseLoader.load("cosmicearth:factor/erosion");
+        temperatureNoise = NoiseLoader.load("cosmicearth:factor/temperature");
+        humidityNoise = NoiseLoader.load("cosmicearth:factor/humidity");
+
+        caveNoise = NoiseLoader.load("cosmicearth:cave_noise");
+        stoneTypeNoise = NoiseLoader.load("cosmicearth:stone_type");
 
         paletteNoise = new WhiteNoiseGenerator(seed + 2);
         featureNoise = new WhiteNoiseGenerator(seed + 6);
@@ -116,8 +136,8 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
     @Override
     public void create() {
-        noiseThreads = new NoiseThreadColumn(4);
-        oreThreads = new NoiseThreadColumn(2);
+        noiseThreads = new ThreadManager(4);
+        oreThreads = new ThreadManager(2);
 
         try {
             loadNoise();
@@ -171,8 +191,8 @@ public class EarthZoneGenerator extends ZoneGenerator {
                     noiseCache3Ds[i] = cache3d;
 
                     var thread = noiseThreads.getThread();
-                    noiseThreads.addJob(thread, chunk, JobCreationHelpler.createNoiseJob(caveNoise, thread, chunk, cache3d.getCache("cave")));
-                    noiseThreads.addJob(thread, chunk, JobCreationHelpler.createNoiseJob(stoneTypeNoise, thread, chunk, cache3d.getCache("stone_type")));
+                    noiseThreads.addJob(thread, chunk, JobCreationHelper.createNoiseJob(caveNoise, thread, chunk, cache3d.getCache("cave")));
+                    noiseThreads.addJob(thread, chunk, JobCreationHelper.createNoiseJob(stoneTypeNoise, thread, chunk, cache3d.getCache("stone_type")));
                 }
                 Performance.end("Build 3D Caches");
 
@@ -185,7 +205,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
                     for (var oreType : oreTypes) {
                         var mask = ChunkMask.create();
-                        var job = JobCreationHelpler.createOregenJob(chunk, oreType, seed, mask);
+                        var job = JobCreationHelper.createOregenJob(chunk, oreType, seed, mask);
 
                         oreThreads.addJob(thread, chunk, job);
                         blockUpdates.put(oreType, mask);
@@ -204,6 +224,12 @@ public class EarthZoneGenerator extends ZoneGenerator {
             cache2d.copyCache("height", "base_height");
             cache2d.build("gradient", heightNoiseGradient);
             cache2d.build("palette", paletteNoise);
+
+            cache2d.build("erosion", erosionBaseNoise);
+            cache2d.build("temperature", temperatureNoise);
+            cache2d.build("humidity", humidityNoise);
+
+            Performance.end("Build 2d caches");
 
 
             // Generate base terrain
@@ -271,6 +297,11 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 double height = noiseCache2d.read("height", localX, localZ);
                 double gradient = noiseCache2d.read("gradient", localX, localZ);
                 double paletteOffset = noiseCache2d.read("palette", localX, localZ);
+
+                double erosionBase = noiseCache2d.read("erosion", localX, localZ);
+                double temperature = noiseCache2d.read("temperature", localX, localZ);
+                double humidity = noiseCache2d.read("humidity", localX, localZ);
+
 
                 for (int localY = CHUNK_WIDTH - 1; localY >= 0; localY--, globalY--) {
                     double caveDensity = noiseCache3d.read("cave", localX, localY, localZ);

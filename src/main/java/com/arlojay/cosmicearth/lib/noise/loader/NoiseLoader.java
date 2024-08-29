@@ -3,6 +3,8 @@ package com.arlojay.cosmicearth.lib.noise.loader;
 import com.arlojay.cosmicearth.CosmicEarthMod;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.impl.*;
+import com.arlojay.cosmicearth.lib.noise.impl.generator.*;
+import com.arlojay.cosmicearth.lib.noise.impl.transformer.*;
 import com.badlogic.gdx.files.FileHandle;
 import com.github.puzzle.core.resources.PuzzleGameAssetLoader;
 import com.github.puzzle.core.resources.ResourceLocation;

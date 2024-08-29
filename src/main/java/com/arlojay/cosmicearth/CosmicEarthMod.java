@@ -2,7 +2,7 @@ package com.arlojay.cosmicearth;
 
 import com.arlojay.cosmicearth.block.Blocks;
 import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
-import com.arlojay.cosmicearth.worldgen.Worldgen;
+import com.arlojay.cosmicearth.worldgen.EarthZoneGenerator;
 import com.github.puzzle.core.PuzzleRegistries;
 import com.github.puzzle.game.events.OnRegisterBlockEvent;
 import com.github.puzzle.game.events.OnRegisterZoneGenerators;
@@ -28,6 +28,6 @@ public class CosmicEarthMod implements ModInitializer {
 
     @Subscribe
     public void onEvent(OnRegisterZoneGenerators event) {
-        Worldgen.register(event);
+        event.registerGenerator(EarthZoneGenerator::new);
     }
 }

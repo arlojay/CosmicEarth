@@ -4,11 +4,24 @@ import com.arlojay.cosmicearth.CosmicEarthMod;
 import com.github.puzzle.core.resources.ResourceLocation;
 import com.github.puzzle.game.block.DataModBlock;
 import com.github.puzzle.game.events.OnRegisterBlockEvent;
+import finalforeach.cosmicreach.rendering.shaders.SpriteBatchShader;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class Blocks {
+    private static class BlockProperties {
+        protected double breakSpeed;
+
+        protected BlockProperties() {
+            this.breakSpeed = 1.0d;
+        }
+
+        protected BlockProperties breakSpeed(double speed) {
+            this.breakSpeed = speed;
+            return this;
+        }
+    }
     private static final Set<String> registeredBlocks = new HashSet<>();
 
     public static void register(OnRegisterBlockEvent registry) {
@@ -18,46 +31,60 @@ public class Blocks {
         }
     }
 
-    private static void register(String id) {
+    private static void register(String id, BlockProperties properties) {
         registeredBlocks.add(id);
     }
 
+    private static BlockProperties plant() {
+        return new BlockProperties();
+    }
+
+    private static BlockProperties flower() {
+        return plant();
+    }
+
+    private static BlockProperties leaves() {
+        return new BlockProperties();
+    }
 
     static {
-        register("black_iris");
-        register("black_tulip");
-        register("bluebell");
-        register("buttercup");
-        register("cactus");
-        register("cactus_flower");
-        register("coniferous_leaves");
-        register("daisy");
+        register("cactus", new BlockProperties());
+        register("coniferous_leaves", leaves());
+        register("deciduous_leaves", leaves());
 //        register("dead_grass");
-        register("deciduous_leaves");
-        register("fire_iris");
-        register("hyacinth");
-        register("narcissus");
-        register("orange_pansy");
-        register("orange_tulip");
-        register("orchid");
-        register("pebbles");
-        register("pink_lily");
-        register("pink_mimosa");
-        register("pink_tulip");
-        register("purple_iris");
-        register("purple_pansy");
-        register("red_pansy");
-        register("red_tulip");
-        register("rose");
-        register("short_grass");
-        register("shrub");
-        register("tall_grass");
-        register("violet");
-        register("white_iris");
-        register("white_lily");
-        register("white_mimosa");
-        register("white_pansy");
-        register("yellow_lily");
-        register("yellow_tulip");
+
+        register("pebbles", new BlockProperties());
+
+        register("tall_grass", plant());
+        register("short_grass", plant());
+        register("shrub", plant());
+
+        register("black_iris", flower());
+        register("black_tulip", flower());
+        register("bluebell", flower());
+        register("buttercup", flower());
+        register("cactus_flower", flower());
+        register("daisy", flower());
+        register("fire_iris", flower());
+        register("hyacinth", flower());
+        register("narcissus", flower());
+        register("orange_pansy", flower());
+        register("orange_tulip", flower());
+        register("orchid", flower());
+        register("pink_lily", plant());
+        register("pink_mimosa", plant());
+        register("pink_tulip", plant());
+        register("purple_iris", plant());
+        register("purple_pansy", plant());
+        register("red_pansy", plant());
+        register("red_tulip", plant());
+        register("rose", plant());
+        register("violet", plant());
+        register("white_iris", plant());
+        register("white_lily", plant());
+        register("white_mimosa", plant());
+        register("white_pansy", plant());
+        register("yellow_lily", plant());
+        register("yellow_tulip", plant());
     }
 }
