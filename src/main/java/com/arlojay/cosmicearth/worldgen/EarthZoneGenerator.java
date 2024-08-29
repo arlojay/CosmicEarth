@@ -121,6 +121,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
         try {
             loadNoise();
         } catch (Exception e) {
+            if(e instanceof NoiseNode) return;
             e.printStackTrace();
         }
     }

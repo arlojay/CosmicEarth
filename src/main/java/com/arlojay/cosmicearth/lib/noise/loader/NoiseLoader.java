@@ -3,6 +3,7 @@ package com.arlojay.cosmicearth.lib.noise.loader;
 import com.arlojay.cosmicearth.CosmicEarthMod;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.impl.*;
+import com.badlogic.gdx.files.FileHandle;
 import com.github.puzzle.core.resources.PuzzleGameAssetLoader;
 import com.github.puzzle.core.resources.ResourceLocation;
 import org.hjson.JsonObject;
@@ -21,78 +22,7 @@ public class NoiseLoader {
         return props;
     }
 
-    private static ResourceLocation getWorldgenFileLocation(ResourceLocation location) {
-        return new ResourceLocation(
-                location.namespace,
-                "worldgen/" + location.name + ".json"
-        );
-    }
-
-    public static NoiseNode loadById(String id) throws Exception {
-        return loadById(ResourceLocation.fromString(id));
-    }
-
-    public static NoiseNode loadById(ResourceLocation id) throws Exception {
-        var source = getWorldgenFileLocation(id);
-        try {
-            return loadLocation(source);
-        } catch (Exception exception) {
-            CosmicEarthMod.LOGGER.error("Exception whilst loading noise graph " + source + "\n" + exception.getMessage());
-            throw exception;
-        }
-    }
-
-    public static NoiseNode loadByPath(ResourceLocation source) throws Exception {
-        try {
-            return loadLocation(source);
-        } catch (Exception exception) {
-            CosmicEarthMod.LOGGER.error("Exception whilst loading noise graph " + source + "\n" + exception.getMessage());
-            throw exception;
-        }
-    }
-
-    public static NoiseNode loadByString(String source) throws Exception {
-        try {
-            return loadString(source);
-        } catch (Exception exception) {
-            CosmicEarthMod.LOGGER.error("Exception whilst loading noise graph " + source + "\n" + exception.getMessage());
-            throw exception;
-        }
-    }
-
-    public static NoiseNode loadByObject(JsonObject object) throws Exception {
-        try {
-            return createNoiseNode(object);
-        } catch (Exception exception) {
-            CosmicEarthMod.LOGGER.error("Exception whilst loading object noise graph\n" + exception.getMessage());
-            throw exception;
-        }
-    }
-
-    private static NoiseNode loadLocation(ResourceLocation source) throws NoSuchFieldException, FileNotFoundException {
-
-        var sourceFile = PuzzleGameAssetLoader.assetExists(source)
-                ? PuzzleGameAssetLoader.locateAsset(source)
-                : PuzzleGameAssetLoader.locateAsset(getWorldgenFileLocation(source));
-
-        if(sourceFile == null) throw new FileNotFoundException("Cannot find noise file " + source);
-
-        var sourceString = sourceFile.readString();
-
-        return loadString(sourceString);
-    }
-
-    private static NoiseNode loadString(String sourceString) throws NoSuchFieldException, FileNotFoundException {
-        var json = JsonObject.readHjson(sourceString);
-
-        return createNoiseNode(json);
-    }
-
-    public static void registerNoiseNode(String id, NoiseNodeFactory factory) {
-        noiseNodeFactories.put(id, factory);
-    }
-
-    public static NoiseNode createNoiseNode(JsonValue rawSource) throws NoSuchFieldException, FileNotFoundException {
+    public static NoiseNode createNoiseNode(JsonValue rawSource) throws NoSuchFieldException, FileNotFoundException, NoiseError {
         if(rawSource.isNumber()) {
             return new ConstantValueGenerator(rawSource.asDouble());
         }
@@ -106,14 +36,113 @@ public class NoiseLoader {
             if(locationString == null) throw new NoSuchFieldException("Field `file` must exist on `ref` node");
             var id = ResourceLocation.fromString(locationString);
 
-            return loadLocation(id);
+
+            try {
+                return loadLocation(id);
+            } catch (Exception e) {
+                throw new NoiseError(e, type);
+            }
         }
 
 
         if (!noiseNodeFactories.containsKey(type)) throw new NoSuchFieldException("Cannot find node type " + type);
         var factory = noiseNodeFactories.get(type);
-        return factory.create(source);
+
+        try {
+            return factory.create(source);
+        } catch (Exception e) {
+            throw new NoiseError(e, type);
+        }
     }
+
+
+    public static void registerNoiseNode(String id, NoiseNodeFactory factory) {
+        noiseNodeFactories.put(id, factory);
+    }
+
+    public static NoiseNode load(String id) throws Exception {
+        return load(ResourceLocation.fromString(id));
+    }
+
+    public static NoiseNode load(ResourceLocation id) throws Exception {
+        try {
+            return loadFile(findSource(id));
+        } catch (Exception exception) {
+            CosmicEarthMod.LOGGER.error("Exception whilst loading noise graph from id ({})\n{}", id, exception.getMessage());
+            throw exception;
+        }
+    }
+
+    public static NoiseNode loadByString(String source) throws Exception {
+        try {
+            return loadString(source);
+        } catch (Exception exception) {
+            CosmicEarthMod.LOGGER.error("Exception whilst loading noise graph from string\n{}\n{}", source, exception.getMessage());
+            throw exception;
+        }
+    }
+
+    public static NoiseNode load(JsonValue value) throws Exception {
+        try {
+            return createNoiseNode(value);
+        } catch (Exception exception) {
+            CosmicEarthMod.LOGGER.error("Exception whilst loading object noise graph\n{}", exception.getMessage());
+            throw exception;
+        }
+    }
+
+
+    private static ResourceLocation[] getWorldgenFileLocations(ResourceLocation location) {
+        return new ResourceLocation[] {
+                location,
+                new ResourceLocation(
+                        location.namespace,
+                        "worldgen/" + location.name + ".json"
+                ),
+                new ResourceLocation(
+                        location.namespace,
+                        "worldgen/" + location.name + ".hjson"
+                ),
+                new ResourceLocation(
+                        location.namespace,
+                        "worldgen/" + location.name + ".jsonc"
+                ),
+                new ResourceLocation(
+                        location.namespace,
+                        "worldgen/" + location.name + ".jsonl"
+                )
+        };
+    }
+
+    private static FileHandle findSource(ResourceLocation id) throws FileNotFoundException {
+        FileHandle sourceFile = null;
+
+        for(var file : getWorldgenFileLocations(id)) {
+            if(PuzzleGameAssetLoader.assetExists(file)) {
+                sourceFile = PuzzleGameAssetLoader.locateAsset(file);
+            }
+        }
+
+        if(sourceFile == null) {
+            throw new FileNotFoundException("Cannot find noise file " + id);
+        } else {
+            return sourceFile;
+        }
+    }
+
+    private static NoiseNode loadLocation(ResourceLocation id) throws NoSuchFieldException, FileNotFoundException, NoiseError {
+        return loadFile(findSource(id));
+    }
+
+    private static NoiseNode loadFile(FileHandle file) throws NoSuchFieldException, FileNotFoundException, NoiseError {
+        return loadString(file.readString());
+    }
+
+    private static NoiseNode loadString(String sourceString) throws NoSuchFieldException, FileNotFoundException, NoiseError {
+        return createNoiseNode(JsonObject.readHjson(sourceString));
+    }
+
+
 
     public static void registerDefaultNoiseNodes() {
         ErodedNoise.register();
