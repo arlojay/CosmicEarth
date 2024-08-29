@@ -9,6 +9,7 @@ import com.arlojay.cosmicearth.lib.spline.SplinePoint;
 import com.arlojay.cosmicearth.lib.variety.GroupedPalette;
 import com.arlojay.cosmicearth.lib.variety.PaletteItem;
 import com.arlojay.cosmicearth.lib.variety.RandomPalette;
+import com.arlojay.cosmicearth.lib.performance.Performance;
 import finalforeach.cosmicreach.blocks.BlockState;
 import finalforeach.cosmicreach.savelib.blockdata.SingleBlockData;
 import finalforeach.cosmicreach.savelib.blocks.IBlockDataFactory;
@@ -126,13 +127,20 @@ public class EarthZoneGenerator extends ZoneGenerator {
         }
     }
 
+    private int c = 0;
     @Override
     public void generateForChunkColumn(Zone zone, ChunkColumn col) {
+        c++;
+        if(c > 100) {
+            c = 0;
+            Performance.report();
+        }
         if (col.chunkY >= 0 && col.chunkY <= 15) {
             var chunks = new Chunk[Region.REGION_WIDTH];
 
             // Initialize chunks
             for(int i = 0; i < Region.REGION_WIDTH; i++) {
+                Performance.start("Initialize Chunk");
                 int chunkY = col.chunkY + i;
 
                 Chunk chunk = zone.getChunkAtChunkCoords(col.chunkX, chunkY, col.chunkZ);
@@ -146,6 +154,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 }
 
                 chunks[i] = chunk;
+                Performance.end("Initialize Chunk");
             }
 
 
@@ -155,6 +164,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
             for(int i = 0; i < Region.REGION_WIDTH; i++) {
                 var chunk = chunks[i];
 
+                Performance.start("Build 3D Caches");
                 // Build 3d caches
                 {
                     var cache3d = NoiseCache3D.create(chunk.getBlockX(), chunk.getBlockY(), chunk.getBlockZ());
@@ -164,8 +174,10 @@ public class EarthZoneGenerator extends ZoneGenerator {
                     noiseThreads.addJob(thread, chunk, JobCreationHelpler.createNoiseJob(caveNoise, thread, chunk, cache3d.getCache("cave")));
                     noiseThreads.addJob(thread, chunk, JobCreationHelpler.createNoiseJob(stoneTypeNoise, thread, chunk, cache3d.getCache("stone_type")));
                 }
+                Performance.end("Build 3D Caches");
 
 
+                Performance.start("Build ore caches");
                 // Build ore caches
                 {
                     var thread = oreThreads.getThread();
@@ -181,9 +193,11 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
                     oreBlockUpdates.add(blockUpdates);
                 }
+                Performance.end("Build ore caches");
             }
 
 
+            Performance.start("Build 2d caches");
             // Build 2d caches
             var cache2d = NoiseCache2D.create(col.getBlockX(), col.getBlockZ());
             cache2d.build("height", heightNoise);
@@ -194,17 +208,26 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
             // Generate base terrain
             for(int i = Region.REGION_WIDTH - 1; i >= 0; i--) {
+                Performance.start("Generate base terrain");
                 generateChunk(chunks[i], cache2d, noiseCache3Ds[i]);
+                Performance.end("Generate base terrain");
+
+                Performance.start("Generate ores");
                 generateOres(chunks[i], oreBlockUpdates.get(i));
+                Performance.end("Generate ores");
             }
 
             // Generate features
+            Performance.start("Generate features");
             generateFeatures(zone, col, cache2d);
+            Performance.end("Generate features");
 
 
             // Recycle caches
+            Performance.start("Recycle caches");
             for(int i = 0; i < Region.REGION_WIDTH; i++) noiseCache3Ds[i].recycle();
             cache2d.recycle();
+            Performance.end("Recycle caches");
         }
     }
 
@@ -236,7 +259,9 @@ public class EarthZoneGenerator extends ZoneGenerator {
         int globalY = chunk.blockY + CHUNK_WIDTH - 1;
         int globalZ = chunk.blockZ;
 
+        Performance.start("Wait for jobs");
         noiseThreads.waitForJobs(chunk);
+        Performance.end("Wait for jobs");
 
         BlockState stoneTypeBlockState;
 
