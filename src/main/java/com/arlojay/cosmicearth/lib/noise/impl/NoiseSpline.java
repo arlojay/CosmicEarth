@@ -4,13 +4,14 @@ import com.arlojay.cosmicearth.lib.noise.NoiseDebugString;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.SingleInputNoiseTransformer;
 import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
-import com.arlojay.cosmicearth.lib.spline.SplineMapper;
+import com.arlojay.cosmicearth.lib.spline.Interpolator;
+import com.arlojay.cosmicearth.lib.spline.SplineInterpolator;
 import com.arlojay.cosmicearth.lib.spline.SplinePoint;
 import org.hjson.JsonObject;
 
 public class NoiseSpline extends SingleInputNoiseTransformer {
-    private final SplineMapper mapper;
-    private final SplineMapper.Interpolator interpolator;
+    private final Interpolator interpolatorType;
+    private final SplineInterpolator<?> interpolator;
 
     public static void register() {
         NoiseLoader.registerNoiseNode("graph", (JsonObject options) -> {
@@ -21,8 +22,8 @@ public class NoiseSpline extends SingleInputNoiseTransformer {
             if(pointObjects == null) throw new NoSuchFieldException("graph transformer must have a `points` array");
             var pointObjectsArray = pointObjects.asArray();
 
-            var interpolationTypeString = options.getString("interpolator", SplineMapper.Interpolator.SMOOTHSTEP.toString());
-            var interpolator = SplineMapper.Interpolator.valueOf(interpolationTypeString.toUpperCase());
+            var interpolationTypeString = options.getString("interpolator", Interpolator.SMOOTHSTEP.toString());
+            var interpolator = Interpolator.valueOf(interpolationTypeString.toUpperCase());
 
             var mixerSources = new SplinePoint[pointObjectsArray.size()];
 
@@ -37,37 +38,33 @@ public class NoiseSpline extends SingleInputNoiseTransformer {
 
             return new NoiseSpline(
                     NoiseLoader.createNoiseNode(sourceObject),
-                    new SplineMapper(mixerSources, interpolator),
+                    interpolator.create(mixerSources),
                     interpolator
             );
         });
     }
 
-    public NoiseSpline(NoiseNode source, SplineMapper mapper) {
-        this(source, mapper, SplineMapper.Interpolator.SMOOTHSTEP);
-    }
-
-    public NoiseSpline(NoiseNode source, SplineMapper mapper, SplineMapper.Interpolator interpolationType) {
+    public NoiseSpline(NoiseNode source, SplineInterpolator<?> interpolator, Interpolator interpolatorType) {
         super(source);
-        this.mapper = mapper;
-        this.interpolator = interpolationType;
+        this.interpolator = interpolator;
+        this.interpolatorType = interpolatorType;
     }
 
     @Override
     public NoiseSpline asCopy() {
-        return new NoiseSpline(source.asCopy(), mapper.asCopy(), interpolator);
+        return new NoiseSpline(source.asCopy(), interpolator.asCopy(), interpolatorType);
     }
 
     @Override
     protected double transform(double sample) {
-        return mapper.transform(sample);
+        return interpolator.interpolate(sample);
     }
 
     @Override
     public String buildString() {
         return "@NoiseSpline" + NoiseDebugString.createPropertyList(
-                "interpolator", interpolator.toString(),
-                "mapper", mapper.toString()
+                "interpolatorType", interpolatorType.toString(),
+                "interpolator", interpolator.toString()
         ) + super.buildString();
     }
 }

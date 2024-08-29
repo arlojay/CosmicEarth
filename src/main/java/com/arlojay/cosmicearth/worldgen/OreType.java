@@ -1,10 +1,9 @@
 package com.arlojay.cosmicearth.worldgen;
 
 
-import com.arlojay.cosmicearth.lib.spline.SplineMapper;
+import com.arlojay.cosmicearth.lib.spline.Interpolator;
+import com.arlojay.cosmicearth.lib.spline.SplineInterpolator;
 import finalforeach.cosmicreach.blocks.BlockState;
-import finalforeach.cosmicreach.world.Chunk;
-import finalforeach.cosmicreach.world.Zone;
 import finalforeach.cosmicreach.worldgen.noise.WhiteNoise;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class OreType {
     private final int minPerChunk;
     private final int maxPerChunk;
     private final int minSize;
-    private final SplineMapper densityMap;
+    private final SplineInterpolator<?> densityMap;
     private final List<BlockState> replaceMask;
     private final WhiteNoise orePositionSeedGenerator = new WhiteNoise();
 
@@ -24,7 +23,7 @@ public class OreType {
             BlockState block,
             int minPerChunk, int maxPerChunk,
             int minSize, int maxSize,
-            SplineMapper densityMap,
+            SplineInterpolator<?> densityMap,
             List<BlockState> replaceMask
     ) {
         this.block = block;
@@ -75,7 +74,7 @@ public class OreType {
             int oreZ = startZ + random.nextInt(0, 16);
 
             double rolledDensity = random.nextDouble();
-            if(rolledDensity > densityMap.transform(oreY)) continue;
+            if(rolledDensity > densityMap.interpolate(oreY)) continue;
 
             this.place(chunkMask, random, oreX, oreY, oreZ);
         }

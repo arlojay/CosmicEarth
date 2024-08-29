@@ -4,7 +4,7 @@ import com.arlojay.cosmicearth.CosmicEarthMod;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.impl.WhiteNoiseGenerator;
 import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
-import com.arlojay.cosmicearth.lib.spline.SplineMapper;
+import com.arlojay.cosmicearth.lib.spline.Interpolator;
 import com.arlojay.cosmicearth.lib.spline.SplinePoint;
 import com.arlojay.cosmicearth.lib.variety.GroupedPalette;
 import com.arlojay.cosmicearth.lib.variety.PaletteItem;
@@ -60,11 +60,11 @@ public class EarthZoneGenerator extends ZoneGenerator {
             getBlockStateInstance("base:ore_gold[default]"),
             8, 16,
             4, 12,
-            new SplineMapper(new SplinePoint[]{
+            Interpolator.SMOOTHSTEP.create(new SplinePoint[]{
                     new SplinePoint(0, 1),
                     new SplinePoint(40, 0.5),
                     new SplinePoint(200, 0.2),
-            }, SplineMapper.Interpolator.SMOOTHSTEP),
+            }),
             List.of(
                     gravelBlock
             )
@@ -74,12 +74,12 @@ public class EarthZoneGenerator extends ZoneGenerator {
             getBlockStateInstance("base:ore_iron[default]"),
             4, 16,
             4, 16,
-            new SplineMapper(new SplinePoint[]{
+            Interpolator.SMOOTHSTEP.create(new SplinePoint[]{
                     new SplinePoint(0, 1),
                     new SplinePoint(40, 0.9),
                     new SplinePoint(200, 0.7),
                     new SplinePoint(500, 0.4),
-            }, SplineMapper.Interpolator.SMOOTHSTEP),
+            }),
             List.of(
                     gabbroBlock
             )
