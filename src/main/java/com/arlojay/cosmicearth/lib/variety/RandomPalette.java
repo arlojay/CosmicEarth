@@ -11,7 +11,7 @@ public class RandomPalette<ItemType> extends Palette<ItemType> {
     }
 
     public ItemType getItem(double seed) {
-        random.setSeed((long) seed);
+        random.setSeed(Double.doubleToLongBits(seed));
         var value = random.nextDouble(0d, totalWeight);
 
         double aggregate = 0d;
