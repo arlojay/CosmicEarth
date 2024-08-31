@@ -117,7 +117,6 @@ public class EarthZoneGenerator extends ZoneGenerator {
     private NoiseNode stoneTypeNoise;
 
     private void loadNoise() throws Exception {
-
         NoiseLoader.getProps().set("seed", seed);
 
         heightNoise = NoiseLoader.load("cosmicearth:height_noise");
@@ -411,17 +410,14 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
                 // Tree generation
                 if(
-                        featureValue > 0.98 && (
-                                ground.equals(grassBlock) ||
-                                ground.equals(dirtBlock) ||
-                                ground.equals(sandBlock)
-                        ) &&
-                        air.equals(airBlock)
+                        featureValue > 0.98 &&
+                        air.hasTag("foliage_replaceable")
                 ) {
                     // Coconut trees
                     if(
                             height < waterHeight + 24d &&
                             height > 48d &&
+                            ground.equals(sandBlock) &&
                             gradient < 0.2d
                     ) {
                         CoconutTree.generateTree(this.seed, zone, globalX, globalY, globalZ);
@@ -431,23 +427,25 @@ public class EarthZoneGenerator extends ZoneGenerator {
                     else if(
                             height > shoreHeight + 10d &&
                             height < maxHeight - 48d &&
+                            ground.hasTag("soil_tropical") &&
                             gradient < 0.6d
                     ) {
                         pineTreeStructure.generate(this.seed, zone, globalX, globalY, globalZ);
                         continue;
                     }
                     // Oak trees
-                    else if(featureValue > 0.996) {
+                    else if(
+                            featureValue > 0.996 &&
+                            ground.hasTag("soil_tropical")
+                    ) {
                         oakTreeStructure.generate(this.seed, zone, globalX, globalY, globalZ);
                         continue;
                     }
                 }
 
                 if(
-                        featureValue > -0.5 && (
-                                ground.equals(grassBlock) ||
-                                ground.equals(fullGrassBlock)
-                        ) &&
+                        featureValue > -0.5 &&
+                        ground.hasTag("soil_tropical") &&
                         air.equals(airBlock)
                 ) {
                     zone.setBlockState(featureValue > 0.0 ? tallGrassBlock : shortGrassBlock, globalX, globalY, globalZ);
@@ -455,10 +453,8 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 }
 
                 if(
-                        featureValue > -0.55 && (
-                                ground.equals(grassBlock) ||
-                                ground.equals(fullGrassBlock)
-                        ) &&
+                        featureValue > -0.55 &&
+                        ground.hasTag("soil_tropical") &&
                         air.equals(airBlock)
                 ) {
                     floraClusterStructure.generate(this.seed, zone, globalX, globalY, globalZ);

@@ -6,7 +6,10 @@
             "generateSlabs": false,
             "isTransparent": true,
             "isOpaque": true,
-            "lightAttenuation": 1
+            "lightAttenuation": 1,
+            "tags": [
+                "foliage_replaceable"
+            ]
         }
     }
 }

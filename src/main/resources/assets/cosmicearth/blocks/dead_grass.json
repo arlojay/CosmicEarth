@@ -3,7 +3,10 @@
     "blockStates": {
         "default": {
             "modelName": "cosmicearth:dead_grass",
-            "generateSlabs": false
+            "generateSlabs": false,
+            "tags": [
+                "foliage_replaceable"
+            ]
         }
     }
 }

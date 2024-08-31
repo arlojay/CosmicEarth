@@ -7,6 +7,7 @@ import finalforeach.cosmicreach.world.Zone;
 import finalforeach.cosmicreach.worldgen.noise.WhiteNoise;
 
 import java.util.Set;
+import java.util.function.Function;
 
 public class BuildHelper {
     public static void setBlockState(Zone zone, BlockState blockState, double globalX, double globalY, double globalZ) {
@@ -56,7 +57,7 @@ public class BuildHelper {
         }
     }
 
-    public static int findClosestBlockInColumn(Zone zone, BlockState blockState, int globalX, int startingY, int globalZ) {
+    public static Integer findClosestBlockInColumn(Zone zone, Function<BlockState, Boolean> comparator, int globalX, int startingY, int globalZ) {
         int height = 0;
 
         boolean checkingBelow = false;
@@ -69,30 +70,7 @@ public class BuildHelper {
 
             if(checkingBlock == null) continue;
 
-            if (checkingBlock.equals(blockState)) return globalY;
-
-            if(checkingBelow) height++;
-        }
-
-        return startingY;
-    }
-
-    public static Integer findClosestBlockInColumn(Zone zone, BlockState[] blockStates, int globalX, int startingY, int globalZ) {
-        int height = 0;
-
-        boolean checkingBelow = false;
-
-        for(int tries = 0; tries < 64; tries++) {
-            checkingBelow = !checkingBelow;
-
-            var globalY = startingY + (checkingBelow ? -height : height);
-            var checkingBlock = zone.getBlockState(globalX, globalY, globalZ);
-
-            if(checkingBlock == null) continue;
-
-            for(var blockState : blockStates) {
-                if (checkingBlock.equals(blockState)) return globalY;
-            }
+            if (comparator.apply(checkingBlock)) return globalY;
 
             if(checkingBelow) height++;
         }
@@ -100,15 +78,25 @@ public class BuildHelper {
         return null;
     }
 
+    public static Integer findClosestBlockInColumn(Zone zone, BlockState blockState, int globalX, int startingY, int globalZ) {
+        return findClosestBlockInColumn(zone, bs -> bs.equals(blockState), globalX, startingY, globalZ);
+    }
+
+    public static Integer findClosestBlockInColumn(Zone zone, BlockState[] blockStates, int globalX, int startingY, int globalZ) {
+        return findClosestBlockInColumn(zone, bs -> {
+            for(var blockState : blockStates) if(blockState.equals(bs)) return true;
+            return false;
+        }, globalX, startingY, globalZ);
+    }
+
     private static final WhiteNoise densityNoise = new WhiteNoise();
-    private static void scatterBlock(
+    public static void scatterBlock(
             Zone zone, long seed,
-            BlockState[] floorMask, BlockState[] airMask,
+            Function<BlockState, Boolean> floorMask,
+            Function<BlockState, Boolean> airMask,
             int globalX, int globalY, int globalZ,
             double clusterSize, double density,
-            BlockState blockState,
-
-            boolean ignoreAir
+            BlockState blockState
     ) {
         densityNoise.setSeed(seed);
         double clusterSizeSq = clusterSize * clusterSize;
@@ -130,16 +118,10 @@ public class BuildHelper {
                 if(foundY == null) continue;
 
                 var y = foundY + 1;
+                var oldBlock = zone.getBlockState(x, y, z);
 
-                if(!ignoreAir) {
-                    boolean isAcceptableLocation = false;
-
-                    for (var airBlock : airMask) {
-                        if (zone.getBlockState(x, y, z).equals(airBlock)) isAcceptableLocation = true;
-                    }
-
-                    if(!isAcceptableLocation) continue;
-                }
+                if(oldBlock == null) continue;
+                if(!airMask.apply(oldBlock)) continue;
 
                 BuildHelper.setBlockState(zone, blockState, x, y, z);
             }
@@ -155,11 +137,17 @@ public class BuildHelper {
     ) {
         scatterBlock(
                 zone, seed,
-                floorMask, airMask,
+                bs -> {
+                    for(var floor : floorMask) if(floor.equals(bs)) return true;
+                    return false;
+                },
+                bs -> {
+                    for(var air : airMask) if(air.equals(bs)) return true;
+                    return false;
+                },
                 globalX, globalY, globalZ,
                 clusterSize, density,
-                blockState,
-                false
+                blockState
         );
     }
 
@@ -172,11 +160,13 @@ public class BuildHelper {
     ) {
         scatterBlock(
                 zone, seed,
-                floorMask, floorMask,
+                bs -> {
+                    for(var floor : floorMask) if(floor.equals(bs)) return true;
+                    return false;
+                }, bs -> true,
                 globalX, globalY, globalZ,
                 clusterSize, density,
-                blockState,
-                true
+                blockState
         );
     }
 
