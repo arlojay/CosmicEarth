@@ -38,7 +38,6 @@ public class EarthZoneGenerator extends ZoneGenerator {
     public static int shoreHeight = 110;
 
     public static final int caveCeilingThickness = 8;
-    public static final int lavaHeight = 15;
 
     private ThreadManager noiseThreads;
     private ThreadManager oreThreads;
@@ -154,7 +153,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
             c = 0;
             Performance.report();
         }
-        if (col.chunkY >= 0 && col.chunkY <= 15) {
+        if (col.chunkY <= 31) {
             var chunks = new Chunk[Region.REGION_WIDTH];
 
             // Initialize chunks
@@ -317,7 +316,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
                     boolean voidCaves = globalY < shoreHeight && globalY > baseHeight - caveCeilingThickness;
                     if(caveDensity < 0.0 && !voidCaves) {
-                        if(globalY < lavaHeight) chunk.setBlockState(magmaBlock, localX, localY, localZ);
+//                        if(globalY < lavaHeight) chunk.setBlockState(magmaBlock, localX, localY, localZ);
                         if(globalY + 1 > height) height--;
                         continue;
                     }
