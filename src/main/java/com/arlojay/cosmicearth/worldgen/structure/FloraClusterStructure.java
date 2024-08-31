@@ -62,7 +62,8 @@ public class FloraClusterStructure extends WorldgenStructure {
 
         BuildHelper.scatterBlock(
                 zone, random.nextLong(),
-                floorMask, airMask,
+                bs -> bs.hasTag("soil_tropical"),
+                bs -> bs.hasTag("foliage_replaceable"),
                 globalX, globalY, globalZ,
                 clusterSize, 0.1d,
                 blockState

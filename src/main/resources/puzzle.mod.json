@@ -9,6 +9,9 @@
   "entrypoints": {
     "init": [
       "com.arlojay.cosmicearth.CosmicEarthMod"
+    ],
+    "postInit": [
+      "com.arlojay.cosmicearth.CosmicEarthMod"
     ]
   },
   "mixins": [
