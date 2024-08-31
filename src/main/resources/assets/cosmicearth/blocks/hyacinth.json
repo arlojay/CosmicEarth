@@ -3,7 +3,6 @@
     "blockStates": {
         "default": {
             "modelName": "cosmicearth:hyacinth",
-            "generateSlabs": false,
             "isTransparent": true,
             "isOpaque": false,
             "lightAttenuation": 0,

@@ -3,7 +3,6 @@
     "blockStates": {
         "default": {
             "modelName": "cosmicearth:short_grass",
-            "generateSlabs": false,
             "isTransparent": true,
             "isOpaque": false,
             "lightAttenuation": 0,

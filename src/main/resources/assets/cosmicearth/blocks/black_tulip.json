@@ -3,7 +3,6 @@
     "blockStates": {
         "default": {
             "modelName": "cosmicearth:black_tulip",
-            "generateSlabs": false,
             "isTransparent": true,
             "isOpaque": false,
             "lightAttenuation": 0,

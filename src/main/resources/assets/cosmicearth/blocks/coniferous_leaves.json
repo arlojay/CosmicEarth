@@ -3,13 +3,10 @@
     "blockStates": {
         "default": {
             "modelName": "cosmicearth:coniferous_leaves",
-            "generateSlabs": false,
             "isTransparent": true,
             "isOpaque": true,
             "lightAttenuation": 1,
-            "tags": [
-                "foliage_replaceable"
-            ]
+            "tags": [ ]
         }
     }
 }

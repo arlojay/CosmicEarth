@@ -3,13 +3,10 @@
     "blockStates": {
         "default": {
             "modelName": "cosmicearth:cactus",
-            "generateSlabs": false,
             "isTransparent": true,
             "isOpaque": false,
             "lightAttenuation": 1,
-            "tags": [
-                "foliage_replaceable"
-            ]
+            "tags": [ ]
         }
     }
 }

@@ -3,7 +3,6 @@
     "blockStates": {
         "default": {
             "modelName": "cosmicearth:shrub",
-            "generateSlabs": false,
             "isTransparent": true,
             "isOpaque": false,
             "lightAttenuation": 0,

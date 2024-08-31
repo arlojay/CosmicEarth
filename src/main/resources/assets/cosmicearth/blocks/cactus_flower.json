@@ -3,7 +3,6 @@
     "blockStates": {
         "default": {
             "modelName": "cosmicearth:cactus_flower",
-            "generateSlabs": false,
             "isTransparent": true,
             "isOpaque": false,
             "lightAttenuation": 0,
