@@ -12,7 +12,7 @@ public class RecyclingPool<T> {
     }
 
     public T get() {
-        if(freeItems.size() > 0) {
+        if(!freeItems.isEmpty()) {
             var old = freeItems.remove(0);
             factory.recycle(old);
             return old;
