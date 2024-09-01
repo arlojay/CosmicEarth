@@ -21,3 +21,7 @@ This is a mod for [Cosmic Reach](https://finalforeach.itch.io/cosmic-reach), a g
 ---
 ### Contributing
 * I don't know enough about GitHub yet to handle contributions, but if you would like to show me how easy (or annoying) it is, I should be open to hear.
+
+---
+### License
+* While the main project is licensed under Apache 2.0, the core com.arlojay.cosmicearth.lib.noise package is licensed under MIT.
