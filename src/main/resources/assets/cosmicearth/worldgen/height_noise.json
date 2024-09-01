@@ -5,37 +5,45 @@
     "sources": [
         {
             "factor": 1,
-            "noise": {
-                "type": "scale",
-                "scalar": 500,
 
+            "noise": {
+                "type": "map",
+                "outputMin": -100,
+                "outputMax": 100,
+            
                 "source": {
                     "type": "ref",
-                    "file": "cosmicearth:terrain/shaped"
-                }
-            }
-        },
-        {
-            "factor": 0.6,
-            "noise": {
-                "type": "scale",
-                "scalar": 3000,
-
-                "source": {
-                    "type": "ref",
-                    "file": "cosmicearth:terrain/ridges"
+                    "file": "cosmicearth:factor/continent"
                 }
             }
         },
         {
             "factor": 1,
+
             "noise": {
-                "type": "scale",
-                "scalar": 250,
+                "type": "operation", "op": "multiply",
+
+                "a": {
+                    "type": "ref",
+                    "file": "cosmicearth:factor/erosion"
+                },
+                "b": {
+                    "type": "ref",
+                    "file": "cosmicearth:detail/erosion"
+                }
+            }
+        },
+        {
+            "factor": 1,
+            
+            "noise": {
+                "type": "map",
+                "outputMin": -100,
+                "outputMax": 50,
 
                 "source": {
                     "type": "ref",
-                    "file": "cosmicearth:terrain/erosion"
+                    "file": "cosmicearth:detail/ridges"
                 }
             }
         }

@@ -1,0 +1,17 @@
+{
+    "type": "scale",
+    "scalar": 1280,
+
+    "source": {
+        "type": "octave",
+        "detail": 2,
+        "roughness": 0.5,
+        "lacunarity": 1.5,
+        "distortion": 0.0,
+
+        "source": {
+            "type": "simplex",
+            "seed": 2
+        }
+    }
+}

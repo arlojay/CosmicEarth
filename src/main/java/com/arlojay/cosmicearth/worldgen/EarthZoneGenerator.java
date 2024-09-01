@@ -1,72 +1,60 @@
 package com.arlojay.cosmicearth.worldgen;
 
 import com.arlojay.cosmicearth.CosmicEarthMod;
+import com.arlojay.cosmicearth.Debug;
+import com.arlojay.cosmicearth.lib.Range;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.impl.generator.WhiteNoiseGenerator;
 import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
 import com.arlojay.cosmicearth.lib.spline.Interpolator;
 import com.arlojay.cosmicearth.lib.spline.SplinePoint;
-import com.arlojay.cosmicearth.lib.variety.GroupedPalette;
-import com.arlojay.cosmicearth.lib.variety.PaletteItem;
-import com.arlojay.cosmicearth.lib.variety.RandomPalette;
 import com.arlojay.cosmicearth.lib.performance.Performance;
+import com.arlojay.cosmicearth.worldgen.biome.BiomeSelector;
+import com.arlojay.cosmicearth.worldgen.biome.impl.*;
 import com.arlojay.cosmicearth.worldgen.mask.ChunkMask;
 import com.arlojay.cosmicearth.worldgen.noise.NoiseCache2D;
 import com.arlojay.cosmicearth.worldgen.noise.NoiseCache3D;
 import com.arlojay.cosmicearth.worldgen.ore.OreType;
-import com.arlojay.cosmicearth.worldgen.structure.FloraClusterStructure;
-import com.arlojay.cosmicearth.worldgen.structure.OakTreeStructure;
-import com.arlojay.cosmicearth.worldgen.structure.PineTreeStructure;
-import com.arlojay.cosmicearth.worldgen.structure.WorldgenStructure;
+import com.arlojay.cosmicearth.worldgen.structure.*;
 import com.arlojay.cosmicearth.lib.threading.ThreadManager;
 import com.arlojay.cosmicearth.worldgen.threading.JobCreationHelper;
+import com.badlogic.gdx.Game;
+import com.github.puzzle.core.Puzzle;
+import com.github.puzzle.game.engine.GameLoader;
+import finalforeach.cosmicreach.BlockGame;
+import finalforeach.cosmicreach.ClientSingletons;
+import finalforeach.cosmicreach.GameSingletons;
 import finalforeach.cosmicreach.blocks.BlockState;
+import finalforeach.cosmicreach.entities.player.Player;
+import finalforeach.cosmicreach.gamestates.InGame;
 import finalforeach.cosmicreach.savelib.blockdata.SingleBlockData;
 import finalforeach.cosmicreach.savelib.blocks.IBlockDataFactory;
+import finalforeach.cosmicreach.ui.UI;
+import finalforeach.cosmicreach.ui.debug.DebugItem;
+import finalforeach.cosmicreach.ui.debug.DebugStringItem;
 import finalforeach.cosmicreach.world.Chunk;
 import finalforeach.cosmicreach.world.Region;
+import finalforeach.cosmicreach.world.World;
 import finalforeach.cosmicreach.world.Zone;
 import finalforeach.cosmicreach.worldgen.ChunkColumn;
 import finalforeach.cosmicreach.worldgen.ZoneGenerator;
-import finalforeach.cosmicreach.worldgen.trees.CoconutTree;
 
 import java.util.*;
 
 public class EarthZoneGenerator extends ZoneGenerator {
     public static int maxHeight = 255;
-    public static int waterHeight = 100;
-    public static int shoreHeight = 110;
+    public static int waterHeight = 0;
+    public static int shoreHeight = 10;
 
-    public static final int caveCeilingThickness = 8;
+    public static final int caveCeilingThickness = 2;
 
     private ThreadManager noiseThreads;
     private ThreadManager oreThreads;
 
-    BlockState airBlock = this.getBlockStateInstance("base:air[default]");
-    BlockState stoneBlock = this.getBlockStateInstance("base:stone_basalt[default]");
-    BlockState gabbroBlock = this.getBlockStateInstance("base:stone_gabbro[default]");
-    BlockState limestoneBlock = this.getBlockStateInstance("base:stone_limestone[default]");
-    BlockState grassBlock = this.getBlockStateInstance("base:grass[default]");
-    BlockState fullGrassBlock = this.getBlockStateInstance("base:grass[type=full]");
-    BlockState dirtBlock = this.getBlockStateInstance("base:dirt[default]");
-    BlockState sandBlock = this.getBlockStateInstance("base:sand[default]");
-    BlockState waterBlock = this.getBlockStateInstance("base:water[default]");
-    BlockState gravelBlock = this.getBlockStateInstance("base:stone_gravel[default]");
-    BlockState shortGrassBlock = this.getBlockStateInstance("cosmicearth:short_grass[default]");
-    BlockState tallGrassBlock = this.getBlockStateInstance("cosmicearth:tall_grass[default]");
-    BlockState magmaBlock = this.getBlockStateInstance("base:magma[default]");
+    private final BiomeSelector biomeSelector = new BiomeSelector();
+    private final Palettes blockPalette = new Palettes();
 
-    RandomPalette<BlockState> steepGradientTopsoil = new RandomPalette<>(Set.of(
-            new PaletteItem<>(grassBlock, 1d),
-            new PaletteItem<>(gravelBlock, 1d),
-            new PaletteItem<>(gabbroBlock, 2d)
-    ));
-    GroupedPalette<BlockState> stoneTypePalette = new GroupedPalette<>(Set.of(
-            new PaletteItem<>(gabbroBlock, -1d),
-            new PaletteItem<>(gravelBlock, 1d)
-    ));
-
-    OreType goldOre = new OreType(
+    private final OreType goldOre = new OreType(
             getBlockStateInstance("base:ore_gold[default]"),
             8, 16,
             4, 12,
@@ -76,11 +64,11 @@ public class EarthZoneGenerator extends ZoneGenerator {
                     new SplinePoint(200, 0.2),
             }),
             List.of(
-                    gravelBlock
+                    blockPalette.gravel
             )
     );
 
-    OreType ironOre = new OreType(
+    private final OreType ironOre = new OreType(
             getBlockStateInstance("base:ore_iron[default]"),
             4, 16,
             4, 16,
@@ -91,29 +79,39 @@ public class EarthZoneGenerator extends ZoneGenerator {
                     new SplinePoint(500, 0.4),
             }),
             List.of(
-                    gabbroBlock
+                    blockPalette.gravel
             )
     );
 
-    OreType[] oreTypes = new OreType[] { ironOre, goldOre };
+    private final OreType[] oreTypes = new OreType[] { ironOre, goldOre };
 
-    WorldgenStructure pineTreeStructure = new PineTreeStructure();
-    WorldgenStructure floraClusterStructure = new FloraClusterStructure();
-    WorldgenStructure oakTreeStructure = new OakTreeStructure();
+    private final IBlockDataFactory<BlockState> chunkDataFactory = () -> new SingleBlockData<>(blockPalette.air);
 
-    private final IBlockDataFactory<BlockState> chunkDataFactory = () -> new SingleBlockData<>(airBlock);
+    public NoiseNode heightNoise;
+    public NoiseNode heightNoiseGradient;
 
-    private NoiseNode heightNoise;
-    private NoiseNode heightNoiseGradient;
+    public NoiseNode erosionBaseNoise;
+    public NoiseNode temperatureNoise;
+    public NoiseNode humidityNoise;
+    public NoiseNode continentNoise;
 
-    private NoiseNode erosionBaseNoise;
-    private NoiseNode temperatureNoise;
-    private NoiseNode humidityNoise;
+    public NoiseNode paletteNoise;
+    public NoiseNode caveNoise;
+    public NoiseNode stoneTypeNoise;
 
-    private NoiseNode paletteNoise;
-    private NoiseNode featureNoise;
-    private NoiseNode caveNoise;
-    private NoiseNode stoneTypeNoise;
+    public DebugItem biomeNoiseDebug = new DebugStringItem(true, () -> {
+        var localPlayer = InGame.getLocalPlayer();
+        var position = localPlayer.getPosition();
+
+        double temperature = temperatureNoise.sample(position.x, position.z);
+        double humidity = humidityNoise.sample(position.x, position.z);
+        double erosion = erosionBaseNoise.sample(position.x, position.z);
+        double continent = continentNoise.sample(position.x, position.z);
+
+        var biome = biomeSelector.getBiome(temperature, humidity, erosion, continent);
+
+        return String.format("T %s H %s E %s C %s -> %s", temperature, humidity, erosion, continent, biome.getName());
+    }, l -> l);
 
     private void loadNoise() throws Exception {
         NoiseLoader.getProps().set("seed", seed);
@@ -124,12 +122,12 @@ public class EarthZoneGenerator extends ZoneGenerator {
         erosionBaseNoise = NoiseLoader.load("cosmicearth:factor/erosion");
         temperatureNoise = NoiseLoader.load("cosmicearth:factor/temperature");
         humidityNoise = NoiseLoader.load("cosmicearth:factor/humidity");
+        continentNoise = NoiseLoader.load("cosmicearth:factor/continent");
 
         caveNoise = NoiseLoader.load("cosmicearth:cave_noise");
         stoneTypeNoise = NoiseLoader.load("cosmicearth:stone_type");
 
         paletteNoise = new WhiteNoiseGenerator(seed + 2);
-        featureNoise = new WhiteNoiseGenerator(seed + 6);
     }
 
     @Override
@@ -137,12 +135,71 @@ public class EarthZoneGenerator extends ZoneGenerator {
         noiseThreads = new ThreadManager(4);
         oreThreads = new ThreadManager(2);
 
+        biomeSelector.registerBiome(new PlainsBiome(
+                seed,
+                new Range(0.3, 0.6),
+                new Range(-0.2, 0.3),
+                new Range(-0.25, 0.25),
+                new Range(0.3, 0.5)
+        ));
+        biomeSelector.registerBiome(new ForestBiome(
+                seed,
+                new Range(-0.2, 0.3),
+                new Range(0.4, 0.8),
+                new Range(-0.1, 0.3),
+                new Range(0.1, 0.3)
+        ));
+        biomeSelector.registerBiome(new RoughlandsBiome(
+                seed,
+                new Range(0.5, 1.0),
+                new Range(-1.0, -0.5),
+                new Range(0.4d, 0.6d),
+                new Range(0.03d, 0.35d)
+        ));
+        biomeSelector.registerBiome(new DesertBiome(
+                seed,
+                new Range(0.5, 1.0),
+                new Range(-1.0, -0.5),
+                new Range(-0.3d, 0.3d),
+                new Range(0.6d, 1.0d)
+        ));
+        biomeSelector.registerBiome(new ConiferousForestBiome(
+                seed,
+                new Range(-0.2, 0.35),
+                new Range(0.2, 0.5),
+                new Range(-0.3d, 0.3d),
+                new Range(0.3d, 1.0d)
+        ));
+        biomeSelector.registerBiome(new SnowyPlainsBiome(
+                seed,
+                new Range(-1.0, -0.45),
+                new Range(0.35, 0.68),
+                new Range(-0.25d, 0.25d),
+                new Range(0.7d, 1.0d)
+        ));
+        biomeSelector.registerBiome(new TropicalShore(
+                seed,
+                new Range(-1.0, 1.0),
+                new Range(0.2, 1.0),
+                new Range(-1.0, 1.0),
+                new Range(-0.15d, 0.05d)
+        ));
+        biomeSelector.registerBiome(new PlainsBiome(
+                seed,
+                new Range(-1.0, 1.0),
+                new Range(0.2, 1.0),
+                new Range(-1.0, 1.0),
+                new Range(0.05d, 1.0d)
+        ));
+
         try {
             loadNoise();
         } catch (Exception e) {
             if(e instanceof NoiseNode) return;
             e.printStackTrace();
         }
+
+        Debug.addDebugItem("biome", biomeNoiseDebug);
     }
 
     private int c = 0;
@@ -153,7 +210,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
             c = 0;
             Performance.report();
         }
-        if (col.chunkY <= 31) {
+        if (col.chunkY * CHUNK_WIDTH <= maxHeight) {
             var chunks = new Chunk[Region.REGION_WIDTH];
 
             // Initialize chunks
@@ -226,6 +283,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
             cache2d.build("erosion", erosionBaseNoise);
             cache2d.build("temperature", temperatureNoise);
             cache2d.build("humidity", humidityNoise);
+            cache2d.build("continent", continentNoise);
 
             Performance.end("Build 2d caches");
 
@@ -294,92 +352,67 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 double baseHeight = noiseCache2d.read("base_height", localX, localZ);
                 double height = noiseCache2d.read("height", localX, localZ);
                 double gradient = noiseCache2d.read("gradient", localX, localZ);
-                double paletteOffset = noiseCache2d.read("palette", localX, localZ);
 
-                double erosionBase = noiseCache2d.read("erosion", localX, localZ);
+                double continent = noiseCache2d.read("continent", localX, localZ);
                 double temperature = noiseCache2d.read("temperature", localX, localZ);
                 double humidity = noiseCache2d.read("humidity", localX, localZ);
+                double erosion = noiseCache2d.read("erosion", localX, localZ);
+
+                var biome = biomeSelector.getBiome(temperature, humidity, erosion, continent);
 
 
                 for (int localY = CHUNK_WIDTH - 1; localY >= 0; localY--, globalY--) {
-                    double caveDensity = noiseCache3d.read("cave", localX, localY, localZ);
-                    double stoneType = noiseCache3d.read("stone_type", localX, localY, localZ);
-
-                    stoneTypeBlockState = stoneTypePalette.getItem(stoneType);
-
                     if(globalY > baseHeight) {
                         if(globalY <= waterHeight) {
-                            chunk.setBlockState(waterBlock, localX, localY, localZ);
+                            chunk.setBlockState(blockPalette.water, localX, localY, localZ);
                         }
                         continue;
                     }
 
-                    boolean voidCaves = globalY < shoreHeight && globalY > baseHeight - caveCeilingThickness;
+                    double caveDensity = noiseCache3d.read("cave", localX, localY, localZ);
+                    double stoneType = noiseCache3d.read("stone_type", localX, localY, localZ);
+
+                    stoneTypeBlockState = blockPalette.stoneType.getItem(stoneType);
+
+                    boolean voidCaves = globalY > baseHeight - caveCeilingThickness && globalY < shoreHeight;
                     if(caveDensity < 0.0 && !voidCaves) {
-//                        if(globalY < lavaHeight) chunk.setBlockState(magmaBlock, localX, localY, localZ);
                         if(globalY + 1 > height) height--;
                         continue;
                     }
 
+                    boolean isBeach = (continent < 0.0 || globalY < waterHeight + 2);
+
                     // Grass/top layer
                     if(globalY > height - 1) {
-                        // Shallow gradient
-                        if(gradient < 0.9) {
-                            if(baseHeight > shoreHeight) {
-                                // Inland
-                                chunk.setBlockState(gradient < 0.4 ? fullGrassBlock : grassBlock, localX, localY, localZ);
-                                continue;
-                            } else {
-                                // Shoreline / underwater
-                                chunk.setBlockState(gradient < 0.7 ? sandBlock : gravelBlock, localX, localY, localZ);
-                                continue;
-                            }
+                        BlockState topsoil;
+
+                        // Beach/underwater override
+                        if(isBeach && globalY > baseHeight - 1) {
+                            topsoil = gradient < 2d ? blockPalette.sand : stoneTypeBlockState;
+                        } else {
+                            topsoil = biome.getTopsoil(globalX, globalY, globalZ, gradient);
                         }
-                        // Steep gradient
-                        else {
-                            if(baseHeight > shoreHeight) {
-                                // Inland
-                                var paletteBlock = steepGradientTopsoil.getItem(
-                                        Double.doubleToLongBits(paletteOffset * Double.MAX_VALUE)
-                                );
-                                chunk.setBlockState(paletteBlock, localX, localY, localZ);
-                                continue;
-                            } else {
-                                // Shoreline / underwater
-                                chunk.setBlockState(stoneTypeBlockState, localX, localY, localZ);
-                                continue;
-                            }
-                        }
+                        chunk.setBlockState(topsoil, localX, localY, localZ);
+                        continue;
                     }
 
                     // Dirt/middle layer
                     if(globalY > height - 5) {
-                        // Shallow gradient
-                        if(gradient < 1.0) {
-                            // Inland
-                            if(baseHeight > shoreHeight) {
-                                chunk.setBlockState(dirtBlock, localX, localY, localZ);
-                                continue;
+                        BlockState loam;
+
+                        // Beach/underwater override
+                        if(isBeach && globalY > baseHeight - 5) {
+                            // Shallow gradient
+                            if(gradient < 1.5) {
+                                loam = gradient < 0.9 ? blockPalette.sand : blockPalette.gravel;
+                            } else {
+                                loam = stoneTypeBlockState;
                             }
-                            // Shoreline / underwater
-                            else {
-                                chunk.setBlockState(gradient < 0.9 ? sandBlock : gravelBlock, localX, localY, localZ);
-                                continue;
-                            }
+                        } else {
+                            loam = biome.getLoam(globalX, globalY, globalZ, gradient);
                         }
-                        // Steep gradient
-                        else {
-                            // Inland
-                            if(baseHeight > shoreHeight) {
-                                chunk.setBlockState(stoneTypeBlockState, localX, localY, localZ);
-                                continue;
-                            }
-                            // Shoreline / underwater
-                            else {
-                                chunk.setBlockState(stoneTypeBlockState, localX, localY, localZ);
-                                continue;
-                            }
-                        }
+                        chunk.setBlockState(loam, localX, localY, localZ);
+                        continue;
                     }
 
                     chunk.setBlockState(stoneTypeBlockState, localX, localY, localZ);
@@ -391,73 +424,35 @@ public class EarthZoneGenerator extends ZoneGenerator {
         }
     }
 
-    private void generateFeatures(Zone zone, ChunkColumn column, NoiseCache2D noiseCache) {
+    private void generateFeatures(Zone zone, ChunkColumn column, NoiseCache2D noiseCache2d) {
         int globalX = column.getBlockX();
         int globalZ = column.getBlockZ();
 
         for(int localX = 0; localX < CHUNK_WIDTH; localX++, globalX++) {
             for (int localZ = 0; localZ < CHUNK_WIDTH; localZ++, globalZ++) {
-                var height = noiseCache.read("height", localX, localZ);
-                var gradient = noiseCache.read("gradient", localX, localZ);
-                var featureValue = featureNoise.sample(globalX, globalZ);
+                double height = noiseCache2d.read("height", localX, localZ);
 
-                var globalY = (int) Math.round(height + 0.5);
+                int globalY = (int) Math.ceil(height);
                 var ground = zone.getBlockState(globalX, globalY - 1, globalZ);
                 var air = zone.getBlockState(globalX, globalY, globalZ);
 
                 if(ground == null || air == null) continue;
 
-                // Tree generation
-                if(
-                        featureValue > 0.98 &&
-                        air.hasTag("foliage_replaceable")
-                ) {
-                    // Coconut trees
-                    if(
-                            height < waterHeight + 24d &&
-                            height > 48d &&
-                            ground.equals(sandBlock) &&
-                            gradient < 0.2d
-                    ) {
-                        CoconutTree.generateTree(this.seed, zone, globalX, globalY, globalZ);
-                        continue;
-                    }
-                    // Pine trees
-                    else if(
-                            height > shoreHeight + 10d &&
-                            height < maxHeight - 48d &&
-                            ground.hasTag("soil_tropical") &&
-                            gradient < 0.6d
-                    ) {
-                        pineTreeStructure.generate(this.seed, zone, globalX, globalY, globalZ);
-                        continue;
-                    }
-                    // Oak trees
-                    else if(
-                            featureValue > 0.996 &&
-                            ground.hasTag("soil_tropical")
-                    ) {
-                        oakTreeStructure.generate(this.seed, zone, globalX, globalY, globalZ);
-                        continue;
-                    }
-                }
 
-                if(
-                        featureValue > -0.5 &&
-                        ground.hasTag("soil_tropical") &&
-                        air.equals(airBlock)
-                ) {
-                    zone.setBlockState(featureValue > 0.0 ? tallGrassBlock : shortGrassBlock, globalX, globalY, globalZ);
-                    continue;
-                }
 
-                if(
-                        featureValue > -0.55 &&
-                        ground.hasTag("soil_tropical") &&
-                        air.equals(airBlock)
-                ) {
-                    floraClusterStructure.generate(this.seed, zone, globalX, globalY, globalZ);
-                }
+                double gradient = noiseCache2d.read("gradient", localX, localZ);
+
+                double temperature = noiseCache2d.read("temperature", localX, localZ);
+                double humidity = noiseCache2d.read("humidity", localX, localZ);
+                double erosion = noiseCache2d.read("erosion", localX, localZ);
+                double continent = noiseCache2d.read("continent", localX, localZ);
+
+                var biome = biomeSelector.getBiome(temperature, humidity, erosion, continent);
+
+                var structure = biome.getStructure(zone, globalX, globalY, globalZ, ground, air, gradient);
+                if(structure == null) continue;
+
+                structure.worldgenStructure.generate(seed, zone, globalX, globalY, globalZ);
             }
             globalZ -= CHUNK_WIDTH;
         }
@@ -475,6 +470,6 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
     @Override
     public int getDefaultRespawnYLevel() {
-        return 0;
+        return Integer.MIN_VALUE;
     }
 }

@@ -1,0 +1,22 @@
+{
+    "type": "map",
+    "outputMin": -20,
+    "outputMax": 40,
+
+    "source": {
+        "type": "scale",
+        "scalar": 200,
+
+        "source": {
+            "type": "octave",
+            "detail": 6,
+            "lacunarity": 1.763,
+            "roughness": 0.4,
+
+            "source": {
+                "type": "simplex",
+                "seed": 4
+            }
+        }
+    }
+}

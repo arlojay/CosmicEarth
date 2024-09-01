@@ -1,0 +1,82 @@
+{
+    "type": "scale",
+    "scalar": 2000,
+
+    "source": {
+        "type": "graph",
+        "interpolator": "cubic",
+        "points": [
+            [ -1.0, -1.0 ],
+            [ -0.4, -0.4 ],
+            [ -0.3, -0.1 ],
+            [ -0.2,  0.2  ],
+            [  1.0,  1.0 ]
+        ],
+        "source": {
+            "type": "mix",
+            "normalize": true,
+
+            "sources": [
+                // Base tectonic
+                {
+                    "factor": 1,
+
+                    "noise": {
+                        "type": "scale",
+                        "scalar": 4,
+
+                        "source": {
+                            "type": "graph",
+                            "interpolator": "cubic",
+                            "points": [
+                                [ 0.0, -1.0 ],
+                                [ 0.4, -0.6 ],
+                                [ 0.6,  0.6 ],
+                                [ 1.0,  1.0 ]
+                            ],
+
+                            "source": {
+                                "type": "absolute",
+                                "source": {
+                                    "type": "octave",
+
+                                    "detail": 5,
+                                    "roughness": 0.575,
+                                    "lacunarity": 2,
+                                    "distortion": 0.2,
+
+                                    "source": { "type": "simplex", "seed": 0 }
+                                }
+                            }
+                        }
+                    }
+                },
+
+                // Detail
+                {
+                    "factor": 1,
+
+                    "noise": {
+                        "type": "graph",
+                        "interpolator": "cubic",
+                        "points": [
+                            [ -1.0, -1.0 ],
+                            [ -0.1,  0.4 ],
+                            [  1.0,  1.0 ]
+                        ],
+
+                        "source": {
+                            "type": "octave",
+
+                            "detail": 3,
+                            "roughness": 0.4,
+                            "lacunarity": 4.11,
+                            
+                            "source": { "type": "simplex", "seed": 1 }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "type": "map",
+    "outputMin": 0,
+    "outputMax": 50,
+
+    "source": {
+        "type": "scale",
+        "scalar": 300,
+
+        "source": {
+            "type": "erosion",
+            "detail": 2,
+            "depth": 2,
+            "lacunarity": 1.2,
+            "stride": 1.65,
+            "roughness": 0.4,
+
+            "source": {
+                "type": "simplex",
+                "seed": 4
+            }
+        }
+    }
+}

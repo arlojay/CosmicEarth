@@ -1,10 +1,10 @@
 {
-    "type": "map",
-    "outputMin": -40,
-    "outputMax": 100,
+    "type": "scale",
+    "scalar": 5000,
 
     "source": {
         "type": "graph",
+        "interpolator": "cubic",
         "points": [
             [ -1.0,  0.0  ],
             [ -0.66, 1.0  ],
@@ -22,7 +22,7 @@
 
             "source": {
                 "type": "simplex",
-                "seed": 2
+                "seed": 5
             }
         }
     }

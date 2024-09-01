@@ -4,8 +4,11 @@ import com.arlojay.cosmicearth.CosmicEarthMod;
 import com.github.puzzle.core.resources.ResourceLocation;
 import com.github.puzzle.game.block.DataModBlock;
 import com.github.puzzle.game.events.OnRegisterBlockEvent;
+import finalforeach.cosmicreach.blocks.BlockState;
 import finalforeach.cosmicreach.rendering.shaders.SpriteBatchShader;
+import finalforeach.cosmicreach.util.ArrayUtils;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
