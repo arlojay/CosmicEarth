@@ -6,7 +6,8 @@
             "isTransparent": true,
             "isOpaque": false,
             "lightAttenuation": 1,
-            "tags": [ ]
+            "tags": [ ],
+            "hardness": 0.3
         }
     }
 }

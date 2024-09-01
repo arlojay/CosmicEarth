@@ -9,7 +9,9 @@
             "walkThrough": true,
             "tags": [
                 "foliage_replaceable"
-            ]
+            ],
+            "hardness": 0.001,
+            "dropId": "base:air[default]"
         }
     }
 }

@@ -9,7 +9,8 @@
             "walkThrough": true,
             "tags": [
                 "foliage_replaceable"
-            ]
+            ],
+            "hardness": 0.001
         }
     }
 }

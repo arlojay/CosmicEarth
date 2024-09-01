@@ -8,7 +8,9 @@
             "lightAttenuation": 0,
             "lightLevelRed": 0,
             "lightLevelGreen": 0,
-            "lightLevelBlue": 0
+            "lightLevelBlue": 0,
+            "hardness": 0.3,
+            "dropId": "base:air[default]"
         },
         "model=1": {
             "modelName": "cosmicearth:pebbles_1",
@@ -17,7 +19,9 @@
             "lightAttenuation": 0,
             "lightLevelRed": 0,
             "lightLevelGreen": 0,
-            "lightLevelBlue": 0
+            "lightLevelBlue": 0,
+            "hardness": 0.3,
+            "dropId": "base:air[default]"
         },
         "model=2": {
             "modelName": "cosmicearth:pebbles_2",
@@ -26,7 +30,9 @@
             "lightAttenuation": 0,
             "lightLevelRed": 0,
             "lightLevelGreen": 0,
-            "lightLevelBlue": 0
+            "lightLevelBlue": 0,
+            "hardness": 0.3,
+            "dropId": "base:air[default]"
         },
         "model=3": {
             "modelName": "cosmicearth:pebbles_3",
@@ -35,7 +41,9 @@
             "lightAttenuation": 0,
             "lightLevelRed": 0,
             "lightLevelGreen": 0,
-            "lightLevelBlue": 0
+            "lightLevelBlue": 0,
+            "hardness": 0.3,
+            "dropId": "base:air[default]"
         },
         "model=4": {
             "modelName": "cosmicearth:pebbles_4",
@@ -44,7 +52,9 @@
             "lightAttenuation": 0,
             "lightLevelRed": 0,
             "lightLevelGreen": 0,
-            "lightLevelBlue": 0
+            "lightLevelBlue": 0,
+            "hardness": 0.3,
+            "dropId": "base:air[default]"
         },
         "model=5": {
             "modelName": "cosmicearth:pebbles_5",
@@ -53,7 +63,9 @@
             "lightAttenuation": 0,
             "lightLevelRed": 0,
             "lightLevelGreen": 0,
-            "lightLevelBlue": 0
+            "lightLevelBlue": 0,
+            "hardness": 0.3,
+            "dropId": "base:air[default]"
         },
         "model=6": {
             "modelName": "cosmicearth:pebbles_6",
@@ -62,7 +74,9 @@
             "lightAttenuation": 0,
             "lightLevelRed": 0,
             "lightLevelGreen": 0,
-            "lightLevelBlue": 0
+            "lightLevelBlue": 0,
+            "hardness": 0.3,
+            "dropId": "base:air[default]"
         },
         "model=7": {
             "modelName": "cosmicearth:pebbles_7",
@@ -71,7 +85,9 @@
             "lightAttenuation": 0,
             "lightLevelRed": 0,
             "lightLevelGreen": 0,
-            "lightLevelBlue": 0
+            "lightLevelBlue": 0,
+            "hardness": 0.3,
+            "dropId": "base:air[default]"
         }
     }
 }
