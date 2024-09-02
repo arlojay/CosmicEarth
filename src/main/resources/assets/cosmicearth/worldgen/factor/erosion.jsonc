@@ -1,31 +1,15 @@
 {
     "type": "scale",
-    "scalar": 1350,
+    "scalar": 2048,
 
     "source": {
-        "type": "graph",
-        "points": [
-            // [ -1, -0.1 ],
-            // [ 0, 0 ],
-            // [ 0.5, 0.1 ],
-            // [ 1, 1 ]
-            [ -1.0, -1.0 ],
-            [ -0.5, -0.2 ],
-            [  0.5,  0.2 ],
-            [  1.0,  1.0 ]
-        ],
+        "type": "basic-octave",
+
+        "amplitudes": [ 1.0, 1.0, 0.0, 1.0, 1.0 ],
 
         "source": {
-            "type": "octave",
-            "detail": 4,
-            "roughness": 0.24,
-            "lacunarity": 3.1,
-            "distortion": 0.0,
-    
-            "source": {
-                "type": "simplex",
-                "seed": 3
-            }
+            "type": "simplex",
+            "seed": 1
         }
     }
 }

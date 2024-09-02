@@ -1,15 +1,15 @@
 {
     "type": "scale",
-    "scalar": 2048,
-
+    "scalar": 128,
+    
     "source": {
         "type": "basic-octave",
 
-        "amplitudes": [ 1.5, 0.0, 1.0, 0.0, 0.0, 0.0 ],
+        "amplitudes": [ 1.0, 1.5, 0.0, 0.333, 1.0 ],
 
         "source": {
             "type": "simplex",
-            "seed": 3
+            "seed": 5
         }
     }
 }

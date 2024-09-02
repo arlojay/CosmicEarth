@@ -1,49 +1,116 @@
 {
     "type": "mix",
     "normalize": false,
-
     "sources": [
         {
             "factor": 1,
-
             "noise": {
-                "type": "map",
-                "outputMin": -100,
-                "outputMax": 100,
+                "type": "mix",
+                "normalize": false,
+                "sources": [
+                    {
+                        "factor": 1,
             
-                "source": {
-                    "type": "ref",
-                    "file": "cosmicearth:factor/continent"
-                }
+                        "noise": {
+                            "type": "graph",
+                            
+                            "points": [
+                                [ -2.000, -100.000 ],
+                                [ -0.300, -30.600 ],
+                                [  0.300,  10.600 ],
+                                [  2.000,  20.000 ]
+                            ],
+                            
+                            "source": {
+                                "type": "ref",
+                                "file": "cosmicearth:factor/continentalness"
+                            }
+                        }
+                    },
+                    {
+                        "factor": 1,
+            
+                        "noise": {
+                            "type": "operation", "op": "multiply",
+
+                            "a": {
+                                "type": "graph",
+                                "points": [
+                                    [ -1, 0 ],
+                                    [ 0,  0 ],
+                                    [ 1,  1 ]
+                                ],
+                                
+                                "source": {
+                                    "type": "ref",
+                                    "file": "cosmicearth:factor/erosion"
+                                }
+                            },
+                            "b": {
+                                "type": "graph",
+                                "points": [
+                                    [ -1.0, -30.0 ],
+                                    [ -0.95, -30.0 ],
+                                    [ -0.85, -5.0 ],
+                                    [ 0.0, 0.0 ],
+                                    [ 0.5, 80.0 ],
+                                    [ 1.0, 100.0 ]
+                                ],
+                
+                                "source": {
+                                    "type": "ref",
+                                    "file": "cosmicearth:factor/peaks"
+                                }
+                            }
+                        }
+                    }
+                ]
             }
         },
         {
             "factor": 1,
-
             "noise": {
                 "type": "operation", "op": "multiply",
-
                 "a": {
-                    "type": "ref",
-                    "file": "cosmicearth:factor/erosion"
+                    "type": "graph",
+            
+                    "points": [
+                        [ -1.000, 5 ],
+                        [ -0.700, 5 ],
+                        [  0.000, 20 ],
+                        [  0.700, 40 ],
+                        [  1.000, 100 ]
+                    ],
+                    "interpolator": "cubic",
+                    "source": {
+                        "type": "operation", "op": "multiply",
+
+                        "a": {
+                            "type": "ref",
+                            "file": "cosmicearth:factor/erosion"
+                        },
+                        "b": {
+                            "type": "ref",
+                            "file": "cosmicearth:factor/continentalness"
+                        }
+                    }
                 },
                 "b": {
                     "type": "ref",
-                    "file": "cosmicearth:detail/erosion"
+                    "file": "cosmicearth:factor/surface_noise_2"
                 }
             }
         },
         {
             "factor": 1,
-            
             "noise": {
                 "type": "map",
-                "outputMin": -100,
-                "outputMax": 50,
+                "outputMin": -10,
+                "outputMax": 10,
 
                 "source": {
                     "type": "ref",
-                    "file": "cosmicearth:detail/ridges"
+                    "file": "cosmicearth:factor/surface_noise_1"
                 }
             }
         }
