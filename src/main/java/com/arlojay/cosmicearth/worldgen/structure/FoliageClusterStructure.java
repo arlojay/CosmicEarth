@@ -4,7 +4,7 @@ import finalforeach.cosmicreach.blocks.BlockState;
 
 import java.util.function.Function;
 
-public class FoliageClusterStructure extends ClusterStructure {
+public abstract class FoliageClusterStructure extends ClusterStructure {
     public FoliageClusterStructure(BlockState blockType, double minRadius, double maxRadius, double density) {
         super(blockType, minRadius, maxRadius, density);
     }

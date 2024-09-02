@@ -111,12 +111,12 @@ public class OakTreeStructure extends WorldgenStructure {
             directionY += random.nextFloat(-ROUGHNESS_Y, ROUGHNESS_Y);
             directionZ += random.nextFloat(-ROUGHNESS_XZ, ROUGHNESS_XZ);
 
-            var inverseDirectionLength = 1f / Math.sqrt(
+            float inverseDirectionLength = 1f / (float) Math.sqrt(
                     directionX * directionX +
-                            directionY * directionY +
-                            directionZ * directionZ
+                    directionY * directionY +
+                    directionZ * directionZ
             );
-            var branchLength = MathUtils.map(
+            float branchLength = MathUtils.map(
                     0f, MAX_BRANCH_RECURSION - 1,
                     MAX_LIMB_LENGTH, MIN_LIMB_LENGTH,
                     index
@@ -150,9 +150,13 @@ public class OakTreeStructure extends WorldgenStructure {
     }
 
     @Override
-    public void generate(long seed, Zone zone, int globalX, int globalY, int globalZ) {
-        var height = MathUtils.map(-1f, 1f, 0.5f, 1.2f, whiteNoiseTreesH.noise3D(globalX, globalY, globalZ));
-        long randomSeed = seed + (short) ((long) globalX * (long) globalY * (long) globalZ * height);
-        generateTree(randomSeed, zone, new Vector3(globalX, globalY, globalZ), MAX_LIMB_LENGTH * height);
+    protected String getId() {
+        return "oak";
+    }
+
+    @Override
+    public void generate(Random random, Zone zone, int globalX, int globalY, int globalZ) {
+        var height = random.nextFloat(0.5f, 1.2f);
+        generateTree(random.nextLong(), zone, new Vector3(globalX, globalY, globalZ), MAX_LIMB_LENGTH * height);
     }
 }
