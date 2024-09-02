@@ -19,6 +19,6 @@
   ],
   "dependencies": {
     "cosmic-reach": ">=0.2.0",
-    "puzzle-loader": ">=1.4.3"
+    "puzzle-loader": ">=1.5.2"
   }
 }
