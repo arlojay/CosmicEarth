@@ -11,7 +11,7 @@
                 "foliage_replaceable"
             ],
             "hardness": 0.001,
-            "dropId": "base:air[default]"
+            "blockEventsId": "cosmicearth:block_events_no_drop"
         }
     }
 }

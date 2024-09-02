@@ -1,0 +1,53 @@
+{
+  "stringId": "cosmicearth:block_events_no_drop",
+  "triggers":
+  {
+    "onBreak":
+    [
+      {
+        "actionId": "base:replace_block_state",
+        "parameters":
+        {
+          "xOff": 0,
+          "yOff": 0,
+          "zOff": 0,
+          "blockStateId": "base:air[default]"
+        }
+      },
+      {
+        "actionId": "base:play_sound_2d",
+        "parameters":
+        {
+          "sound": "block-break.ogg",
+          "volume": 1,
+          "pitch": 1,
+          "pan": 0
+        }
+      }
+    ],
+
+    "onPlace":
+    [
+      {
+        "actionId": "base:replace_block_state",
+        "parameters":
+        {
+          "xOff": 0,
+          "yOff": 0,
+          "zOff": 0,
+          "blockStateId": "self"
+        }
+      },
+      {
+        "actionId": "base:play_sound_2d",
+        "parameters":
+        {
+          "sound": "block-place.ogg",
+          "volume": 1,
+          "pitch": 1,
+          "pan": 0
+        }
+      }
+    ]
+  }
+}
