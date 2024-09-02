@@ -3,7 +3,7 @@ package com.arlojay.cosmicearth.worldgen.biome.util;
 import com.arlojay.cosmicearth.worldgen.structure.Palettes;
 import finalforeach.cosmicreach.blocks.BlockState;
 
-public class NaturalTopsoilGenerator extends TopsoilGenerator {
+public class NaturalTopsoilGenerator extends SeededBlockGenerator {
     public NaturalTopsoilGenerator(long seed) {
         super(seed);
     }

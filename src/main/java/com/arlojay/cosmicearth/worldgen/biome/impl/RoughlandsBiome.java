@@ -4,8 +4,7 @@ import com.arlojay.cosmicearth.lib.Range;
 import com.arlojay.cosmicearth.worldgen.biome.Biome;
 import com.arlojay.cosmicearth.worldgen.biome.BiomeStructure;
 import com.arlojay.cosmicearth.worldgen.biome.BlockGenerator;
-import com.arlojay.cosmicearth.worldgen.biome.util.LoamGenerator;
-import com.arlojay.cosmicearth.worldgen.biome.util.TopsoilGenerator;
+import com.arlojay.cosmicearth.worldgen.biome.util.SeededBlockGenerator;
 import com.arlojay.cosmicearth.worldgen.structure.Palettes;
 import finalforeach.cosmicreach.blocks.BlockState;
 
@@ -26,7 +25,7 @@ public class RoughlandsBiome extends Biome {
 
     @Override
     protected BlockGenerator getTopsoilGenerator(long seed) {
-        return new LoamGenerator(seed) {
+        return new SeededBlockGenerator(seed) {
             @Override
             public BlockState getBlock(int x, int y, int z, double gradient) {
                 if(gradient < 1.5) return Palettes.instance.limestone;

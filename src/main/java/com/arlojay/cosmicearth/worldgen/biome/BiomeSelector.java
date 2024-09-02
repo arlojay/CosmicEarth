@@ -1,5 +1,7 @@
 package com.arlojay.cosmicearth.worldgen.biome;
 
+import com.badlogic.gdx.math.MathUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,10 +63,10 @@ public class BiomeSelector {
 
             // If there are multiple biomes that meet the same amount of criteria, find the one closest to the passed values
             for(var biome : predicates2.get()) {
-                biomeTemperature = biome.temperature.getMiddle();
-                biomeHumidity = biome.humidity.getMiddle();
-                biomeErosion = biome.erosion.getMiddle();
-                biomeContinent = biome.continent.getMiddle();
+                biomeTemperature = MathUtils.clamp(temperature, biome.temperature.min, biome.temperature.max);
+                biomeHumidity = MathUtils.clamp(humidity, biome.humidity.min, biome.humidity.max);
+                biomeErosion = MathUtils.clamp(erosion, biome.erosion.min, biome.erosion.max);
+                biomeContinent = MathUtils.clamp(continent, biome.continent.min, biome.continent.max);
 
                 dTemperature = temperature - biomeTemperature;
                 dHumidity = humidity - biomeHumidity;

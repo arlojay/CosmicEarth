@@ -4,61 +4,52 @@ import com.arlojay.cosmicearth.lib.Range;
 import com.arlojay.cosmicearth.worldgen.biome.Biome;
 import com.arlojay.cosmicearth.worldgen.biome.BiomeStructure;
 import com.arlojay.cosmicearth.worldgen.biome.BlockGenerator;
-import com.arlojay.cosmicearth.worldgen.biome.util.NaturalLoamGenerator;
-import com.arlojay.cosmicearth.worldgen.biome.util.NaturalTopsoilGenerator;
 import com.arlojay.cosmicearth.worldgen.biome.util.StructureSet;
-import com.arlojay.cosmicearth.worldgen.biome.util.TopsoilGenerator;
-import com.arlojay.cosmicearth.worldgen.structure.OakTreeStructure;
+import com.arlojay.cosmicearth.worldgen.biome.util.TundraGenerator;
 import com.arlojay.cosmicearth.worldgen.structure.Palettes;
-import com.arlojay.cosmicearth.worldgen.structure.PalmTreeStructure;
+import com.arlojay.cosmicearth.worldgen.structure.PineTreeStructure;
 import com.arlojay.cosmicearth.worldgen.structure.WorldgenStructure;
 import finalforeach.cosmicreach.blocks.BlockState;
 import finalforeach.cosmicreach.world.Zone;
 
 import java.util.List;
 
-public class TropicalShore extends Biome {
-    public TropicalShore(long seed, Range temperature, Range humidity, Range erosion, Range continent) {
+public class SnowyConiferousForestBiome extends Biome {
+    public SnowyConiferousForestBiome(long seed, Range temperature, Range humidity, Range erosion, Range continent) {
         super(seed, temperature, humidity, erosion, continent);
     }
 
     @Override
     public String getName() {
-        return "tropical_shore";
+        return "snowy_coniferous_forest";
     }
 
     @Override
     public BlockGenerator getTopsoilGenerator(long seed) {
-        return new TopsoilGenerator(seed) {
-            @Override
-            public BlockState getBlock(int x, int y, int z, double gradient) {
-                return Palettes.instance.sand;
-            }
-        };
+        return new TundraGenerator(seed);
     }
 
     @Override
     public BlockGenerator getLoamGenerator(long seed) {
-        return new NaturalLoamGenerator(seed);
+        return new TundraGenerator(seed);
     }
 
     @Override
     protected void addStructures(List<BiomeStructure> structures) {
         StructureSet.pebbles(structures);
 
-
         structures.add(new BiomeStructure() {
             public double getAverageDistance() {
-                return 40;
+                return 12;
             }
             public WorldgenStructure getWorldgenStructure() {
-                return new PalmTreeStructure();
+                return new PineTreeStructure();
             }
             public Range getGradientRange() {
-                return new Range(0d, 0.75d);
+                return new Range(0d, 2.0d);
             }
             public boolean canSpawn(Zone zone, int blockX, int blockY, int blockZ, BlockState ground, BlockState air) {
-                return ground.equals(Palettes.instance.sand) && air.hasTag("foliage_replaceable");
+                return ground.equals(Palettes.instance.snow) && air.hasTag("foliage_replaceable");
             }
         });
     }

@@ -18,23 +18,14 @@ import com.arlojay.cosmicearth.worldgen.ore.OreType;
 import com.arlojay.cosmicearth.worldgen.structure.*;
 import com.arlojay.cosmicearth.lib.threading.ThreadManager;
 import com.arlojay.cosmicearth.worldgen.threading.JobCreationHelper;
-import com.badlogic.gdx.Game;
-import com.github.puzzle.core.Puzzle;
-import com.github.puzzle.game.engine.GameLoader;
-import finalforeach.cosmicreach.BlockGame;
-import finalforeach.cosmicreach.ClientSingletons;
-import finalforeach.cosmicreach.GameSingletons;
 import finalforeach.cosmicreach.blocks.BlockState;
-import finalforeach.cosmicreach.entities.player.Player;
 import finalforeach.cosmicreach.gamestates.InGame;
 import finalforeach.cosmicreach.savelib.blockdata.SingleBlockData;
 import finalforeach.cosmicreach.savelib.blocks.IBlockDataFactory;
-import finalforeach.cosmicreach.ui.UI;
 import finalforeach.cosmicreach.ui.debug.DebugItem;
 import finalforeach.cosmicreach.ui.debug.DebugStringItem;
 import finalforeach.cosmicreach.world.Chunk;
 import finalforeach.cosmicreach.world.Region;
-import finalforeach.cosmicreach.world.World;
 import finalforeach.cosmicreach.world.Zone;
 import finalforeach.cosmicreach.worldgen.ChunkColumn;
 import finalforeach.cosmicreach.worldgen.ZoneGenerator;
@@ -70,8 +61,8 @@ public class EarthZoneGenerator extends ZoneGenerator {
 
     private final OreType ironOre = new OreType(
             getBlockStateInstance("base:ore_iron[default]"),
-            4, 16,
-            4, 16,
+            2, 8,
+            12, 32,
             Interpolator.SMOOTHSTEP.create(new SplinePoint[]{
                     new SplinePoint(0, 1),
                     new SplinePoint(40, 0.9),
@@ -79,7 +70,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
                     new SplinePoint(500, 0.4),
             }),
             List.of(
-                    blockPalette.gravel
+                    blockPalette.gabbro
             )
     );
 
@@ -93,7 +84,9 @@ public class EarthZoneGenerator extends ZoneGenerator {
     public NoiseNode erosionBaseNoise;
     public NoiseNode temperatureNoise;
     public NoiseNode humidityNoise;
-    public NoiseNode continentNoise;
+    public NoiseNode continentalnessNoise;
+    public NoiseNode weirdnessNoise;
+    public NoiseNode peaksNoise;
 
     public NoiseNode paletteNoise;
     public NoiseNode caveNoise;
@@ -106,11 +99,19 @@ public class EarthZoneGenerator extends ZoneGenerator {
         double temperature = temperatureNoise.sample(position.x, position.z);
         double humidity = humidityNoise.sample(position.x, position.z);
         double erosion = erosionBaseNoise.sample(position.x, position.z);
-        double continent = continentNoise.sample(position.x, position.z);
+        double continentalness = continentalnessNoise.sample(position.x, position.z);
+        double weirdness = weirdnessNoise.sample(position.x, position.z);
+        double peaks = peaksNoise.sample(position.x, position.z);
 
-        var biome = biomeSelector.getBiome(temperature, humidity, erosion, continent);
+        var biome = biomeSelector.getBiome(temperature, humidity, erosion, continentalness);
 
-        return String.format("T %s H %s E %s C %s -> %s", temperature, humidity, erosion, continent, biome.getName());
+        return "T: " + (Math.round(temperature * 1000d) / 1000d) + " " +
+                "H: " + (Math.round(humidity * 1000d) / 1000d) + " " +
+                "E: " + (Math.round(erosion * 1000d) / 1000d) + " " +
+                "C: " + (Math.round(continentalness * 1000d) / 1000d) + " " +
+                "W: " + (Math.round(weirdness * 1000d) / 1000d) +  " " +
+                "P: " + (Math.round(peaks * 1000d) / 1000d) +  " " +
+                "\nBiome: " + biome.getName();
     }, l -> l);
 
     private void loadNoise() throws Exception {
@@ -122,7 +123,9 @@ public class EarthZoneGenerator extends ZoneGenerator {
         erosionBaseNoise = NoiseLoader.load("cosmicearth:factor/erosion");
         temperatureNoise = NoiseLoader.load("cosmicearth:factor/temperature");
         humidityNoise = NoiseLoader.load("cosmicearth:factor/humidity");
-        continentNoise = NoiseLoader.load("cosmicearth:factor/continent");
+        continentalnessNoise = NoiseLoader.load("cosmicearth:factor/continentalness");
+        weirdnessNoise = NoiseLoader.load("cosmicearth:factor/weirdness");
+        peaksNoise = NoiseLoader.load("cosmicearth:factor/peaks");
 
         caveNoise = NoiseLoader.load("cosmicearth:cave_noise");
         stoneTypeNoise = NoiseLoader.load("cosmicearth:stone_type");
@@ -139,28 +142,21 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 seed,
                 new Range(0.3, 0.6),
                 new Range(-0.2, 0.3),
-                new Range(-0.25, 0.25),
+                new Range(0.2, 1.0),
                 new Range(0.3, 0.5)
         ));
         biomeSelector.registerBiome(new ForestBiome(
                 seed,
                 new Range(-0.2, 0.3),
                 new Range(0.4, 0.8),
-                new Range(-0.1, 0.3),
+                new Range(-0.1, 1.0),
                 new Range(0.1, 0.3)
-        ));
-        biomeSelector.registerBiome(new RoughlandsBiome(
-                seed,
-                new Range(0.5, 1.0),
-                new Range(-1.0, -0.5),
-                new Range(0.4d, 0.6d),
-                new Range(0.03d, 0.35d)
         ));
         biomeSelector.registerBiome(new DesertBiome(
                 seed,
                 new Range(0.5, 1.0),
                 new Range(-1.0, -0.5),
-                new Range(-0.3d, 0.3d),
+                new Range(0.7d, 1.0d),
                 new Range(0.6d, 1.0d)
         ));
         biomeSelector.registerBiome(new ConiferousForestBiome(
@@ -175,21 +171,49 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 new Range(-1.0, -0.45),
                 new Range(0.35, 0.68),
                 new Range(-0.25d, 0.25d),
-                new Range(0.7d, 1.0d)
+                new Range(0.0d, 1.0d)
         ));
-        biomeSelector.registerBiome(new TropicalShore(
+        biomeSelector.registerBiome(new TundraBiome(
+                seed,
+                new Range(-1.0, -0.45),
+                new Range(-1.0, 0.35),
+                new Range(-0.25d, 0.25d),
+                new Range(0.0d, 1.0d)
+        ));
+        biomeSelector.registerBiome(new SnowyConiferousForestBiome(
+                seed,
+                new Range(-1.0d, -0.45d),
+                new Range(0.65d, 1.0d),
+                new Range(-0.25d, 0.25d),
+                new Range(0.2d, 1.0d)
+        ));
+        biomeSelector.registerBiome(new TropicalShoreBiome(
+                seed,
+                new Range(0.5, 1.0),
+                new Range(0.77, 1.0),
+                new Range(-1.0, 1.0),
+                new Range(-0.05d, 0.1d)
+        ));
+        biomeSelector.registerBiome(new ShoreBiome(
+                seed,
+                new Range(-0.3, 0.5),
+                new Range(-1.0, 0.77),
+                new Range(-1.0, 1.0),
+                new Range(-0.05d, 0.1d)
+        ));
+        biomeSelector.registerBiome(new ColdShoreBiome(
+                seed,
+                new Range(-1.0, -0.3),
+                new Range(-1.0, 0.77),
+                new Range(-1.0, 1.0),
+                new Range(-0.05d, 0.1d)
+        ));
+        biomeSelector.registerBiome(new OceanBiome(
                 seed,
                 new Range(-1.0, 1.0),
-                new Range(0.2, 1.0),
                 new Range(-1.0, 1.0),
-                new Range(-0.15d, 0.05d)
-        ));
-        biomeSelector.registerBiome(new PlainsBiome(
-                seed,
                 new Range(-1.0, 1.0),
-                new Range(0.2, 1.0),
-                new Range(-1.0, 1.0),
-                new Range(0.05d, 1.0d)
+                new Range(-1.0d, -0.05d)
         ));
 
         try {
@@ -283,7 +307,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
             cache2d.build("erosion", erosionBaseNoise);
             cache2d.build("temperature", temperatureNoise);
             cache2d.build("humidity", humidityNoise);
-            cache2d.build("continent", continentNoise);
+            cache2d.build("continentalness", continentalnessNoise);
 
             Performance.end("Build 2d caches");
 
@@ -353,12 +377,12 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 double height = noiseCache2d.read("height", localX, localZ);
                 double gradient = noiseCache2d.read("gradient", localX, localZ);
 
-                double continent = noiseCache2d.read("continent", localX, localZ);
+                double continentalness = noiseCache2d.read("continentalness", localX, localZ);
                 double temperature = noiseCache2d.read("temperature", localX, localZ);
                 double humidity = noiseCache2d.read("humidity", localX, localZ);
                 double erosion = noiseCache2d.read("erosion", localX, localZ);
 
-                var biome = biomeSelector.getBiome(temperature, humidity, erosion, continent);
+                var biome = biomeSelector.getBiome(temperature, humidity, erosion, continentalness);
 
 
                 for (int localY = CHUNK_WIDTH - 1; localY >= 0; localY--, globalY--) {
@@ -380,7 +404,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
                         continue;
                     }
 
-                    boolean isBeach = (continent < 0.0 || globalY < waterHeight + 2);
+                    boolean isBeach = (continentalness < 0.0 || globalY < waterHeight);
 
                     // Grass/top layer
                     if(globalY > height - 1) {
@@ -445,9 +469,9 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 double temperature = noiseCache2d.read("temperature", localX, localZ);
                 double humidity = noiseCache2d.read("humidity", localX, localZ);
                 double erosion = noiseCache2d.read("erosion", localX, localZ);
-                double continent = noiseCache2d.read("continent", localX, localZ);
+                double continentalness = noiseCache2d.read("continentalness", localX, localZ);
 
-                var biome = biomeSelector.getBiome(temperature, humidity, erosion, continent);
+                var biome = biomeSelector.getBiome(temperature, humidity, erosion, continentalness);
 
                 var structure = biome.getStructure(zone, globalX, globalY, globalZ, ground, air, gradient);
                 if(structure == null) continue;

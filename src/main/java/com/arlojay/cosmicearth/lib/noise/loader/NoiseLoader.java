@@ -99,10 +99,6 @@ public class NoiseLoader {
                 location,
                 new ResourceLocation(
                         location.namespace,
-                        "worldgen/" + location.name + ".json"
-                ),
-                new ResourceLocation(
-                        location.namespace,
                         "worldgen/" + location.name + ".hjson"
                 ),
                 new ResourceLocation(
@@ -112,6 +108,10 @@ public class NoiseLoader {
                 new ResourceLocation(
                         location.namespace,
                         "worldgen/" + location.name + ".jsonl"
+                ),
+                new ResourceLocation(
+                        location.namespace,
+                        "worldgen/" + location.name + ".json"
                 )
         };
     }
@@ -161,5 +161,6 @@ public class NoiseLoader {
         CoordinateGenerator.register();
         NoiseOperation.register();
         ConstantValueGenerator.register();
+        BasicOctaveNoise.register();
     }
 }

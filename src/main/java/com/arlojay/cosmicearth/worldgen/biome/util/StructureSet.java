@@ -25,6 +25,11 @@ public class StructureSet {
                 protected WorldgenStructure getWorldgenStructure() {
                     return new ClusterStructure(Palettes.instance.pebbles[index], 1, 3, 0.1d) {
                         @Override
+                        protected String getId() {
+                            return "cluster-pebble-" + index;
+                        }
+
+                        @Override
                         public Function<BlockState, Boolean> createGroundChecker() {
                             return bs -> !bs.walkThrough && bs.isOpaque && !bs.isFluid && !bs.isTransparent;
                         }
@@ -50,7 +55,12 @@ public class StructureSet {
 
                 @Override
                 protected WorldgenStructure getWorldgenStructure() {
-                    return new FoliageClusterStructure(flower, 3, 7, 0.1d);
+                    return new FoliageClusterStructure(flower, 3, 7, 0.1d) {
+                        @Override
+                        protected String getId() {
+                            return "cluster-flower-" + flower.getBlockId();
+                        }
+                    };
                 }
             });
         }
@@ -77,7 +87,12 @@ public class StructureSet {
 
             @Override
             protected WorldgenStructure getWorldgenStructure() {
-                return new FoliageClusterStructure(block, minRadius, maxRadius, density);
+                return new FoliageClusterStructure(block, minRadius, maxRadius, density) {
+                    @Override
+                    protected String getId() {
+                        return "cluster-generic-" + block.getBlockId();
+                    }
+                };
             }
         });
     }

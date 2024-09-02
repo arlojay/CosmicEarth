@@ -16,14 +16,14 @@ import finalforeach.cosmicreach.world.Zone;
 
 import java.util.List;
 
-public class ForestBiome extends Biome {
-    public ForestBiome(long seed, Range temperature, Range humidity, Range erosion, Range continent) {
+public class FlowerPlainsBiome extends Biome {
+    public FlowerPlainsBiome(long seed, Range temperature, Range humidity, Range erosion, Range continent) {
         super(seed, temperature, humidity, erosion, continent);
     }
 
     @Override
     public String getName() {
-        return "forest";
+        return "flower_plains";
     }
 
     @Override
@@ -39,45 +39,41 @@ public class ForestBiome extends Biome {
     @Override
     protected void addStructures(List<BiomeStructure> structures) {
         StructureSet.pebbles(structures);
-        StructureSet.flowers(structures, new BlockState[] {
-                Palettes.instance.yellow_tulip,
-                Palettes.instance.orange_tulip,
-                Palettes.instance.orange_pansy,
-                Palettes.instance.white_lily,
-                Palettes.instance.buttercup,
-                Palettes.instance.fire_iris,
-        });
+        StructureSet.flowers(structures, Palettes.instance.flowers);
 
         StructureSet.shortGrass(structures);
         StructureSet.tallGrass(structures);
+        StructureSet.shrub(structures);
 
 
         structures.add(new BiomeStructure() {
             public double getAverageDistance() {
-                return 40;
+                return 80;
             }
             public WorldgenStructure getWorldgenStructure() {
                 return new OakTreeStructure();
             }
             public Range getGradientRange() {
-                return new Range(0d, 1.5d);
+                return new Range(0d, 0.2d);
             }
             public boolean canSpawn(Zone zone, int blockX, int blockY, int blockZ, BlockState ground, BlockState air) {
-                return ground.hasTag("soil_temperate") && air.hasTag("foliage_replaceable");
+                return ground.hasTag("soil_tropical") && air.hasTag("foliage_replaceable");
             }
         });
+
+
         structures.add(new BiomeStructure() {
             public double getAverageDistance() {
-                return 12;
+                return 50;
             }
             public WorldgenStructure getWorldgenStructure() {
                 return new HickoryTreeStructure();
             }
             public Range getGradientRange() {
-                return new Range(0d, 2.5d);
+                return new Range(0.3d, 2.2d);
             }
             public boolean canSpawn(Zone zone, int blockX, int blockY, int blockZ, BlockState ground, BlockState air) {
-                return ground.hasTag("soil_temperate") && air.hasTag("foliage_replaceable");
+                return ground.hasTag("soil_tropical") && air.hasTag("foliage_replaceable");
             }
         });
     }

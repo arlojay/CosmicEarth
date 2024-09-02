@@ -5,11 +5,10 @@ import com.arlojay.cosmicearth.worldgen.biome.Biome;
 import com.arlojay.cosmicearth.worldgen.biome.BiomeStructure;
 import com.arlojay.cosmicearth.worldgen.biome.BlockGenerator;
 import com.arlojay.cosmicearth.worldgen.biome.util.NaturalLoamGenerator;
-import com.arlojay.cosmicearth.worldgen.biome.util.NaturalTopsoilGenerator;
+import com.arlojay.cosmicearth.worldgen.biome.util.SeededBlockGenerator;
 import com.arlojay.cosmicearth.worldgen.biome.util.StructureSet;
-import com.arlojay.cosmicearth.worldgen.biome.util.TopsoilGenerator;
-import com.arlojay.cosmicearth.worldgen.structure.CactusStructure;
 import com.arlojay.cosmicearth.worldgen.structure.Palettes;
+import com.arlojay.cosmicearth.worldgen.structure.PineTreeStructure;
 import com.arlojay.cosmicearth.worldgen.structure.WorldgenStructure;
 import finalforeach.cosmicreach.blocks.BlockState;
 import finalforeach.cosmicreach.world.Zone;
@@ -28,7 +27,7 @@ public class SnowyPlainsBiome extends Biome {
 
     @Override
     public BlockGenerator getTopsoilGenerator(long seed) {
-        return new TopsoilGenerator(seed) {
+        return new SeededBlockGenerator(seed) {
             @Override
             public BlockState getBlock(int x, int y, int z, double gradient) {
                 return Palettes.instance.snow;
@@ -46,13 +45,13 @@ public class SnowyPlainsBiome extends Biome {
         StructureSet.pebbles(structures);
         structures.add(new BiomeStructure() {
             protected double getAverageDistance() {
-                return 32;
+                return 128;
             }
             protected WorldgenStructure getWorldgenStructure() {
-                return new CactusStructure();
+                return new PineTreeStructure();
             }
             public boolean canSpawn(Zone zone, int blockX, int blockY, int blockZ, BlockState ground, BlockState air) {
-                return ground.equals(Palettes.instance.sand) && air.hasTag("foliage_replaceable");
+                return ground.equals(Palettes.instance.snow) && air.hasTag("foliage_replaceable");
             }
         });
     }

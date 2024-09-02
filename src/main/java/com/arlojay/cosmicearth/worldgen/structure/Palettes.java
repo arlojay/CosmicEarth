@@ -55,6 +55,10 @@ public class Palettes {
 
     public final BlockState cactus = get("cosmicearth:cactus[default]");
 
+    public final BlockState coniferous_leaves = get("cosmicearth:coniferous_leaves[default]");
+    public final BlockState deciduous_leaves = get("cosmicearth:deciduous_leaves[default]");
+    public final BlockState tree_log = get("base:tree_log[default]");
+
     public final BlockState[] pebbles = new BlockState[] {
             get("cosmicearth:pebbles[model=0]"),
             get("cosmicearth:pebbles[model=1]"),
@@ -90,6 +94,12 @@ public class Palettes {
             new PaletteItem<>(gravel, 1d),
             new PaletteItem<>(stone, 1d),
             new PaletteItem<>(gabbro, 2d)
+    ));
+
+    public final RandomPalette<BlockState> tundraSoil = new RandomPalette<>(Set.of(
+            new PaletteItem<>(gravel, 1d),
+            new PaletteItem<>(stone, 1d),
+            new PaletteItem<>(snow, 5d)
     ));
 
     public final GroupedPalette<BlockState> stoneType = new GroupedPalette<>(Set.of(
