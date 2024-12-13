@@ -31,7 +31,7 @@ public class StructureSet {
 
                         @Override
                         public Function<BlockState, Boolean> createGroundChecker() {
-                            return bs -> !bs.walkThrough && bs.isOpaque && !bs.isFluid && !bs.isTransparent;
+                            return bs -> !bs.walkThrough && bs.isOpaque && !bs.isFluid;
                         }
 
                         @Override

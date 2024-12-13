@@ -7,6 +7,8 @@ import finalforeach.cosmicreach.blocks.BlockState;
 
 import java.util.Set;
 
+import static finalforeach.cosmicreach.blocks.MissingBlockStateResult.EXCEPTION;
+
 public class Palettes {
     public static Palettes instance;
 
@@ -108,6 +110,6 @@ public class Palettes {
     ));
 
     private BlockState get(String tag) {
-        return BlockState.getInstance(tag);
+        return BlockState.getInstance(tag, EXCEPTION);
     }
 }

@@ -4,8 +4,13 @@ import com.arlojay.cosmicearth.lib.Range;
 import com.arlojay.cosmicearth.worldgen.biome.Biome;
 import com.arlojay.cosmicearth.worldgen.biome.BiomeStructure;
 import com.arlojay.cosmicearth.worldgen.biome.BlockGenerator;
-import com.arlojay.cosmicearth.worldgen.biome.util.*;
-import com.arlojay.cosmicearth.worldgen.structure.*;
+import com.arlojay.cosmicearth.worldgen.biome.util.NaturalLoamGenerator;
+import com.arlojay.cosmicearth.worldgen.biome.util.NaturalTopsoilGenerator;
+import com.arlojay.cosmicearth.worldgen.biome.util.StructureSet;
+import com.arlojay.cosmicearth.worldgen.structure.HickoryTreeStructure;
+import com.arlojay.cosmicearth.worldgen.structure.OakTreeStructure;
+import com.arlojay.cosmicearth.worldgen.structure.Palettes;
+import com.arlojay.cosmicearth.worldgen.structure.WorldgenStructure;
 import finalforeach.cosmicreach.blocks.BlockState;
 import finalforeach.cosmicreach.world.Zone;
 

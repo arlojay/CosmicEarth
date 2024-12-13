@@ -1,14 +1,10 @@
 package com.arlojay.cosmicearth.block;
 
 import com.arlojay.cosmicearth.CosmicEarthMod;
-import com.github.puzzle.core.resources.ResourceLocation;
 import com.github.puzzle.game.block.DataModBlock;
 import com.github.puzzle.game.events.OnRegisterBlockEvent;
-import finalforeach.cosmicreach.blocks.BlockState;
-import finalforeach.cosmicreach.rendering.shaders.SpriteBatchShader;
-import finalforeach.cosmicreach.util.ArrayUtils;
+import finalforeach.cosmicreach.util.Identifier;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,8 +25,8 @@ public class Blocks {
 
     public static void register(OnRegisterBlockEvent registry) {
         for(var id : registeredBlocks) {
-            var path = "blocks/" + id + ".json";
-            registry.registerBlock(() -> new DataModBlock(id, new ResourceLocation(CosmicEarthMod.MOD_ID, path)));
+            var file = id + ".json";
+            registry.registerBlock(() -> new DataModBlock(Identifier.of(CosmicEarthMod.MOD_ID, file)));
         }
     }
 

@@ -6,6 +6,8 @@ import finalforeach.cosmicreach.worldgen.noise.WhiteNoise;
 
 import java.util.Random;
 
+import static finalforeach.cosmicreach.blocks.MissingBlockStateResult.EXCEPTION;
+
 public class HickoryTreeStructure extends WorldgenStructure {
     static BlockState treeLogBlock = getBlockStateInstance("base:tree_log[default]");
     static BlockState leavesBlock = getBlockStateInstance("cosmicearth:deciduous_leaves[default]");
@@ -17,7 +19,7 @@ public class HickoryTreeStructure extends WorldgenStructure {
     }
 
     protected static BlockState getBlockStateInstance(String blockStateId) {
-        return BlockState.getInstance(blockStateId);
+        return BlockState.getInstance(blockStateId, EXCEPTION);
     }
 
     public void generate(Random random, Zone zone, int globalX, int globalY, int globalZ) {

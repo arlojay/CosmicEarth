@@ -1,36 +1,35 @@
 package com.arlojay.cosmicearth.worldgen;
 
 import com.arlojay.cosmicearth.CosmicEarthMod;
-import com.arlojay.cosmicearth.Debug;
 import com.arlojay.cosmicearth.lib.Range;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.impl.generator.WhiteNoiseGenerator;
 import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
+import com.arlojay.cosmicearth.lib.performance.Performance;
 import com.arlojay.cosmicearth.lib.spline.Interpolator;
 import com.arlojay.cosmicearth.lib.spline.SplinePoint;
-import com.arlojay.cosmicearth.lib.performance.Performance;
+import com.arlojay.cosmicearth.lib.threading.ThreadManager;
 import com.arlojay.cosmicearth.worldgen.biome.BiomeSelector;
 import com.arlojay.cosmicearth.worldgen.biome.impl.*;
 import com.arlojay.cosmicearth.worldgen.mask.ChunkMask;
 import com.arlojay.cosmicearth.worldgen.noise.NoiseCache2D;
 import com.arlojay.cosmicearth.worldgen.noise.NoiseCache3D;
 import com.arlojay.cosmicearth.worldgen.ore.OreType;
-import com.arlojay.cosmicearth.worldgen.structure.*;
-import com.arlojay.cosmicearth.lib.threading.ThreadManager;
+import com.arlojay.cosmicearth.worldgen.structure.Palettes;
 import com.arlojay.cosmicearth.worldgen.threading.JobCreationHelper;
 import finalforeach.cosmicreach.blocks.BlockState;
-import finalforeach.cosmicreach.gamestates.InGame;
 import finalforeach.cosmicreach.savelib.blockdata.SingleBlockData;
 import finalforeach.cosmicreach.savelib.blocks.IBlockDataFactory;
-import finalforeach.cosmicreach.ui.debug.DebugItem;
-import finalforeach.cosmicreach.ui.debug.DebugStringItem;
 import finalforeach.cosmicreach.world.Chunk;
 import finalforeach.cosmicreach.world.Region;
 import finalforeach.cosmicreach.world.Zone;
 import finalforeach.cosmicreach.worldgen.ChunkColumn;
 import finalforeach.cosmicreach.worldgen.ZoneGenerator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EarthZoneGenerator extends ZoneGenerator {
     public static int maxHeight = 255;
@@ -42,7 +41,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
     private ThreadManager noiseThreads;
     private ThreadManager oreThreads;
 
-    private final BiomeSelector biomeSelector = new BiomeSelector();
+    public static final BiomeSelector biomeSelector = new BiomeSelector();
     private final Palettes blockPalette = new Palettes();
 
     private final OreType goldOre = new OreType(
@@ -81,38 +80,16 @@ public class EarthZoneGenerator extends ZoneGenerator {
     public NoiseNode heightNoise;
     public NoiseNode heightNoiseGradient;
 
-    public NoiseNode erosionBaseNoise;
-    public NoiseNode temperatureNoise;
-    public NoiseNode humidityNoise;
-    public NoiseNode continentalnessNoise;
-    public NoiseNode weirdnessNoise;
-    public NoiseNode peaksNoise;
+    public static NoiseNode erosionBaseNoise;
+    public static NoiseNode temperatureNoise;
+    public static NoiseNode humidityNoise;
+    public static NoiseNode continentalnessNoise;
+    public static NoiseNode weirdnessNoise;
+    public static NoiseNode peaksNoise;
 
     public NoiseNode paletteNoise;
     public NoiseNode caveNoise;
     public NoiseNode stoneTypeNoise;
-
-    public DebugItem biomeNoiseDebug = new DebugStringItem(true, () -> {
-        var localPlayer = InGame.getLocalPlayer();
-        var position = localPlayer.getPosition();
-
-        double temperature = temperatureNoise.sample(position.x, position.z);
-        double humidity = humidityNoise.sample(position.x, position.z);
-        double erosion = erosionBaseNoise.sample(position.x, position.z);
-        double continentalness = continentalnessNoise.sample(position.x, position.z);
-        double weirdness = weirdnessNoise.sample(position.x, position.z);
-        double peaks = peaksNoise.sample(position.x, position.z);
-
-        var biome = biomeSelector.getBiome(temperature, humidity, erosion, continentalness);
-
-        return "T: " + (Math.round(temperature * 1000d) / 1000d) + " " +
-                "H: " + (Math.round(humidity * 1000d) / 1000d) + " " +
-                "E: " + (Math.round(erosion * 1000d) / 1000d) + " " +
-                "C: " + (Math.round(continentalness * 1000d) / 1000d) + " " +
-                "W: " + (Math.round(weirdness * 1000d) / 1000d) +  " " +
-                "P: " + (Math.round(peaks * 1000d) / 1000d) +  " " +
-                "\nBiome: " + biome.getName();
-    }, l -> l);
 
     private void loadNoise() throws Exception {
         NoiseLoader.getProps().set("seed", seed);
@@ -223,7 +200,6 @@ public class EarthZoneGenerator extends ZoneGenerator {
             e.printStackTrace();
         }
 
-        Debug.addDebugItem("biome", biomeNoiseDebug);
     }
 
     private int c = 0;

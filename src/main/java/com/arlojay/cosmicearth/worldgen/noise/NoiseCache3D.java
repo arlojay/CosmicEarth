@@ -1,7 +1,7 @@
 package com.arlojay.cosmicearth.worldgen.noise;
 
-import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.memory.RecyclingPool;
+import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 
 import java.util.Arrays;
 import java.util.HashMap;

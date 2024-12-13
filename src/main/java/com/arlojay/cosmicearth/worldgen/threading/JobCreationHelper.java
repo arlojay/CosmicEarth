@@ -1,11 +1,11 @@
 package com.arlojay.cosmicearth.worldgen.threading;
 
-import com.arlojay.cosmicearth.lib.noise.NoiseNode;
-import com.arlojay.cosmicearth.worldgen.mask.ChunkMask;
 import com.arlojay.cosmicearth.lib.memory.HashMapWithFactory;
+import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.threading.MapOfCopyables;
-import com.arlojay.cosmicearth.worldgen.ore.OreType;
 import com.arlojay.cosmicearth.lib.threading.ThreadExecutor;
+import com.arlojay.cosmicearth.worldgen.mask.ChunkMask;
+import com.arlojay.cosmicearth.worldgen.ore.OreType;
 import finalforeach.cosmicreach.world.Chunk;
 
 public class JobCreationHelper {

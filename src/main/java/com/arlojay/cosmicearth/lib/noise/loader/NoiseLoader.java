@@ -2,12 +2,12 @@ package com.arlojay.cosmicearth.lib.noise.loader;
 
 import com.arlojay.cosmicearth.CosmicEarthMod;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
-import com.arlojay.cosmicearth.lib.noise.impl.*;
+import com.arlojay.cosmicearth.lib.noise.impl.NoiseError;
 import com.arlojay.cosmicearth.lib.noise.impl.generator.*;
 import com.arlojay.cosmicearth.lib.noise.impl.transformer.*;
 import com.badlogic.gdx.files.FileHandle;
-import com.github.puzzle.core.resources.PuzzleGameAssetLoader;
-import com.github.puzzle.core.resources.ResourceLocation;
+import com.github.puzzle.game.resources.PuzzleGameAssetLoader;
+import finalforeach.cosmicreach.util.Identifier;
 import org.hjson.JsonObject;
 import org.hjson.JsonValue;
 
@@ -36,7 +36,7 @@ public class NoiseLoader {
         if(type.equals("ref")) {
             var locationString = source.getString("file", null);
             if(locationString == null) throw new NoSuchFieldException("Field `file` must exist on `ref` node");
-            var id = ResourceLocation.fromString(locationString);
+            var id = Identifier.of(locationString);
 
 
             try {
@@ -63,10 +63,10 @@ public class NoiseLoader {
     }
 
     public static NoiseNode load(String id) throws Exception {
-        return load(ResourceLocation.fromString(id));
+        return load(Identifier.of(id));
     }
 
-    public static NoiseNode load(ResourceLocation id) throws Exception {
+    public static NoiseNode load(Identifier id) throws Exception {
         try {
             return loadFile(findSource(id));
         } catch (Exception exception) {
@@ -94,29 +94,20 @@ public class NoiseLoader {
     }
 
 
-    private static ResourceLocation[] getWorldgenFileLocations(ResourceLocation location) {
-        return new ResourceLocation[] {
+    private static Identifier[] getWorldgenFileLocations(Identifier location) {
+        return new Identifier[] {
                 location,
-                new ResourceLocation(
-                        location.namespace,
-                        "worldgen/" + location.name + ".hjson"
-                ),
-                new ResourceLocation(
-                        location.namespace,
-                        "worldgen/" + location.name + ".jsonc"
-                ),
-                new ResourceLocation(
-                        location.namespace,
-                        "worldgen/" + location.name + ".jsonl"
-                ),
-                new ResourceLocation(
-                        location.namespace,
-                        "worldgen/" + location.name + ".json"
-                )
+                Identifier.of(location.getNamespace() , "worldgen/" + location.getName() + ".hjson")
+                ,
+                Identifier.of(location.getNamespace() , "worldgen/" + location.getName() + ".jsonc")
+                ,
+                Identifier.of(location.getNamespace() , "worldgen/" + location.getName() + ".jsonl")
+                ,
+                Identifier.of(location.getNamespace() , "worldgen/" + location.getName() + ".json")
         };
     }
 
-    private static FileHandle findSource(ResourceLocation id) throws FileNotFoundException {
+    private static FileHandle findSource(Identifier id) throws FileNotFoundException {
         FileHandle sourceFile = null;
 
         for(var file : getWorldgenFileLocations(id)) {
@@ -132,7 +123,7 @@ public class NoiseLoader {
         }
     }
 
-    private static NoiseNode loadLocation(ResourceLocation id) throws NoSuchFieldException, FileNotFoundException, NoiseError {
+    private static NoiseNode loadLocation(Identifier id) throws NoSuchFieldException, FileNotFoundException, NoiseError {
         return loadFile(findSource(id));
     }
 

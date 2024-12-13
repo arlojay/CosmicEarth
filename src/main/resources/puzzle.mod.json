@@ -1,4 +1,5 @@
 {
+  "formatVersion": 1,
   "id": "${mod_id}",
   "version": "${mod_version}",
   "name": "${mod_name}",
@@ -7,6 +8,9 @@
     "arlojay"
   ],
   "entrypoints": {
+    "client_init": [
+      "com.arlojay.cosmicearth.ClientInitializer"
+    ],
     "init": [
       "com.arlojay.cosmicearth.CosmicEarthMod"
     ],
@@ -17,8 +21,9 @@
   "mixins": [
     "cosmicearth.mixins.json"
   ],
-  "dependencies": {
-    "cosmic-reach": ">=0.2.0",
-    "puzzle-loader": ">=1.5.2"
-  }
+  "depends": {
+    "cosmic-reach": ">=0.3.11",
+    "puzzle-loader": ">=2.1.9"
+  },
+  "accessManipulator": "cosmicearth.manipulator"
 }

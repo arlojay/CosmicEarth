@@ -7,6 +7,8 @@ import finalforeach.cosmicreach.worldgen.noise.WhiteNoise;
 import java.util.Objects;
 import java.util.Random;
 
+import static finalforeach.cosmicreach.blocks.MissingBlockStateResult.EXCEPTION;
+
 public abstract class WorldgenStructure {
     private final WhiteNoise randomNoise = new WhiteNoise();
     private final Random random = new Random();
@@ -28,7 +30,7 @@ public abstract class WorldgenStructure {
     protected abstract String getId();
 
     protected static BlockState getBlockStateInstance(String blockStateId) {
-        return BlockState.getInstance(blockStateId);
+        return BlockState.getInstance(blockStateId, EXCEPTION);
     }
 
     public final void generate(long seed, Zone zone, int globalX, int globalY, int globalZ) {
