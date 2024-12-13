@@ -3,9 +3,8 @@
     "blockStates": {
         "default": {
             "modelName": "cosmicearth:coniferous_leaves",
-            "isTransparent": true,
             "isOpaque": true,
-            "lightAttenuation": 1,
+            "lightAttenuation": 2,
             "tags": [ ],
             "hardness": 0.3
         }

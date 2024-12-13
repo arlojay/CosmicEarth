@@ -1,4 +1,7 @@
 {
+    "isTransparent": true,
+    "cullsSelf": false,
+
     "textures":
     {
         "default":
