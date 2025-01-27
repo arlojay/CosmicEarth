@@ -38,4 +38,9 @@ public abstract class SingleInputNoiseTransformer implements NoiseNode {
     public void setSeed(long seed) {
         source.setSeed(seed);
     }
+
+    @Override
+    public NoiseNode[] getSources() {
+        return new NoiseNode[] { this.source };
+    }
 }

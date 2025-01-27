@@ -77,4 +77,9 @@ public class NoiseScaler implements NoiseNode {
                 "scaleW", scaleW
         ) + NoiseDebugString.buildStringSubnode(noise);
     }
+
+    @Override
+    public NoiseNode[] getSources() {
+        return new NoiseNode[] { this.noise };
+    }
 }

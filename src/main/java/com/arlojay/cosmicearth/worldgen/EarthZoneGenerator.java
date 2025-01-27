@@ -36,7 +36,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
     public static int waterHeight = 0;
     public static int shoreHeight = 10;
 
-    public static final int caveCeilingThickness = 2;
+    public static final int caveCeilingThickness = 20;
 
     private ThreadManager noiseThreads;
     private ThreadManager oreThreads;
@@ -119,8 +119,8 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 seed,
                 new Range(0.3, 0.6),
                 new Range(-0.2, 0.3),
-                new Range(0.2, 1.0),
-                new Range(0.3, 0.5)
+                new Range(-0.25, 1.0),
+                new Range(0.0, 0.5)
         ));
         biomeSelector.registerBiome(new ForestBiome(
                 seed,
@@ -128,6 +128,13 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 new Range(0.4, 0.8),
                 new Range(-0.1, 1.0),
                 new Range(0.1, 0.3)
+        ));
+        biomeSelector.registerBiome(new BirchForestBiome(
+                seed,
+                new Range(0.5, 1.0),
+                new Range(0.3, 1.0),
+                new Range(0.1, 1.0),
+                new Range(0.2, 0.5)
         ));
         biomeSelector.registerBiome(new DesertBiome(
                 seed,
@@ -148,7 +155,7 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 new Range(-1.0, -0.45),
                 new Range(0.35, 0.68),
                 new Range(-0.25d, 0.25d),
-                new Range(0.0d, 1.0d)
+                new Range(0.0d, 0.5d)
         ));
         biomeSelector.registerBiome(new TundraBiome(
                 seed,
@@ -186,6 +193,13 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 new Range(-0.05d, 0.1d)
         ));
         biomeSelector.registerBiome(new OceanBiome(
+                seed,
+                new Range(-1.0, 1.0),
+                new Range(-1.0, 1.0),
+                new Range(-1.0, 1.0),
+                new Range(-1.0d, -0.05d)
+        ));
+        biomeSelector.registerBiome(new FrozenOceanBiome(
                 seed,
                 new Range(-1.0, 1.0),
                 new Range(-1.0, 1.0),
@@ -364,7 +378,11 @@ public class EarthZoneGenerator extends ZoneGenerator {
                 for (int localY = CHUNK_WIDTH - 1; localY >= 0; localY--, globalY--) {
                     if(globalY > baseHeight) {
                         if(globalY <= waterHeight) {
-                            chunk.setBlockState(blockPalette.water, localX, localY, localZ);
+                            if(biome.freezeWater() && globalY > waterHeight - 1) {
+                                chunk.setBlockState(blockPalette.ice, localX, localY, localZ);
+                            } else {
+                                chunk.setBlockState(blockPalette.water, localX, localY, localZ);
+                            }
                         }
                         continue;
                     }

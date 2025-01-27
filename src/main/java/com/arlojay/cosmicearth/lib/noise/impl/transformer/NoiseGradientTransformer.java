@@ -78,4 +78,9 @@ public class NoiseGradientTransformer implements NoiseNode {
                 "h", h
         ) + NoiseDebugString.buildStringSubnode(noise);
     }
+
+    @Override
+    public NoiseNode[] getSources() {
+        return new NoiseNode[] { this.noise };
+    }
 }

@@ -1,0 +1,53 @@
+{
+    "type": "scale",
+    "scalar": 1024,
+
+    "source": {
+        "type": "fract",
+
+        "source": {
+            "type": "mix",
+            "normalize": false,
+
+            "sources": [
+                {
+                    "factor": 30,
+                    "noise": {
+                        "type": "scale",
+                        "scalar": 200,
+
+                        "source": {
+                            "type": "octave",
+
+                            "detail": 3,
+                            "roughness": 0.5,
+                            "lacunarity": 2.8,
+                            "distortion": 1.0,
+
+                            "source": {
+                                "type": "simplex",
+                                "seed": 40
+                            }
+                        }
+                    }
+                },
+                {
+                    "factor": 1,
+                    "noise": {
+                        "type": "octave",
+
+                        "detail": 1,
+                        "roughness": 0.5,
+                        "lacunarity": 1.5,
+                        "distortion": 0.0,
+
+                        "source": {
+                            "type": "simplex",
+                            "seed": 41
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

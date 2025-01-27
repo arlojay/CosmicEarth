@@ -13,6 +13,7 @@
             
                         "noise": {
                             "type": "graph",
+                            "interpolator": "linear",
                             
                             "points": [
                                 [ -2.000, -100.000 ],
@@ -35,6 +36,8 @@
 
                             "a": {
                                 "type": "graph",
+                                "interpolator": "linear",
+
                                 "points": [
                                     [ -1, 0 ],
                                     [ 0,  0 ],
@@ -48,6 +51,8 @@
                             },
                             "b": {
                                 "type": "graph",
+                                "interpolator": "linear",
+
                                 "points": [
                                     [ -1.0, -30.0 ],
                                     [ -0.95, -30.0 ],

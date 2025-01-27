@@ -90,4 +90,9 @@ public class NoiseOperation implements NoiseNode {
                 sourceB
         );
     }
+
+    @Override
+    public NoiseNode[] getSources() {
+        return new NoiseNode[] { this.sourceA, this.sourceB };
+    }
 }

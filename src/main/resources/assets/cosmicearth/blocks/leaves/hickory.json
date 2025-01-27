@@ -1,0 +1,12 @@
+{
+    "stringId": "cosmicearth:hickory_leaves",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:leaves/hickory",
+            "isOpaque": true,
+            "lightAttenuation": 2,
+            "tags": [ ],
+            "hardness": 0.3
+        }
+    }
+}

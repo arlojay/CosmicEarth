@@ -1,0 +1,110 @@
+{
+  "type": "map",
+  "inputMin": -2.8,
+  "inputMax": 2.8,
+  "outputMin": -50,
+  "outputMax": 50,
+  "source": {
+    "type": "scale",
+    "scale_x": 100,
+    "scale_y": 100,
+    "scale_z": 100,
+    "scale_w": 100,
+    "source": {
+      "type": "mix",
+      "sources": [
+        {
+          "factor": 4,
+          "noise": {
+            "type": "scale",
+            "scale_x": 2,
+            "scale_y": 2,
+            "scale_z": 2,
+            "scale_w": 2,
+            "source": {
+              "type": "graph",
+              "points": [
+                [
+                  -1,
+                  0.5
+                ],
+                [
+                  -0.27,
+                  0.435
+                ],
+                [
+                  0.186,
+                  -0.409
+                ],
+                [
+                  0.977,
+                  -0.5
+                ]
+              ],
+              "interpolator": "LINEAR",
+              "source": {
+                "type": "octave",
+                "detail": 3,
+                "roughness": 0.5,
+                "lacunarity": 2,
+                "distortion": 0,
+                "source": {
+                  "type": "simplex",
+                  "seed": 0
+                }
+              }
+            }
+          }
+        },
+        {
+          "factor": 1,
+          "noise": {
+            "type": "graph",
+            "points": [
+              [
+                -1,
+                -1
+              ],
+              [
+                -0.315,
+                -0.714
+              ],
+              [
+                -0.049,
+                0.169
+              ],
+              [
+                0.115,
+                0.845
+              ],
+              [
+                0.534,
+                0.711
+              ],
+              [
+                0.725,
+                -0.113
+              ],
+              [
+                1,
+                -0.146
+              ]
+            ],
+            "interpolator": "SMOOTHSTEP",
+            "source": {
+              "type": "octave",
+              "detail": 4,
+              "roughness": 0.5,
+              "lacunarity": 2,
+              "distortion": 0,
+              "source": {
+                "type": "simplex",
+                "seed": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

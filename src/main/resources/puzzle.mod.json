@@ -22,8 +22,8 @@
     "cosmicearth.mixins.json"
   ],
   "depends": {
-    "cosmic-reach": ">=0.3.11",
-    "puzzle-loader": ">=2.1.9"
+    "cosmic-reach": ">=${cosmic_reach_version}",
+    "puzzle-loader": ">=${puzzle_loader_version}"
   },
   "accessManipulator": "cosmicearth.manipulator"
 }

@@ -1,0 +1,12 @@
+{
+    "stringId": "cosmicearth:pine_leaves",
+    "blockStates": {
+        "default": {
+            "modelName": "cosmicearth:leaves/pine",
+            "isOpaque": true,
+            "lightAttenuation": 2,
+            "tags": [ ],
+            "hardness": 0.3
+        }
+    }
+}

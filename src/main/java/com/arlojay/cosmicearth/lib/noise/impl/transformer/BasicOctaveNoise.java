@@ -43,9 +43,13 @@ public class BasicOctaveNoise implements NoiseNode {
         double value = 0.0;
         double effectiveness = 1.0;
         double scale = 1.0;
+        double i = 0.0;
         for(var amplitude : amplitudes) {
+            i++;
             max += effectiveness;
-            if(amplitude != 0.0d) value += noise.sample(t * scale) * effectiveness * amplitude;
+            if(amplitude != 0) value += noise.sample(
+                    t * scale + i * 170.74026176879897
+            ) * effectiveness * amplitude;
 
             effectiveness *= 0.5;
             scale *= 2.0;
@@ -59,9 +63,14 @@ public class BasicOctaveNoise implements NoiseNode {
         double value = 0.0;
         double effectiveness = 1.0;
         double scale = 1.0;
+        double i = 0.0;
         for(var amplitude : amplitudes) {
+            i++;
             max += effectiveness;
-            value += noise.sample(x * scale, y * scale) * effectiveness * amplitude;
+            value += noise.sample(
+                    x * scale + i * 73.948990498798,
+                    y * scale + i * 785.6504844886496
+            ) * effectiveness * amplitude;
 
             effectiveness *= 0.5;
             scale *= 2.0;
@@ -75,9 +84,15 @@ public class BasicOctaveNoise implements NoiseNode {
         double value = 0.0;
         double effectiveness = 1.0;
         double scale = 1.0;
+        double i = 0.0;
         for(var amplitude : amplitudes) {
+            i++;
             max += effectiveness;
-            value += noise.sample(x * scale, y * scale, z * scale) * effectiveness * amplitude;
+            value += noise.sample(
+                    x * scale + i * 368.31313629154084,
+                    y * scale + i * 420.62485068161016,
+                    z * scale + i * 523.7760189663836
+            ) * effectiveness * amplitude;
 
             effectiveness *= 0.5;
             scale *= 2.0;
@@ -91,9 +106,16 @@ public class BasicOctaveNoise implements NoiseNode {
         double value = 0.0;
         double effectiveness = 1.0;
         double scale = 1.0;
+        double i = 0.0;
         for(var amplitude : amplitudes) {
+            i++;
             max += effectiveness;
-            value += noise.sample(x * scale, y * scale,z * scale, w * scale) * effectiveness * amplitude;
+            value += noise.sample(
+                    x * scale + i * 707.7451164777871,
+                    y * scale + i * 640.0279481315554,
+                    z * scale + i * 178.45669172182488,
+                    w * scale + i * 862.9621652014006
+            ) * effectiveness * amplitude;
 
             effectiveness *= 0.5;
             scale *= 2.0;
@@ -111,5 +133,10 @@ public class BasicOctaveNoise implements NoiseNode {
         return "@BasicOctaveNoise" + NoiseDebugString.createPropertyList(
                 "amplitudes", Arrays.toString(amplitudes)
         ) + NoiseDebugString.buildStringSubnode(noise);
+    }
+
+    @Override
+    public NoiseNode[] getSources() {
+        return new NoiseNode[] { this.noise };
     }
 }

@@ -1,5 +1,7 @@
 package com.arlojay.cosmicearth.lib.noise;
 
+import java.util.Arrays;
+
 public abstract class MultiInputNoiseTransformer implements NoiseNode {
     protected final NoiseNode[] sources;
     protected final double[] samples;
@@ -46,5 +48,10 @@ public abstract class MultiInputNoiseTransformer implements NoiseNode {
     @Override
     public void setSeed(long seed) {
         for(var source : sources) source.setSeed(seed);
+    }
+
+    @Override
+    public NoiseNode[] getSources() {
+        return Arrays.copyOf(sources, sources.length);
     }
 }

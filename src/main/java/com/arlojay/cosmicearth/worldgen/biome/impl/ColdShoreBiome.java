@@ -27,7 +27,7 @@ public class ColdShoreBiome extends Biome {
         return new SeededBlockGenerator(seed) {
             @Override
             public BlockState getBlock(int x, int y, int z, double gradient) {
-                return Palettes.instance.snow;
+                return Palettes.instance.sand;
             }
         };
     }

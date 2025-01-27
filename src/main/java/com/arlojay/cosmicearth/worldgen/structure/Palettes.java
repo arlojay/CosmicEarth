@@ -85,6 +85,7 @@ public class Palettes {
     public final BlockState gravel = get("base:stone_gravel[default]");
     public final BlockState magma = get("base:magma[default]");
     public final BlockState snow = get("base:snow[default]");
+    public final BlockState ice = get("base:ice[default]");
 
     public final RandomPalette<BlockState> steepGradientTopsoil = new RandomPalette<>(Set.of(
             new PaletteItem<>(grass, 1d),

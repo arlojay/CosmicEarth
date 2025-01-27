@@ -12,4 +12,6 @@ public interface NoiseNode extends Copyable<NoiseNode> {
 
     void setSeed(long seed);
     String buildString();
+
+    NoiseNode[] getSources();
 }

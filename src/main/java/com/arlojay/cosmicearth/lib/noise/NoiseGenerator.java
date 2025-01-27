@@ -13,4 +13,9 @@ public abstract class NoiseGenerator implements NoiseNode {
     public void setSeed(long seed) {
         this.seed = seed + seedOffset;
     }
+
+    @Override
+    public NoiseNode[] getSources() {
+        return new NoiseNode[0];
+    }
 }

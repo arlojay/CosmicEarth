@@ -50,4 +50,9 @@ public class ValueCaptureNode implements NoiseNode {
                 "lastValue", lastValue
         ) + NoiseDebugString.buildStringSubnode(this.noise);
     }
+
+    @Override
+    public NoiseNode[] getSources() {
+        return new NoiseNode[] { this.noise };
+    }
 }

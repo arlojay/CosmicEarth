@@ -1,5 +1,6 @@
 {
     "type": "graph",
+    "interpolator": "linear",
 
     "points": [
         [0.2, 1],

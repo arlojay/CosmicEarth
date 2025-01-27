@@ -9,8 +9,8 @@ import java.util.Random;
 import static finalforeach.cosmicreach.blocks.MissingBlockStateResult.EXCEPTION;
 
 public class HickoryTreeStructure extends WorldgenStructure {
-    static BlockState treeLogBlock = getBlockStateInstance("base:tree_log[default]");
-    static BlockState leavesBlock = getBlockStateInstance("cosmicearth:deciduous_leaves[default]");
+    static BlockState treeLogBlock = getBlockStateInstance("cosmicearth:oak_log[default]");
+    static BlockState leavesBlock = getBlockStateInstance("cosmicearth:hickory_leaves[default]");
     static WhiteNoise whiteNoiseTreesH = new WhiteNoise();
 
     @Override

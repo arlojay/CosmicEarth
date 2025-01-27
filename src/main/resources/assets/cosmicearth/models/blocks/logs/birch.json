@@ -1,0 +1,20 @@
+{
+    "parent": "base:models/blocks/cube.json",
+
+    "textures":
+    {
+        "top":
+        {
+            "fileName": "cosmicearth:logs/birch_top"
+        },
+        "bottom":
+        {
+            "fileName": "cosmicearth:logs/birch_top"
+        },
+        "side":
+        {
+            "fileName": "cosmicearth:logs/birch_side"
+        }
+    }
+    
+}

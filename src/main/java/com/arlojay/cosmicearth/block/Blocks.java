@@ -46,10 +46,36 @@ public class Blocks {
         return new BlockProperties();
     }
 
+    private static BlockProperties log() {
+        return new BlockProperties();
+    }
+
+    private static BlockProperties planks() {
+        return new BlockProperties();
+    }
+
     static {
         register("cactus", new BlockProperties());
-        register("coniferous_leaves", leaves());
-        register("deciduous_leaves", leaves());
+
+        register("leaves/coniferous", leaves());
+        register("leaves/deciduous", leaves());
+
+        register("leaves/hickory", leaves());
+        register("leaves/oak", leaves());
+        register("leaves/pine", leaves());
+        register("leaves/red_maple", leaves());
+        register("leaves/yellow_birch", leaves());
+
+        register("logs/oak", log());
+        register("logs/pine", log());
+        register("logs/maple", log());
+        register("logs/birch", log());
+
+        register("planks/oak", planks());
+        register("planks/pine", planks());
+        register("planks/maple", planks());
+        register("planks/birch", planks());
+
 //        register("dead_grass");
 
         register("pebbles", new BlockProperties());

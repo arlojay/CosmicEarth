@@ -1,0 +1,20 @@
+{
+    "parent": "base:models/blocks/cube.json",
+
+    "textures":
+    {
+        "top":
+        {
+            "fileName": "cosmicearth:logs/pine_top"
+        },
+        "bottom":
+        {
+            "fileName": "cosmicearth:logs/pine_top"
+        },
+        "side":
+        {
+            "fileName": "cosmicearth:logs/pine_side"
+        }
+    }
+    
+}

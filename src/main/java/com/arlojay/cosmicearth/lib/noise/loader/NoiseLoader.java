@@ -153,5 +153,7 @@ public class NoiseLoader {
         NoiseOperation.register();
         ConstantValueGenerator.register();
         BasicOctaveNoise.register();
+        NoiseFraction.register();
+        SimpleTransform.register();
     }
 }

@@ -1,21 +1,17 @@
 {
-    "type": "operation", "op": "add",
+    "type": "map",
 
-    "a": 0,
-    "b": {
-        "type": "mix",
-        "normalize": false,
-    
-        "sources": [
-            {
-                "factor": 1,
-                "noise": {
-                    "type": "scale",
-                    "scalar": 40,
-    
-                    "source": { "type": "ref", "file": "cosmicearth:cave/pocket" }
-                }
-            }
-        ]
+    "inputMin": -1,
+    "inputMax": 1,
+    "outputMin": -1,
+    "outputMax": 6,
+
+    "source": {
+        "type": "scale",
+        "scalar": 20,
+        "source": {
+            "type": "ref",
+            "file": "cosmicearth:cave/pocket"
+        }
     }
 }

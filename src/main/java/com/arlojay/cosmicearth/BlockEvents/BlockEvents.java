@@ -1,6 +1,7 @@
 package com.arlojay.cosmicearth.BlockEvents;
 
 import com.arlojay.cosmicearth.CosmicEarthMod;
+import com.badlogic.gdx.utils.Json;
 import finalforeach.cosmicreach.util.Identifier;
 
 import java.util.HashSet;
@@ -16,7 +17,8 @@ public class BlockEvents {
     public static void register() {
         for(var id : registeredBlocks) {
             var file = "block_events/" + id + ".json";
-            loadBlockEventsFromAsset(Objects.requireNonNull(locateAsset(Identifier.of(CosmicEarthMod.MOD_ID, file))));
+            var json = new Json();
+            loadBlockEventsFromAsset(json, Objects.requireNonNull(locateAsset(Identifier.of(CosmicEarthMod.MOD_ID, file))));
         }
     }
 

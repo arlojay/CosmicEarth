@@ -53,6 +53,9 @@ public abstract class Biome {
     public final BlockState getLoam(int x, int y, int z, double gradient) {
         return loamGenerator.getBlock(x, y, z, gradient);
     }
+    public boolean freezeWater() {
+        return false;
+    }
 
     public final BiomeStructure getStructure(Zone zone, int x, int y, int z, BlockState ground, BlockState air, double gradient) {
         structureNoise.setSeed(seed + Double.doubleToLongBits((x + 0.581d) * (y + 0.953d) * (z + 1.284d)));

@@ -36,6 +36,8 @@ processResources {
             "mod_desc"       : desc,
             "mod_name"        : project.name,
             "mod_id"          : id,
+            "cosmic_reach_version": cosmic_reach_version,
+            "puzzle_loader_version": puzzle_loader_version,
     ]
 
 

@@ -30,6 +30,11 @@ public class TundraBiome extends Biome {
     }
 
     @Override
+    public boolean freezeWater() {
+        return true;
+    }
+
+    @Override
     protected void addStructures(List<BiomeStructure> structures) {
         StructureSet.pebbles(structures);
     }

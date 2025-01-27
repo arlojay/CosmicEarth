@@ -11,6 +11,7 @@ public class VoronoiGenerator extends NoiseGenerator {
     public enum VoronoiMode { CELL, DISTANCE }
 
     private static final int stride = 1;
+    private static final double sin45 = Math.sqrt(2d) / 2d;
 
     private final VoronoiMode mode;
     private final double randomness;
@@ -44,12 +45,12 @@ public class VoronoiGenerator extends NoiseGenerator {
     public VoronoiGenerator(long seed, long seedOffset, double randomness, VoronoiMode mode) {
         super(seed, seedOffset);
         this.mode = mode;
-        this.randomness = randomness * (Math.sqrt(3d) / 2d);
+        this.randomness = randomness * sin45;
         this.randomGenerator = new Random(seed);
     }
 
     public VoronoiGenerator asCopy() {
-        return new VoronoiGenerator(seed, seedOffset, randomness, mode);
+        return new VoronoiGenerator(seed, seedOffset, randomness / sin45, mode);
     }
 
     private double random(long seed, double t) {

@@ -1,0 +1,12 @@
+{
+    "parent": "cosmicearth:leaves/base.json",
+    
+    "isTransparent": true,
+    "cullsSelf": false,
+
+    "textures": {
+        "default": {
+            "fileName": "cosmicearth:leaves/pine.png"
+        }
+    }
+}

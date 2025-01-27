@@ -1,11 +1,12 @@
 package com.arlojay.cosmicearth.lib.noise.impl.generator;
 
 import com.arlojay.cosmicearth.lib.noise.NoiseDebugString;
+import com.arlojay.cosmicearth.lib.noise.NoiseGenerator;
 import com.arlojay.cosmicearth.lib.noise.NoiseNode;
 import com.arlojay.cosmicearth.lib.noise.loader.NoiseLoader;
 import org.hjson.JsonObject;
 
-public class ConstantValueGenerator implements NoiseNode {
+public class ConstantValueGenerator extends NoiseGenerator {
     private final double value;
 
     public static void register() {
@@ -17,6 +18,7 @@ public class ConstantValueGenerator implements NoiseNode {
     }
 
     public ConstantValueGenerator(double value) {
+        super(0, 0);
         this.value = value;
     }
 

@@ -1,0 +1,19 @@
+{
+    "stringId": "base:birch_planks",
+    "blockStates":
+    {
+        "default": 
+        {
+            "blockEventsId": "base:block_events_wood",
+            "modelName": "cosmicearth:planks/birch",
+            "stateGenerators": ["base:slabs_seamless_all", "base:stairs_seamless_all"],
+            "tags": [
+                "tool_axe_effective"
+            ],
+            "intProperties":
+            {
+                "fuelTicks": 16
+            }
+        }
+    }
+}

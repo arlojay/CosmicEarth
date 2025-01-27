@@ -1,0 +1,10 @@
+{
+    "parent": "base:models/blocks/cube.json",
+
+    "textures": {
+        "all": {
+            "fileName": "cosmicearth:logs/birch_side"
+        }
+    }
+    
+}

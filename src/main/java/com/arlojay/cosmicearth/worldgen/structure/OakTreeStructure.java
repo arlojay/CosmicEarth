@@ -12,8 +12,8 @@ import java.util.Set;
 
 public class OakTreeStructure extends WorldgenStructure {
     private static final BlockState airBlock = getBlockStateInstance("base:air[default]");
-    private static final BlockState treeLogBlock = getBlockStateInstance("base:tree_log[default]");
-    private static final BlockState leavesBlock = getBlockStateInstance("cosmicearth:deciduous_leaves[default]");
+    private static final BlockState treeLogBlock = getBlockStateInstance("cosmicearth:oak_log[default]");
+    private static final BlockState leavesBlock = getBlockStateInstance("cosmicearth:oak_leaves[default]");
     private static final WhiteNoise whiteNoiseTreesH = new WhiteNoise();
 
     private static final Set<BlockState> leafReplaceMask = new HashSet<>();

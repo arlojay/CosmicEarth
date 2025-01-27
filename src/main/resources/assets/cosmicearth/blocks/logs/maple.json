@@ -1,0 +1,34 @@
+{
+    "stringId": "cosmicearth:maple_log",
+    "blockStates":
+    {
+        "default": 
+        {
+            "blockEventsId": "base:block_events_wood",
+            "modelName": "cosmicearth:logs/maple.json",
+            "stateGenerators": ["base:slabs_seamless_all"],
+            "tags": [
+                "tool_axe_effective"
+            ],
+            "intProperties":
+            {
+                "fuelTicks": 64
+            },
+            "hardness": 4.5
+        },
+        "type=bark": 
+        {
+            "blockEventsId": "base:block_events_wood",
+            "modelName": "cosmicearth:logs/maple_bark.json",
+            "stateGenerators": ["base:slabs_seamless_all", "base:stairs_seamless_all"],
+            "tags": [
+                "tool_axe_effective"
+            ],
+            "intProperties":
+            {
+                "fuelTicks": 64
+            },
+            "hardness": 4.5
+        }
+    }
+}

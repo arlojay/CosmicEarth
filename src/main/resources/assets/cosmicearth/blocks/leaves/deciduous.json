@@ -1,8 +1,8 @@
 {
-    "stringId": "cosmicearth:coniferous_leaves",
+    "stringId": "cosmicearth:deciduous_leaves",
     "blockStates": {
         "default": {
-            "modelName": "cosmicearth:coniferous_leaves",
+            "modelName": "cosmicearth:leaves/deciduous",
             "isOpaque": true,
             "lightAttenuation": 2,
             "tags": [ ],

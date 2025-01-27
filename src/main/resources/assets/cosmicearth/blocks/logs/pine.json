@@ -1,0 +1,34 @@
+{
+    "stringId": "cosmicearth:pine_log",
+    "blockStates":
+    {
+        "default": 
+        {
+            "blockEventsId": "base:block_events_wood",
+            "modelName": "cosmicearth:logs/pine.json",
+            "stateGenerators": ["base:slabs_seamless_all"],
+            "tags": [
+                "tool_axe_effective"
+            ],
+            "intProperties":
+            {
+                "fuelTicks": 64
+            },
+            "hardness": 3
+        },
+        "type=bark": 
+        {
+            "blockEventsId": "base:block_events_wood",
+            "modelName": "cosmicearth:logs/pine_bark.json",
+            "stateGenerators": ["base:slabs_seamless_all", "base:stairs_seamless_all"],
+            "tags": [
+                "tool_axe_effective"
+            ],
+            "intProperties":
+            {
+                "fuelTicks": 64
+            },
+            "hardness": 3
+        }
+    }
+}
