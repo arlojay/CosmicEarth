@@ -1,3 +1,6 @@
+# Archival Notice
+I am no longer active in the Cosmic Reach community. If you want to become a maintainer, send me an inquiry via the [Discord server](https://discord.gg/BdgvTwQqyY) (@lexifuzzpup).
+
 # Cosmic Earth - Terrain Generator
 ### *A second and reimagined release of the original Cosmic Earth Terrain Generator that never had a release to begin with*
 
